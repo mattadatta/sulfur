@@ -1,10 +1,10 @@
 Pod::Spec.new do |s|
   s.name                  = "Sulfur"
   s.version               = "1.0.0"
-  s.summary               = "A collection of various utilities I\"ve been building out over time for iOS."
+  s.summary               = "A collection of various utilities I've been building out over time for iOS."
   s.homepage              = "https://github.com/mattadatta/sulfur"
   s.authors               = { "Matthew Brown" => "me.matt.brown@gmail.com" }
-  s.license               = { :type => "MIT" }
+  s.license               = { :type => "MIT", :file => 'LICENSE' }
 
   s.platform              = :ios
   s.ios.deployment_target = "9.0"
