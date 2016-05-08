@@ -9,7 +9,7 @@ public final class GradientView: UIView {
 
     public typealias GradientData = (x: Double, y: Double, color: UIColor)
 
-    override class func layerClass() -> AnyClass {
+    override public class func layerClass() -> AnyClass {
         return CAGradientLayer.self
     }
 
@@ -35,12 +35,12 @@ public final class GradientView: UIView {
         }
     }
 
-    override init(frame: CGRect) {
+    override public init(frame: CGRect) {
         super.init(frame: frame)
         self.commonInit()
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         self.commonInit()
     }
@@ -58,39 +58,39 @@ public final class GradientView: UIView {
     }
 }
 
-final class TwoPointGradientLayer: CAGradientLayer {
+public final class TwoPointGradientLayer: CAGradientLayer {
 
-    typealias GradientData = (x: Double, y: Double, color: UIColor)
+    public typealias GradientData = (x: Double, y: Double, color: UIColor)
 
-    var startData: GradientData = (0.5, 0.0, UIColor.whiteColor()) {
+    public var startData: GradientData = (0.5, 0.0, UIColor.whiteColor()) {
         didSet {
             self.updateGradient()
         }
     }
 
-    var endData: GradientData = (0.5, 1.0, UIColor.blackColor()) {
+    public var endData: GradientData = (0.5, 1.0, UIColor.blackColor()) {
         didSet {
             self.updateGradient()
         }
     }
 
-    var reverse = false {
+    public var reverse = false {
         didSet {
             self.updateGradient()
         }
     }
 
-    override init() {
+    override public init() {
         super.init()
         self.commonInit()
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         self.commonInit()
     }
 
-    override init(layer: AnyObject) {
+    override public init(layer: AnyObject) {
         super.init(layer: layer)
         guard let other = layer as? TwoPointGradientLayer else {
             return

@@ -4,6 +4,7 @@
  */
 
 import UIKit
+import Cartography
 
 public protocol UINibViewInflatable: class { }
 

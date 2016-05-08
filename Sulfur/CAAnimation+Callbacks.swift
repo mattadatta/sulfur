@@ -29,15 +29,6 @@ private class CAAnimationDelegate: NSObject {
 
 public extension CAAnimation {
 
-    override var delegate: AnyObject? {
-        get {
-            return super.delegate
-        }
-        set {
-            super.delegate = newValue
-        }
-    }
-
     /// The `CAAnimation`'s delegate as our custom delegate, if it exists and is a proper instance
     private var animationDelegate: CAAnimationDelegate? {
         return self.delegate as? CAAnimationDelegate
