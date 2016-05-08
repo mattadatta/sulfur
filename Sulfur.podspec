@@ -13,4 +13,7 @@ Pod::Spec.new do |s|
   s.source_files          = "Sulfur/**/*.{swift,h,m}"
   s.resources             = "Sulfur/**/*.{lproj,storyboard}"
   s.module_name           = s.name
+
+  s.dependency 'Cartography', '~> 0.6'
+  s.dependency 'XCGLogger', '~> 3.3'
 end

@@ -6,7 +6,7 @@ workspace 'Sulfur'
 
 target 'Sulfur' do
   pod 'Cartography', '~> 0.6'
-  pod 'XCGLogger', '~> 3.2'
+  pod 'XCGLogger', '~> 3.3'
 
   target 'SulfurTests' do
     inherit! :search_paths
