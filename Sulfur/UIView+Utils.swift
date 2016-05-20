@@ -57,10 +57,3 @@ public extension UIViewController {
         navigationController.pushViewController(viewController, animated: animated)
     }
 }
-
-public extension UITableView {
-
-    public func dequeueAtIndexPath<Cell: UITableViewCell>(indexPath: NSIndexPath) -> Cell {
-        return self.dequeueReusableCellWithIdentifier("\(Cell.self)", forIndexPath: indexPath) as! Cell
-    }
-}

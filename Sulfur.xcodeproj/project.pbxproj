@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3203E9EC1CEFBA9000D14253 /* ViewCellWrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3203E9EB1CEFBA9000D14253 /* ViewCellWrappers.swift */; };
 		32389E211CDFDCD1009475F6 /* Sulfur.h in Headers */ = {isa = PBXBuildFile; fileRef = 32389E201CDFDCD1009475F6 /* Sulfur.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		32389E281CDFDCD1009475F6 /* Sulfur.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32389E1D1CDFDCD1009475F6 /* Sulfur.framework */; };
 		32389E2D1CDFDCD1009475F6 /* SulfurTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E2C1CDFDCD1009475F6 /* SulfurTests.swift */; };
@@ -46,6 +47,7 @@
 
 /* Begin PBXFileReference section */
 		308DD552E6F1255043497577 /* Pods_Sulfur.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Sulfur.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3203E9EB1CEFBA9000D14253 /* ViewCellWrappers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewCellWrappers.swift; sourceTree = "<group>"; };
 		32389E1D1CDFDCD1009475F6 /* Sulfur.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Sulfur.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		32389E201CDFDCD1009475F6 /* Sulfur.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sulfur.h; sourceTree = "<group>"; };
 		32389E221CDFDCD1009475F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -143,6 +145,7 @@
 				32389E471CDFDD1F009475F6 /* UIImage+Utils.swift */,
 				32389E481CDFDD1F009475F6 /* UINib+Utils.swift */,
 				32389E4A1CDFDD1F009475F6 /* UIView+Utils.swift */,
+				3203E9EB1CEFBA9000D14253 /* ViewCellWrappers.swift */,
 				32389E201CDFDCD1009475F6 /* Sulfur.h */,
 				32389E221CDFDCD1009475F6 /* Info.plist */,
 			);
@@ -374,6 +377,7 @@
 				32389E5A1CDFDD1F009475F6 /* UIColor+Utils.swift in Sources */,
 				32389E4E1CDFDD1F009475F6 /* CancelableScrollView.swift in Sources */,
 				32389E571CDFDD1F009475F6 /* SequenceType+Utils.swift in Sources */,
+				3203E9EC1CEFBA9000D14253 /* ViewCellWrappers.swift in Sources */,
 				32389E581CDFDD1F009475F6 /* String+Utils.swift in Sources */,
 				32389E551CDFDD1F009475F6 /* Random.swift in Sources */,
 				32389E4B1CDFDD1F009475F6 /* Array+Utils.swift in Sources */,
