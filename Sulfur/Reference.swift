@@ -9,9 +9,9 @@ import Foundation
 
 public struct StrongObjectReference: Hashable {
 
-    let object: AnyObject
+    public let object: AnyObject
 
-    init(_ object: AnyObject) {
+    public init(_ object: AnyObject) {
         self.object = object
     }
 
@@ -28,17 +28,17 @@ public func == (lhs: StrongObjectReference, rhs: StrongObjectReference) -> Bool 
 
 public struct WeakReference<Referent where Referent: AnyObject>: Hashable {
 
-    private(set) weak var referent: Referent?
+    public private(set) weak var referent: Referent?
 
-    init(referent: Referent) {
+    public init(referent: Referent) {
         self.referent = referent
     }
 
-    var isNil: Bool {
+    public var isNil: Bool {
         return self.referent == nil
     }
 
-    var isNotNil: Bool {
+    public var isNotNil: Bool {
         return self.referent != nil
     }
 
