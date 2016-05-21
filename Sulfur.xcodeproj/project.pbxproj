@@ -206,6 +206,7 @@
 				32389E1A1CDFDCD1009475F6 /* Headers */,
 				32389E1B1CDFDCD1009475F6 /* Resources */,
 				EF050235D6689D15AA5CEBFC /* 📦 Copy Pods Resources */,
+				3203E9ED1CF0C68F00D14253 /* Version Script */,
 			);
 			buildRules = (
 			);
@@ -291,6 +292,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		3203E9ED1CF0C68F00D14253 /* Version Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Version Script";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/xcode-version-script.swift\"\n";
+		};
 		45501371483DA1D726C06E72 /* 📦 Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -517,6 +532,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Sulfur/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mattadatta.Sulfur;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -536,6 +552,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Sulfur/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mattadatta.Sulfur;
 				PRODUCT_NAME = "$(TARGET_NAME)";
