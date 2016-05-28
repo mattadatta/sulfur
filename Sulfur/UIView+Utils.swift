@@ -42,18 +42,3 @@ public extension UIView {
         return self.constrainView(view, withInsets: insets)
     }
 }
-
-public extension UIViewController {
-
-    public func instantiateControllerFromStoryboard<Controller: UIViewController>() -> Controller! {
-        return self.storyboard!.instantiateViewControllerWithIdentifier("\(Controller.self)") as! Controller
-    }
-
-    public func pushViewControllerIfPossible<ViewController: UIViewController>(viewController: ViewController, animated: Bool) {
-        guard let navigationController = self.navigationController else {
-            self.presentViewController(viewController, animated: animated, completion: nil)
-            return
-        }
-        navigationController.pushViewController(viewController, animated: animated)
-    }
-}
