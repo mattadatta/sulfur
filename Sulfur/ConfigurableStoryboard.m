@@ -9,7 +9,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ConfigurableStoryboard ()
 
-@property (nonatomic, weak) id<ConfigurableStoryboardDelegate> delegate;
+@property (nonatomic, readwrite) id<ConfigurableStoryboardDelegate> delegate;
 
 @end
 
