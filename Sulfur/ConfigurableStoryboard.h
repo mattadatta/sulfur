@@ -15,6 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
                                         bundle:(nullable NSBundle *)storyboardBundleOrNil
                                       delegate:(id<ConfigurableStoryboardDelegate>)delegate;
 
+@property (nonatomic, readonly) id<ConfigurableStoryboardDelegate> delegate;
+
 @end
 
 @protocol ConfigurableStoryboardDelegate <NSObject>

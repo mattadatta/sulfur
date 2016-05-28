@@ -16,7 +16,7 @@
 		32389E4D1CDFDD1F009475F6 /* CAAnimation+Callbacks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E391CDFDD1F009475F6 /* CAAnimation+Callbacks.swift */; };
 		32389E4E1CDFDD1F009475F6 /* CancelableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E3A1CDFDD1F009475F6 /* CancelableScrollView.swift */; };
 		32389E4F1CDFDD1F009475F6 /* CG+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E3B1CDFDD1F009475F6 /* CG+Utils.swift */; };
-		32389E501CDFDD1F009475F6 /* ConfigurableStoryboard.h in Headers */ = {isa = PBXBuildFile; fileRef = 32389E3C1CDFDD1F009475F6 /* ConfigurableStoryboard.h */; };
+		32389E501CDFDD1F009475F6 /* ConfigurableStoryboard.h in Headers */ = {isa = PBXBuildFile; fileRef = 32389E3C1CDFDD1F009475F6 /* ConfigurableStoryboard.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		32389E511CDFDD1F009475F6 /* ConfigurableStoryboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 32389E3D1CDFDD1F009475F6 /* ConfigurableStoryboard.m */; };
 		32389E521CDFDD1F009475F6 /* Gradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E3E1CDFDD1F009475F6 /* Gradient.swift */; };
 		32389E531CDFDD1F009475F6 /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E3F1CDFDD1F009475F6 /* GradientView.swift */; };
