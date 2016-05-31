@@ -5,9 +5,7 @@
 
 import UIKit
 
-public struct Random {
-
-    private init() { }
+public enum Random {
 
     public static func randomNumberInclusiveMinimum(minimum: Int, maximum: Int) -> Int {
         if maximum < minimum {
@@ -21,7 +19,7 @@ public struct Random {
 
 public extension CollectionType where Self.Index == Int {
 
-    var randomElement: Self.Generator.Element? {
+    public var randomElement: Self.Generator.Element? {
         if self.isEmpty {
             return nil
         }
@@ -32,11 +30,11 @@ public extension CollectionType where Self.Index == Int {
 public extension UIColor {
 
     @warn_unused_result
-    static func randomColor() -> UIColor {
+    public static func randomColor(alpha alpha: CGFloat = 1.0) -> UIColor {
         return UIColor(
             red: CGFloat(Random.randomNumberInclusiveMinimum(0, maximum: 255)) / 255,
             green: CGFloat(Random.randomNumberInclusiveMinimum(0, maximum: 255)) / 255,
             blue: CGFloat(Random.randomNumberInclusiveMinimum(0, maximum: 255)) / 255,
-            alpha: 1.0)
+            alpha: alpha)
     }
 }
