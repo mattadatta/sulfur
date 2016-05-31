@@ -11,7 +11,6 @@ Pod::Spec.new do |s|
   s.requires_arc          = true
   s.source                = { :git => "https://github.com/mattadatta/sulfur.git", :tag => "v/#{s.version}" }
   s.source_files          = "Sulfur/**/*.{swift,h,m}"
-  s.resources             = "Sulfur/**/*.{lproj,storyboard}"
   s.module_name           = s.name
 
   s.dependency 'Cartography', '~> 0.6'
