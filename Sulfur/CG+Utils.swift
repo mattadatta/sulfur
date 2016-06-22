@@ -157,6 +157,22 @@ public extension CGRect {
         return CGPoint(x: self.maxX, y: self.maxY)
     }
 
+    var left: CGFloat {
+        return self.origin.x
+    }
+
+    var top: CGFloat {
+        return self.origin.y
+    }
+
+    var right: CGFloat {
+        return self.left + self.width
+    }
+
+    var bottom: CGFloat {
+        return self.top + self.height
+    }
+
     public init(center: CGPoint, size: CGSize) {
         self.origin = CGRect.originForAnchor(CGPoint(x: 0.5, y: 0.5), point: center, size: size)
         self.size = size

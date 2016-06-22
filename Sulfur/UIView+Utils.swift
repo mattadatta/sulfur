@@ -25,6 +25,17 @@ public extension UIEdgeInsets {
     }
 }
 
+extension UIEdgeInsets: Hashable {
+
+    public var hashValue: Int {
+        var hash = Float(self.left).hashValue
+        hash = hash ^ 31 + Float(self.top).hashValue
+        hash = hash ^ 31 + Float(self.right).hashValue
+        hash = hash ^ 31 + Float(self.bottom).hashValue
+        return hash
+    }
+}
+
 public extension UIView {
 
     public func constrainView(view: UIView, withInsets insets: UIEdgeInsets = UIEdgeInsetsZero) -> ConstraintGroup {

@@ -15,6 +15,10 @@ public enum Random {
         let random = Int(arc4random_uniform(range + 1))
         return random + minimum
     }
+
+    public static func randomFloat() -> CGFloat {
+        return CGFloat(arc4random()) / CGFloat(UINT32_MAX)
+    }
 }
 
 public extension CollectionType where Self.Index == Int {
@@ -24,17 +28,5 @@ public extension CollectionType where Self.Index == Int {
             return nil
         }
         return self[Random.randomNumberInclusiveMinimum(0, maximum: self.count - 1)]
-    }
-}
-
-public extension UIColor {
-
-    @warn_unused_result
-    public static func randomColor(alpha alpha: CGFloat = 1.0) -> UIColor {
-        return UIColor(
-            red: CGFloat(Random.randomNumberInclusiveMinimum(0, maximum: 255)) / 255,
-            green: CGFloat(Random.randomNumberInclusiveMinimum(0, maximum: 255)) / 255,
-            blue: CGFloat(Random.randomNumberInclusiveMinimum(0, maximum: 255)) / 255,
-            alpha: alpha)
     }
 }
