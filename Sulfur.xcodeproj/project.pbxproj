@@ -33,6 +33,7 @@
 		3269DC511CDFF6A900716F0A /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3269DC501CDFF6A900716F0A /* Environment.swift */; };
 		32BC05961D1B3BE1008573BC /* Aminating+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05951D1B3BE1008573BC /* Aminating+Utils.swift */; };
 		32BC05981D1B3C39008573BC /* DebugFns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05971D1B3C39008573BC /* DebugFns.swift */; };
+		32BC059A1D1B3D75008573BC /* Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05991D1B3D75008573BC /* Context.swift */; };
 		C4ADD0A249B30919490EAD71 /* Pods_SulfurTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33508068B01975F4BE987303 /* Pods_SulfurTests.framework */; };
 		FF5DF861D8622D5F35E67351 /* Pods_Sulfur.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 308DD552E6F1255043497577 /* Pods_Sulfur.framework */; };
 /* End PBXBuildFile section */
@@ -78,6 +79,7 @@
 		3269DC501CDFF6A900716F0A /* Environment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Environment.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		32BC05951D1B3BE1008573BC /* Aminating+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Aminating+Utils.swift"; sourceTree = "<group>"; };
 		32BC05971D1B3C39008573BC /* DebugFns.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugFns.swift; sourceTree = "<group>"; };
+		32BC05991D1B3D75008573BC /* Context.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Context.swift; sourceTree = "<group>"; };
 		33508068B01975F4BE987303 /* Pods_SulfurTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SulfurTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DEC0F1850456DF28C79858C /* Pods-Sulfur.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sulfur.release.xcconfig"; path = "Pods/Target Support Files/Pods-Sulfur/Pods-Sulfur.release.xcconfig"; sourceTree = "<group>"; };
 		5C8B141792ECACC3DEF93D64 /* Pods-SulfurTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SulfurTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SulfurTests/Pods-SulfurTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -137,6 +139,7 @@
 				32389E3B1CDFDD1F009475F6 /* CG+Utils.swift */,
 				32389E3C1CDFDD1F009475F6 /* ConfigurableStoryboard.h */,
 				32389E3D1CDFDD1F009475F6 /* ConfigurableStoryboard.m */,
+				32BC05991D1B3D75008573BC /* Context.swift */,
 				32BC05971D1B3C39008573BC /* DebugFns.swift */,
 				3269DC501CDFF6A900716F0A /* Environment.swift */,
 				32389E3E1CDFDD1F009475F6 /* Gradient.swift */,
@@ -415,6 +418,7 @@
 				32389E591CDFDD1F009475F6 /* TabManagerViewController.swift in Sources */,
 				32389E5C1CDFDD1F009475F6 /* UINib+Utils.swift in Sources */,
 				3269DC511CDFF6A900716F0A /* Environment.swift in Sources */,
+				32BC059A1D1B3D75008573BC /* Context.swift in Sources */,
 				32389E4D1CDFDD1F009475F6 /* CAAnimation+Callbacks.swift in Sources */,
 				32389E531CDFDD1F009475F6 /* GradientView.swift in Sources */,
 				32389E511CDFDD1F009475F6 /* ConfigurableStoryboard.m in Sources */,
