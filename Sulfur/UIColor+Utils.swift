@@ -76,6 +76,102 @@ public extension UIColor {
     public var alpha: CGFloat {
         return self.rgba.alpha
     }
+
+    public var hsba: (hue: CGFloat, saturation: CGFloat, brightness: CGFloat, alpha: CGFloat) {
+        var hue: CGFloat = 0
+        var saturation: CGFloat = 0
+        var brightness: CGFloat = 0
+        var alpha: CGFloat = 0
+        if self.getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha) {
+            return (hue, saturation, brightness, alpha)
+        } else {
+            return (1.0, 1.0, 1.0, 1.0)
+        }
+    }
+
+    public var hue: CGFloat {
+        return self.hsba.hue
+    }
+
+    public var saturation: CGFloat {
+        return self.hsba.saturation
+    }
+
+    public var brightness: CGFloat {
+        return self.hsba.brightness
+    }
+
+    public func replaceHSBA(hue
+        hue: CGFloat? = nil,
+        saturation: CGFloat? = nil,
+        brightness: CGFloat? = nil,
+        alpha: CGFloat? = nil) -> UIColor
+    {
+        return UIColor(
+            hue: hue ?? self.hue,
+            saturation: saturation ?? self.saturation,
+            brightness: brightness ?? self.brightness,
+            alpha: alpha ?? self.alpha)
+    }
+
+    public func replaceRGBA(red
+        red: CGFloat? = nil,
+        green: CGFloat? = nil,
+        blue: CGFloat? = nil,
+        alpha: CGFloat? = nil) -> UIColor
+    {
+        return UIColor(
+            red: red ?? self.red,
+            green: green ?? self.green,
+            blue: blue ?? self.blue,
+            alpha: alpha ?? self.alpha)
+    }
+
+    public func lighter() -> UIColor {
+        return UIColor(
+            hue: self.hue,
+            saturation: self.saturation,
+            brightness: min(self.brightness * 1.3, 1.0),
+            alpha: self.alpha)
+    }
+
+    public func darker() -> UIColor {
+        return UIColor(
+            hue: self.hue,
+            saturation: self.saturation,
+            brightness: self.brightness * 0.75,
+            alpha: self.alpha)
+    }
+
+    public static func randomizeHSBA(hue
+        hue: CGFloat? = nil,
+        saturation: CGFloat? = nil,
+        brightness: CGFloat? = nil,
+        alpha: CGFloat? = nil) -> UIColor
+    {
+        return UIColor(
+            hue: hue ?? self.random255(),
+            saturation: saturation ?? self.random255(),
+            brightness: brightness ?? self.random255(),
+            alpha: alpha ?? self.random255())
+    }
+
+    public static func randomizeRGBA(red
+        red: CGFloat? = nil,
+        green: CGFloat? = nil,
+        blue: CGFloat? = nil,
+        alpha: CGFloat? = nil) -> UIColor
+    {
+        return UIColor(
+            red: red ?? self.random255(),
+            green: green ?? self.random255(),
+            blue: blue ?? self.random255(),
+            alpha: alpha ?? self.random255())
+    }
+
+    public static func random255() -> CGFloat {
+        return CGFloat(Random.randomNumberInclusiveMinimum(0, maximum: 255)) / 255.0
+    }
 }
 
 public extension SequenceType where Self.Generator.Element: UIColor {

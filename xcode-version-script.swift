@@ -15,12 +15,12 @@ import Darwin
 
 // Utils
 
-func shell(args: String ...) -> (statusCode: Int, output: String) {
-    let task = NSTask()
+func shell(_ args: String ...) -> (statusCode: Int, output: String) {
+    let task = Task()
     task.launchPath = "/usr/bin/env"
     task.arguments = args
 
-    let pipe = NSPipe()
+    let pipe = Pipe()
     task.standardOutput = pipe
     task.launch()
     task.waitUntilExit()
@@ -30,7 +30,7 @@ func shell(args: String ...) -> (statusCode: Int, output: String) {
 }
 
 func setPlistProperty(property: String, toValue value: Any) {
-    let environment = NSProcessInfo.processInfo().environment
+    let environment = ProcessInfo.processInfo().environment
 
     guard let projectDir = environment["PROJECT_DIR"] else {
         print("\'PROJECT_DIR\' environment variable not set!")
