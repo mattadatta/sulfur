@@ -20,7 +20,7 @@ public extension Array {
     }
 
     public func ask(index index: Int) -> Element? {
-        guard index > 0 && index < self.count else {
+        guard index >= 0 && index < self.count else {
             return nil
         }
         return self[index]

@@ -71,7 +71,7 @@ public extension UIView {
         return self.replaceAndConstrain(view: self.subviews[0], withBlock: block)
     }
 
-    public func replaceAndConstraintFirstView(withInsets insets: UIEdgeInsets) -> ConstraintGroup {
+    public func replaceAndConstrainFirstView(withInsets insets: UIEdgeInsets) -> ConstraintGroup {
         return self.replaceAndConstrainFirstView(block: UIView.edgeInsetsBlock(insets))
     }
 }
