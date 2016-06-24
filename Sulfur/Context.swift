@@ -55,26 +55,28 @@ public final class Context {
 
     private var services: [String: AnyObject] = [:]
 
-    public func store < Identifier: ContextServiceIdentifier, Service where Service == Identifier.Service > (service service: Service?, forIdentifier identifier: Identifier) {
-        if let existingService = self.services[Identifier.serviceId] as? Service {
+    public func store < Tag: ContextServiceTag, Service where Service == Tag.Service >
+    (service service: Service?, forTag tag: Tag)
+    {
+        if let existingService = self.services[tag.absoluteServiceId] as? Service {
             existingService.removedFrom(context: self)
             existingService.contextFn = nil
-            self.dispatch(serviceChange: .Removed, forServiceId: Identifier.serviceId)
+            self.dispatch(serviceChange: .Removed, forServiceId: tag.absoluteServiceId)
         }
-        self.services[Identifier.serviceId] = service
+        self.services[tag.absoluteServiceId] = service
         if let service = service {
             service.contextFn = { [weak self] in return self }
             service.addedTo(context: self)
-            self.dispatch(serviceChange: .Added(service), forServiceId: Identifier.serviceId)
+            self.dispatch(serviceChange: .Added(service), forServiceId: tag.absoluteServiceId)
         }
     }
 
-    public func service < Identifier: ContextServiceIdentifier, Service where Service == Identifier.Service > (forIdentifier identifier: Identifier) -> Service? {
-        return self.services[Identifier.serviceId] as? Service
+    func rawService < Tag: ContextServiceTag, Service where Service == Tag.Service > (forTag tag: Tag) -> Service? {
+        return self.services[tag.absoluteServiceId] as? Service
     }
 
-    public func serviceItem < Identifier: ContextServiceIdentifier, Service where Service == Identifier.Service > (forIdentifier identifier: Identifier) -> Service.ServiceItem? {
-        return self.service(forIdentifier: identifier)?.serviceItem
+    public func service < Tag: ContextServiceTag, Service where Service == Tag.Service > (forTag tag: Tag) -> Service.Component? {
+        return self.rawService(forTag: tag)?.component
     }
 
     private func dispatch(serviceChange serviceChange: ServiceChange, forServiceId serviceId: String) {
@@ -186,7 +188,7 @@ public extension ContextAware where Self: UIViewController {
 
     /**
      Instantiate a view controller from the view controller's storyboard. The `UIViewController` subclass you're
-     instantiating must have the same storyboard identifier as its class name, such that the identifier is the
+     instantiating must have the same storyboard tag as its class name, such that the tag is the
      result of executing `String(Controller)`.
 
      - returns: The new `UIViewController` instance
@@ -226,22 +228,23 @@ extension UIView: ContextAwareContainer {
 
 // MARK: - ContextService
 
-public protocol ContextServiceIdentifier {
+public protocol ContextServiceTag {
     associatedtype Service: ContextService
+    var serviceId: String? { get }
 }
 
-public extension ContextServiceIdentifier {
+private extension ContextServiceTag {
 
-    static var serviceId: String {
-        return "\(self)"
+    var absoluteServiceId: String {
+        return self.serviceId ?? String(Self)
     }
 }
 
 public protocol ContextService: class {
-    associatedtype ServiceItem
+    associatedtype Component
 
     var contextFn: (() -> Context?)? { get set }
-    var serviceItem: ServiceItem { get }
+    var component: Component { get }
 
     func addedTo(context context: Context)
     func removedFrom(context context: Context)
