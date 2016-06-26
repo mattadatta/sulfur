@@ -13,12 +13,12 @@ public final class TableViewCell<View: UIView>: UITableViewCell {
         return "\(self)"
     }
 
-    public class func registerInTableView(tableView: UITableView) {
-        tableView.registerClass(self, forCellReuseIdentifier: self.viewReuseIdentifier)
+    public class func registerInTableView(_ tableView: UITableView) {
+        tableView.register(self, forCellReuseIdentifier: self.viewReuseIdentifier)
     }
 
-    public class func dequeueFromTableView(tableView: UITableView, forIndexPath indexPath: NSIndexPath) -> (TableViewCell<View>, View) {
-        let cell = tableView.dequeueReusableCellWithIdentifier(self.viewReuseIdentifier, forIndexPath: indexPath) as! TableViewCell<View>
+    public class func dequeueFromTableView(_ tableView: UITableView, forIndexPath indexPath: IndexPath) -> (TableViewCell<View>, View) {
+        let cell = tableView.dequeueReusableCell(withIdentifier: self.viewReuseIdentifier, for: indexPath) as! TableViewCell<View>
         return (cell, cell.nestedView)
     }
 
@@ -49,12 +49,12 @@ public final class TableViewHeaderFooterView<View: UIView>: UITableViewHeaderFoo
         return "\(self)"
     }
 
-    public class func registerInTableView(tableView: UITableView) {
-        tableView.registerClass(self, forHeaderFooterViewReuseIdentifier: self.viewReuseIdentifier)
+    public class func registerInTableView(_ tableView: UITableView) {
+        tableView.register(self, forHeaderFooterViewReuseIdentifier: self.viewReuseIdentifier)
     }
 
-    public class func dequeueFromTableView(tableView: UITableView) -> (TableViewHeaderFooterView<View>, View) {
-        let view = tableView.dequeueReusableHeaderFooterViewWithIdentifier(self.viewReuseIdentifier) as! TableViewHeaderFooterView<View>
+    public class func dequeueFromTableView(_ tableView: UITableView) -> (TableViewHeaderFooterView<View>, View) {
+        let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: self.viewReuseIdentifier) as! TableViewHeaderFooterView<View>
         return (view, view.nestedView)
     }
 
@@ -85,12 +85,12 @@ public final class CollectionViewCell<View: UIView>: UICollectionViewCell {
         return "\(self)"
     }
 
-    public class func registerInCollectionView(collectionView: UICollectionView) {
-        collectionView.registerClass(self, forCellWithReuseIdentifier: self.viewReuseIdentifier)
+    public class func registerInCollectionView(_ collectionView: UICollectionView) {
+        collectionView.register(self, forCellWithReuseIdentifier: self.viewReuseIdentifier)
     }
 
-    public class func dequeueFromCollectionView(collectionView: UICollectionView, forIndexPath indexPath: NSIndexPath) -> (CollectionViewCell<View>, View) {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(self.viewReuseIdentifier, forIndexPath: indexPath) as! CollectionViewCell<View>
+    public class func dequeueFromCollectionView(_ collectionView: UICollectionView, forIndexPath indexPath: IndexPath) -> (CollectionViewCell<View>, View) {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.viewReuseIdentifier, for: indexPath) as! CollectionViewCell<View>
         return (cell, cell.nestedView)
     }
 
@@ -121,12 +121,12 @@ public final class CollectionReusableView<View: UIView>: UICollectionReusableVie
         return "\(self)"
     }
 
-    public class func registerInCollectionView(collectionView: UICollectionView, forSupplementaryViewOfKind kind: String) {
-        collectionView.registerClass(self, forSupplementaryViewOfKind: kind, withReuseIdentifier: self.viewReuseIdentifier)
+    public class func registerInCollectionView(_ collectionView: UICollectionView, forSupplementaryViewOfKind kind: String) {
+        collectionView.register(self, forSupplementaryViewOfKind: kind, withReuseIdentifier: self.viewReuseIdentifier)
     }
 
-    public class func dequeueFromCollectionView(collectionView: UICollectionView, forSupplementaryViewOfKind kind: String, forIndexPath indexPath: NSIndexPath) -> (CollectionReusableView<View>, View) {
-        let view = collectionView.dequeueReusableSupplementaryViewOfKind(kind, withReuseIdentifier: self.viewReuseIdentifier, forIndexPath: indexPath) as! CollectionReusableView<View>
+    public class func dequeueFromCollectionView(_ collectionView: UICollectionView, forSupplementaryViewOfKind kind: String, forIndexPath indexPath: IndexPath) -> (CollectionReusableView<View>, View) {
+        let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: self.viewReuseIdentifier, for: indexPath) as! CollectionReusableView<View>
         return (view, view.nestedView)
     }
 

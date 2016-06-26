@@ -15,22 +15,23 @@ import Darwin
 
 // Utils
 
-func shell(args: String ...) -> (statusCode: Int, output: String) {
-    let task = NSTask()
+@discardableResult
+func shell(_ args: String ...) -> (statusCode: Int, output: String) {
+    let task = Task()
     task.launchPath = "/usr/bin/env"
     task.arguments = args
 
-    let pipe = NSPipe()
+    let pipe = Pipe()
     task.standardOutput = pipe
     task.launch()
     task.waitUntilExit()
 
     let data = pipe.fileHandleForReading.readDataToEndOfFile()
-    return (Int(task.terminationStatus), String(data: data, encoding: NSUTF8StringEncoding)!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()))
+    return (Int(task.terminationStatus), String(data: data, encoding: .utf8)!.trimmingCharacters(in: .whitespacesAndNewlines))
 }
 
-func setPlistProperty(property: String, toValue value: Any) {
-    let environment = NSProcessInfo.processInfo().environment
+func setPlistProperty(_ property: String, toValue value: Any) {
+    let environment = ProcessInfo.processInfo().environment
 
     guard let projectDir = environment["PROJECT_DIR"] else {
         print("\'PROJECT_DIR\' environment variable not set!")
@@ -60,14 +61,14 @@ guard branchName.hasPrefix("release") else {
     exit(0)
 }
 
-guard let versionStartIndex = branchName.rangeOfString("/")?.endIndex else {
+guard let versionStartIndex = branchName.range(of: "/")?.upperBound else {
     print("Release branch should have form \"release/x.y.z\".")
     exit(1)
 }
 
-let versionNumberString = branchName.substringFromIndex(versionStartIndex)
+let versionNumberString = branchName.substring(from: versionStartIndex)
 let versionNumberPattern = "^\\d+(\\.\\d+)*$"
-guard (try! NSRegularExpression(pattern: versionNumberPattern, options: [])).numberOfMatchesInString(versionNumberString, options: [], range: NSRange(location: 0, length: versionNumberString.characters.count)) > 0 else {
+guard (try! RegularExpression(pattern: versionNumberPattern, options: [])).numberOfMatches(in: versionNumberString, options: [], range: NSRange(location: 0, length: versionNumberString.characters.count)) > 0 else {
     print("Version number should match regex pattern \"\(versionNumberPattern)\".")
     exit(1)
 }

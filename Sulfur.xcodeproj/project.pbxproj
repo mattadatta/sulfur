@@ -12,7 +12,6 @@
 		32389E281CDFDCD1009475F6 /* Sulfur.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32389E1D1CDFDCD1009475F6 /* Sulfur.framework */; };
 		32389E2D1CDFDCD1009475F6 /* SulfurTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E2C1CDFDCD1009475F6 /* SulfurTests.swift */; };
 		32389E4B1CDFDD1F009475F6 /* Array+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E371CDFDD1F009475F6 /* Array+Utils.swift */; };
-		32389E4C1CDFDD1F009475F6 /* Async.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E381CDFDD1F009475F6 /* Async.swift */; };
 		32389E4D1CDFDD1F009475F6 /* CAAnimation+Callbacks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E391CDFDD1F009475F6 /* CAAnimation+Callbacks.swift */; };
 		32389E4E1CDFDD1F009475F6 /* CancelableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E3A1CDFDD1F009475F6 /* CancelableScrollView.swift */; };
 		32389E4F1CDFDD1F009475F6 /* CG+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E3B1CDFDD1F009475F6 /* CG+Utils.swift */; };
@@ -58,7 +57,6 @@
 		32389E2C1CDFDCD1009475F6 /* SulfurTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SulfurTests.swift; sourceTree = "<group>"; };
 		32389E2E1CDFDCD1009475F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		32389E371CDFDD1F009475F6 /* Array+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "Array+Utils.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		32389E381CDFDD1F009475F6 /* Async.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Async.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		32389E391CDFDD1F009475F6 /* CAAnimation+Callbacks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "CAAnimation+Callbacks.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		32389E3A1CDFDD1F009475F6 /* CancelableScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CancelableScrollView.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		32389E3B1CDFDD1F009475F6 /* CG+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "CG+Utils.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -133,7 +131,6 @@
 			children = (
 				32BC05951D1B3BE1008573BC /* Aminating+Utils.swift */,
 				32389E371CDFDD1F009475F6 /* Array+Utils.swift */,
-				32389E381CDFDD1F009475F6 /* Async.swift */,
 				32389E391CDFDD1F009475F6 /* CAAnimation+Callbacks.swift */,
 				32389E3A1CDFDD1F009475F6 /* CancelableScrollView.swift */,
 				32389E3B1CDFDD1F009475F6 /* CG+Utils.swift */,
@@ -399,7 +396,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				32389E4C1CDFDD1F009475F6 /* Async.swift in Sources */,
 				32389E5A1CDFDD1F009475F6 /* UIColor+Utils.swift in Sources */,
 				32389E4E1CDFDD1F009475F6 /* CancelableScrollView.swift in Sources */,
 				32BC05981D1B3C39008573BC /* DebugFns.swift in Sources */,

@@ -16,10 +16,10 @@ public extension UIImage {
         let newY = (imageHeight - minDimension) / 2.0
         let newRect = CGRect(x: newX, y: newY, width: minDimension, height: minDimension)
 
-        guard let cgImage = CGImageCreateWithImageInRect(self.CGImage, newRect) else {
+        guard let cgImage = self.cgImage?.cropping(to: newRect) else {
             return nil
         }
-        return UIImage(CGImage: cgImage)
+        return UIImage(cgImage: cgImage)
     }
 
     @warn_unused_result
@@ -30,21 +30,19 @@ public extension UIImage {
 
         UIGraphicsBeginImageContextWithOptions(croppedImageSize, false, 0.0)
         let context = UIGraphicsGetCurrentContext()
-        CGContextBeginPath(context)
-        CGContextAddArc(
-            context,
-            croppedImageSize.width / 2.0,
-            croppedImageSize.height / 2.0,
-            croppedImageSize.width / 2.0,
-            0.0,
-            CGFloat(360.0.asRadians),
-            0)
-        CGContextClosePath(context)
-        CGContextClip(context)
-        self.drawInRect(CGRect(origin: CGPointZero, size: croppedImageSize))
+        context?.beginPath()
+        context?.addArc(centerX: croppedImageSize.width / 2.0,
+            y: croppedImageSize.height / 2.0,
+            radius: croppedImageSize.width / 2.0,
+            startAngle: 0.0,
+            endAngle: CGFloat(360.0.asRadians),
+            clockwise: 0)
+        context?.closePath()
+        context?.clip()
+        self.draw(in: CGRect(origin: CGPoint.zero, size: croppedImageSize))
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
 
-        return newImage
+        return newImage!
     }
 }

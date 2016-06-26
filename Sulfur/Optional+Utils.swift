@@ -9,9 +9,9 @@ public extension Optional {
 
     public var isBlank: Bool {
         switch self {
-        case .None:
+        case .none:
             return true
-        case .Some(let value):
+        case .some(let value):
             switch value {
             case let str as String:
                 return str.isBlank

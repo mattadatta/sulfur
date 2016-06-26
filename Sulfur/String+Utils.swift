@@ -9,7 +9,7 @@ public extension String {
 
     @warn_unused_result
     public func trim() -> String {
-        return self.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        return self.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
     }
 
     public var isBlank: Bool {

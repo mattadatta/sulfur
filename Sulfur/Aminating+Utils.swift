@@ -7,31 +7,31 @@ import UIKit
 
 public extension UIViewControllerContextTransitioning {
 
-    public func fromViewController<ViewController>(reverse reverse: Bool = false) -> ViewController {
+    public func fromViewController<ViewController>(reverse: Bool = false) -> ViewController {
         if reverse {
             return self.toViewController()
         }
-        return self.viewControllerForKey(UITransitionContextFromViewControllerKey) as! ViewController
+        return self.viewController(forKey: UITransitionContextFromViewControllerKey) as! ViewController
     }
 
-    public func fromView<View>(reverse reverse: Bool = false) -> View {
+    public func fromView<View>(reverse: Bool = false) -> View {
         if reverse {
             return self.toView()
         }
-        return self.viewForKey(UITransitionContextFromViewKey) as! View
+        return self.view(forKey: UITransitionContextFromViewKey) as! View
     }
 
-    public func toViewController<ViewController>(reverse reverse: Bool = false) -> ViewController {
+    public func toViewController<ViewController>(reverse: Bool = false) -> ViewController {
         if reverse {
             return self.fromViewController()
         }
-        return self.viewControllerForKey(UITransitionContextToViewControllerKey) as! ViewController
+        return self.viewController(forKey: UITransitionContextToViewControllerKey) as! ViewController
     }
 
-    public func toView<View>(reverse reverse: Bool = false) -> View {
+    public func toView<View>(reverse: Bool = false) -> View {
         if reverse {
             return self.fromView()
         }
-        return self.viewForKey(UITransitionContextToViewKey) as! View
+        return self.view(forKey: UITransitionContextToViewKey) as! View
     }
 }

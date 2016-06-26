@@ -8,6 +8,6 @@ import XCGLogger
 
 let log: XCGLogger = {
     let log = XCGLogger()
-    log.setup(.Info, showFunctionName: true, showThreadName: false, showLogLevel: true, showFileNames: true, showLineNumbers: true, showDate: false, writeToFile: nil, fileLogLevel: nil)
+    log.setup(.info, showFunctionName: true, showThreadName: false, showLogLevel: true, showFileNames: true, showLineNumbers: true, showDate: false, writeToFile: nil, fileLogLevel: nil)
     return log
 }()

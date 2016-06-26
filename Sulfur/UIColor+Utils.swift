@@ -8,13 +8,14 @@ import UIKit
 public extension UIColor {
 
     public convenience init(hex: String) {
-        let characterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet().mutableCopy() as! NSMutableCharacterSet
-        characterSet.formUnionWithCharacterSet(NSCharacterSet(charactersInString: "#"))
-        let colorString = hex.stringByTrimmingCharactersInSet(characterSet).uppercaseString
+        var characterSet = CharacterSet.whitespacesAndNewlines
+        characterSet.formUnion(CharacterSet(charactersIn: "#"))
+
+        let colorString = hex.trimmingCharacters(in: characterSet).uppercased()
         let charCount = colorString.characters.count
         if charCount == 6 {
             var rgbValue: UInt32 = 0
-            NSScanner(string: colorString).scanHexInt(&rgbValue)
+            Scanner(string: colorString).scanHexInt32(&rgbValue)
             self.init(
                 red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
                 green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
@@ -22,7 +23,7 @@ public extension UIColor {
                 alpha: CGFloat(1.0))
         } else if charCount == 8 {
             var argbValue: UInt32 = 0
-            NSScanner(string: colorString).scanHexInt(&argbValue)
+            Scanner(string: colorString).scanHexInt32(&argbValue)
             self.init(
                 red: CGFloat((argbValue & 0x00FF0000) >> 16) / 255.0,
                 green: CGFloat((argbValue & 0x0000FF00) >> 8) / 255.0,
@@ -101,8 +102,7 @@ public extension UIColor {
         return self.hsba.brightness
     }
 
-    public func replaceHSBA(hue
-        hue: CGFloat? = nil,
+    public func replaceHSBA(hue: CGFloat? = nil,
         saturation: CGFloat? = nil,
         brightness: CGFloat? = nil,
         alpha: CGFloat? = nil) -> UIColor
@@ -114,8 +114,7 @@ public extension UIColor {
             alpha: alpha ?? self.alpha)
     }
 
-    public func replaceRGBA(red
-        red: CGFloat? = nil,
+    public func replaceRGBA(red: CGFloat? = nil,
         green: CGFloat? = nil,
         blue: CGFloat? = nil,
         alpha: CGFloat? = nil) -> UIColor
@@ -143,38 +142,32 @@ public extension UIColor {
             alpha: self.alpha)
     }
 
-    public static func randomizeHSBA(hue
-        hue: CGFloat? = nil,
+    public static func randomizeHSBA(hue: CGFloat? = nil,
         saturation: CGFloat? = nil,
         brightness: CGFloat? = nil,
         alpha: CGFloat? = nil) -> UIColor
     {
         return UIColor(
-            hue: hue ?? self.random255(),
-            saturation: saturation ?? self.random255(),
-            brightness: brightness ?? self.random255(),
-            alpha: alpha ?? self.random255())
+            hue: hue ?? Random.float(),
+            saturation: saturation ?? Random.float(),
+            brightness: brightness ?? Random.float(),
+            alpha: alpha ?? Random.float())
     }
 
-    public static func randomizeRGBA(red
-        red: CGFloat? = nil,
+    public static func randomizeRGBA(red: CGFloat? = nil,
         green: CGFloat? = nil,
         blue: CGFloat? = nil,
         alpha: CGFloat? = nil) -> UIColor
     {
         return UIColor(
-            red: red ?? self.random255(),
-            green: green ?? self.random255(),
-            blue: blue ?? self.random255(),
-            alpha: alpha ?? self.random255())
-    }
-
-    public static func random255() -> CGFloat {
-        return CGFloat(Random.randomNumberInclusiveMinimum(0, maximum: 255)) / 255.0
+            red: red ?? Random.float(),
+            green: green ?? Random.float(),
+            blue: blue ?? Random.float(),
+            alpha: alpha ?? Random.float())
     }
 }
 
-public extension SequenceType where Self.Generator.Element: UIColor {
+public extension Sequence where Self.Iterator.Element: UIColor {
 
     public var asFloatArray: [CGFloat] {
         return self.flatMap({ [$0.red, $0.green, $0.blue, $0.alpha] })

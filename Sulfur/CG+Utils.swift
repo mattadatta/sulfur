@@ -9,7 +9,7 @@ public func * (size: CGSize, scale: CGFloat) -> CGSize {
     return CGSize(width: size.width * scale, height: size.height * scale)
 }
 
-public func *= (inout size: CGSize, scale: CGFloat) {
+public func *= (size: inout CGSize, scale: CGFloat) {
     size = size * scale
 }
 
@@ -17,7 +17,7 @@ public func / (size: CGSize, scale: CGFloat) -> CGSize {
     return CGSize(width: size.width / scale, height: size.height / scale)
 }
 
-public func /= (inout size: CGSize, scale: CGFloat) {
+public func /= (size: inout CGSize, scale: CGFloat) {
     size = size / scale
 }
 
@@ -37,7 +37,7 @@ public func + (lhs: CGVector, rhs: CGVector) -> CGVector {
     return CGVector(dx: lhs.dx + rhs.dx, dy: lhs.dy + rhs.dy)
 }
 
-public func += (inout lhs: CGVector, rhs: CGVector) {
+public func += (lhs: inout CGVector, rhs: CGVector) {
     lhs = lhs + rhs
 }
 
@@ -45,7 +45,7 @@ public func - (lhs: CGVector, rhs: CGVector) -> CGVector {
     return CGVector(dx: lhs.dx - rhs.dx, dy: lhs.dy - rhs.dy)
 }
 
-public func -= (inout lhs: CGVector, rhs: CGVector) {
+public func -= (lhs: inout CGVector, rhs: CGVector) {
     lhs = lhs - rhs
 }
 
@@ -53,7 +53,7 @@ public func * (vector: CGVector, scale: CGFloat) -> CGVector {
     return CGVector(dx: vector.dx * scale, dy: vector.dy * scale)
 }
 
-public func *= (inout vector: CGVector, scale: CGFloat) {
+public func *= (vector: inout CGVector, scale: CGFloat) {
     vector = vector * scale
 }
 
@@ -61,11 +61,11 @@ public func / (vector: CGVector, scale: CGFloat) -> CGVector {
     return CGVector(dx: vector.dx / scale, dy: vector.dy / scale)
 }
 
-public func /= (inout vector: CGVector, scale: CGFloat) {
+public func /= (vector: inout CGVector, scale: CGFloat) {
     vector = vector / scale
 }
 
-public func angleBetween(u u: CGVector, v: CGVector) -> CGFloat {
+public func angleBetween(u: CGVector, v: CGVector) -> CGFloat {
     let dotProduct = (u.dx * v.dx) + (u.dy * v.dy)
     return acos(dotProduct / (u.length * v.length))
 }
@@ -92,14 +92,14 @@ public extension CGVector {
         return CGPoint(x: self.dx, y: self.dy)
     }
 
-    public func angleTo(vector: CGVector) -> CGFloat {
+    public func angleTo(_ vector: CGVector) -> CGFloat {
         return angleBetween(u: self, v: vector)
     }
 }
 
 public extension CGPoint {
 
-    public func vectorTo(point: CGPoint) -> CGVector {
+    public func vectorTo(_ point: CGPoint) -> CGVector {
         return CGVector(dx: point.x - self.x, dy: point.y - self.y)
     }
 
@@ -110,7 +110,7 @@ public extension CGPoint {
 
 public extension CGRect {
 
-    public static func originForAnchor(anchorPoint: CGPoint, point: CGPoint, size: CGSize) -> CGPoint {
+    public static func originForAnchor(_ anchorPoint: CGPoint, point: CGPoint, size: CGSize) -> CGPoint {
         return CGPoint(
             x: point.x - (size.width * anchorPoint.x),
             y: point.y - (size.height * anchorPoint.y))
@@ -178,7 +178,7 @@ public extension CGRect {
         self.size = size
     }
 
-    public func pointAtAnchor(anchorPoint: CGPoint) -> CGPoint {
+    public func pointAtAnchor(_ anchorPoint: CGPoint) -> CGPoint {
         return CGPoint(
             x: (anchorPoint.x * self.width) + self.origin.x,
             y: (anchorPoint.y * self.height) + self.origin.y)
@@ -197,7 +197,7 @@ public extension CGAffineTransform {
     }
 
     public init() {
-        self = CGAffineTransformIdentity
+        self = CGAffineTransform.identity
     }
 
     public init(xScale: CGFloat, yScale: CGFloat) {
@@ -260,15 +260,15 @@ public extension CGAffineTransform {
 
 public extension CGRect {
 
-    public func rectForTransform(transform: CGAffineTransform) -> CGRect {
-        return CGRectApplyAffineTransform(self, transform)
+    public func rectForTransform(_ transform: CGAffineTransform) -> CGRect {
+        return self.apply(transform: transform)
     }
 
-    public mutating func applyTransform(transform: CGAffineTransform) {
+    public mutating func applyTransform(_ transform: CGAffineTransform) {
         self = self.rectForTransform(transform)
     }
 
-    public func transformToRect(rect: CGRect, anchorPoint: CGPoint = CGPointZero) -> CGAffineTransform {
+    public func transformToRect(_ rect: CGRect, anchorPoint: CGPoint = CGPoint.zero) -> CGAffineTransform {
         let xScale = rect.width / self.width
         let yScale = rect.height / self.height
         var transform = CGAffineTransform(xScale: xScale, yScale: yScale)
@@ -283,7 +283,7 @@ public extension CGRect {
 
 public extension UIView {
 
-    public func transformToRect(rect: CGRect) -> CGAffineTransform {
+    public func transformToRect(_ rect: CGRect) -> CGAffineTransform {
         let oldTransform = self.transform
         self.transform = CGAffineTransform()
         let newTransform = self.frame.transformToRect(rect, anchorPoint: self.layer.anchorPoint)
@@ -291,7 +291,7 @@ public extension UIView {
         return newTransform
     }
 
-    public func applyTransformToRect(rect: CGRect) {
+    public func applyTransformToRect(_ rect: CGRect) {
         self.transform = self.transformToRect(rect)
     }
 }

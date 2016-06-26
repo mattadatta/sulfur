@@ -1,15 +1,31 @@
 PODS:
-  - Cartography (0.6.0)
+  - Cartography (0.5.0)
   - XCGLogger (3.3)
 
 DEPENDENCIES:
-  - Cartography (~> 0.6)
-  - XCGLogger (~> 3.3)
+  - Cartography (from `https://github.com/mattadatta/Cartography.git`, branch `feature/swift-3`)
+  - XCGLogger (from `https://github.com/mattadatta/XCGLogger.git`, branch `feature/swift-3`)
+
+EXTERNAL SOURCES:
+  Cartography:
+    :branch: feature/swift-3
+    :git: https://github.com/mattadatta/Cartography.git
+  XCGLogger:
+    :branch: feature/swift-3
+    :git: https://github.com/mattadatta/XCGLogger.git
+
+CHECKOUT OPTIONS:
+  Cartography:
+    :commit: 39646449f2857b7f1b370809a1c41a4f749354ae
+    :git: https://github.com/mattadatta/Cartography.git
+  XCGLogger:
+    :commit: 4f4e358b72e37d0a6a2a063acea5470ae83b4f0d
+    :git: https://github.com/mattadatta/XCGLogger.git
 
 SPEC CHECKSUMS:
-  Cartography: 70af183a248547694a8cfaa6b989cb7e04589985
+  Cartography: de3e85d2fc2d7288a2e7c89e1ac6cad08599d75e
   XCGLogger: d6e196e78940ff6daab17d6917107876f973fa31
 
-PODFILE CHECKSUM: 7bddb815369f38d53fd8a8fc4f33a98a91986952
+PODFILE CHECKSUM: 0c959212bac96a733b0f1cfdc1d1be46a3b4ebae
 
 COCOAPODS: 1.0.1

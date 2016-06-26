@@ -25,17 +25,17 @@ public final class Context {
         return Set(self.contextTokens.flatMap({ $0.referent }))
     }
 
-    private func generateTokenForContextAware(contextAware: ContextAware) -> ContextToken {
+    private func generateTokenForContextAware(_ contextAware: ContextAware) -> ContextToken {
         let token = ContextToken(context: self)
         self.contextTokens.insert(WeakReference(referent: token))
         return token
     }
 
-    private func removeToken(token: ContextToken) {
+    private func removeToken(_ token: ContextToken) {
         self.contextTokens = Set(self.contextTokens.filter({ $0.referent != token }))
     }
 
-    private func setupContextAwareIfNecessary(obj: Any?) {
+    private func setupContextAwareIfNecessary(_ obj: Any?) {
         guard let contextAware = obj as? ContextAware where contextAware.contextToken == nil else {
             return
         }
@@ -49,25 +49,25 @@ public final class Context {
     // MARK: Services
 
     public enum ServiceChange {
-        case Removed
-        case Added(Any)
+        case removed
+        case added(Any)
     }
 
     private var services: [String: AnyObject] = [:]
 
     public func store < Tag: ContextServiceTag, Service where Service == Tag.Service >
-    (service service: Service?, forTag tag: Tag)
+    (service: Service?, forTag tag: Tag)
     {
         if let existingService = self.services[tag.absoluteServiceId] as? Service {
             existingService.removedFrom(context: self)
             existingService.contextFn = nil
-            self.dispatch(serviceChange: .Removed, forServiceId: tag.absoluteServiceId)
+            self.dispatch(serviceChange: .removed, forServiceId: tag.absoluteServiceId)
         }
         self.services[tag.absoluteServiceId] = service
         if let service = service {
             service.contextFn = { [weak self] in return self }
             service.addedTo(context: self)
-            self.dispatch(serviceChange: .Added(service), forServiceId: tag.absoluteServiceId)
+            self.dispatch(serviceChange: .added(service), forServiceId: tag.absoluteServiceId)
         }
     }
 
@@ -79,7 +79,7 @@ public final class Context {
         return self.rawService(forTag: tag)?.component
     }
 
-    private func dispatch(serviceChange serviceChange: ServiceChange, forServiceId serviceId: String) {
+    private func dispatch(serviceChange: ServiceChange, forServiceId serviceId: String) {
         self.unwrappedTokens.forEach { token in
             guard let contextServiceAware = token.contextAware as? ContextServiceAware else {
                 return
@@ -90,7 +90,8 @@ public final class Context {
 
     // MARK: Wrapping
 
-    public func wrap<Object>(obj: Object) -> Object {
+    @discardableResult
+    public func wrap<Object>(_ obj: Object) -> Object {
         if let viewController = obj as? UIViewController {
             viewController.loadViewIfNeeded()
             self.setupContextAwareIfNecessary(viewController)
@@ -141,7 +142,7 @@ public final class StoryboardContextWrapper: NSObject, ConfigurableStoryboardDel
         self.context = context
     }
 
-    public func configureViewController(viewController: UIViewController) {
+    public func configureViewController(_ viewController: UIViewController) {
         context.wrap(viewController)
     }
 }
@@ -167,20 +168,16 @@ public extension ContextAware {
         return self.contextToken!.context
     }
 
-    func contextWrap<Object>(@autoclosure objFn: (() -> Object)) -> Object {
+    func contextWrap<Object>(_ objFn: @autoclosure () -> Object) -> Object {
         return self.context.wrap(objFn())
     }
 
     func newViewController<ViewController: UIViewController>() -> ViewController {
-        let viewController = ViewController()
-        self.context.wrap(viewController)
-        return viewController
+        return self.context.wrap(ViewController())
     }
 
     func newView<View: UIView>() -> View {
-        let view = View()
-        self.context.wrap(view)
-        return view
+        return self.context.wrap(View())
     }
 }
 
@@ -197,7 +194,7 @@ public extension ContextAware where Self: UIViewController {
         guard let storyboard = self.storyboard else {
             return nil
         }
-        let controller = storyboard.instantiateViewControllerWithIdentifier(String(Controller)) as! Controller
+        let controller = storyboard.instantiateViewController(withIdentifier: String(Controller)) as! Controller
         if !storyboard.hasContextWrapper {
             self.context.wrap(controller)
         }
@@ -246,8 +243,8 @@ public protocol ContextService: class {
     var contextFn: (() -> Context?)? { get set }
     var component: Component { get }
 
-    func addedTo(context context: Context)
-    func removedFrom(context context: Context)
+    func addedTo(context: Context)
+    func removedFrom(context: Context)
 }
 
 public extension ContextService {
@@ -259,5 +256,5 @@ public extension ContextService {
 
 public protocol ContextServiceAware: class {
 
-    func contextDispatched(serviceChange serviceChange: Context.ServiceChange, forServiceId serviceId: String)
+    func contextDispatched(serviceChange: Context.ServiceChange, forServiceId serviceId: String)
 }

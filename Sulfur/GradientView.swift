@@ -17,13 +17,13 @@ public final class GradientView: UIView {
         return self.layer as! CAGradientLayer
     }
 
-    public var startData: GradientData = (0.5, 0.0, UIColor.whiteColor()) {
+    public var startData: GradientData = (0.5, 0.0, UIColor.white()) {
         didSet {
             self.updateGradient()
         }
     }
 
-    public var endData: GradientData = (0.5, 1.0, UIColor.blackColor()) {
+    public var endData: GradientData = (0.5, 1.0, UIColor.black()) {
         didSet {
             self.updateGradient()
         }
@@ -50,8 +50,8 @@ public final class GradientView: UIView {
     }
 
     private func updateGradient() {
-        let startColor = (self.reverse ? self.endData.color : self.startData.color).CGColor
-        let endColor = (self.reverse ? self.startData.color : self.endData.color).CGColor
+        let startColor = (self.reverse ? self.endData.color : self.startData.color).cgColor
+        let endColor = (self.reverse ? self.startData.color : self.endData.color).cgColor
         self.gradientLayer.colors = [startColor, endColor]
         self.gradientLayer.startPoint = CGPoint(x: self.startData.x, y: self.startData.y)
         self.gradientLayer.endPoint = CGPoint(x: self.endData.x, y: self.endData.y)
@@ -62,13 +62,13 @@ public final class TwoPointGradientLayer: CAGradientLayer {
 
     public typealias GradientData = (x: Double, y: Double, color: UIColor)
 
-    public var startData: GradientData = (0.5, 0.0, UIColor.whiteColor()) {
+    public var startData: GradientData = (0.5, 0.0, UIColor.white()) {
         didSet {
             self.updateGradient()
         }
     }
 
-    public var endData: GradientData = (0.5, 1.0, UIColor.blackColor()) {
+    public var endData: GradientData = (0.5, 1.0, UIColor.black()) {
         didSet {
             self.updateGradient()
         }
@@ -105,8 +105,8 @@ public final class TwoPointGradientLayer: CAGradientLayer {
     }
 
     private func updateGradient() {
-        let startColor = (self.reverse ? self.endData.color : self.startData.color).CGColor
-        let endColor = (self.reverse ? self.startData.color : self.endData.color).CGColor
+        let startColor = (self.reverse ? self.endData.color : self.startData.color).cgColor
+        let endColor = (self.reverse ? self.startData.color : self.endData.color).cgColor
         self.colors = [startColor, endColor]
         self.startPoint = CGPoint(x: self.startData.x, y: self.startData.y)
         self.endPoint = CGPoint(x: self.endData.x, y: self.endData.y)

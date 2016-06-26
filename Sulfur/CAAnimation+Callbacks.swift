@@ -18,11 +18,11 @@ private class CAAnimationDelegate: NSObject {
     /// The function to invoke when the animation completes
     var completion: ((Bool) -> Void)?
 
-    override func animationDidStart(anim: CAAnimation) {
+    override func animationDidStart(_ anim: CAAnimation) {
         self.start?()
     }
 
-    override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
+    override func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         self.completion?(flag)
     }
 }
