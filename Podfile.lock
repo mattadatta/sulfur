@@ -16,7 +16,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   Cartography:
-    :commit: 39646449f2857b7f1b370809a1c41a4f749354ae
+    :commit: dc1731ea64a6e874a2fb73e1b60ff30a1d53fafb
     :git: https://github.com/mattadatta/Cartography.git
   XCGLogger:
     :commit: 4f4e358b72e37d0a6a2a063acea5470ae83b4f0d

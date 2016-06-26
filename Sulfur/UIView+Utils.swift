@@ -38,27 +38,30 @@ extension UIEdgeInsets: Hashable {
 
 public extension UIView {
 
-    public static func edgeInsetsBlock(_ insets: UIEdgeInsets) -> ((LayoutProxy, LayoutProxy) -> Void) { return { (containerView, view) in
+    public static func edgeInsetsBlock(_ insets: UIEdgeInsets) -> (LayoutProxy, LayoutProxy) -> Void { return { (containerView, view) in
         view.left == containerView.left + insets.left
         view.top == containerView.top + insets.top
         view.right == containerView.right - insets.right
         view.bottom == containerView.bottom - insets.bottom
     } }
 
-    public static func edgeInsetsZeroBlock() -> ((LayoutProxy, LayoutProxy) -> Void) {
+    public static func edgeInsetsZeroBlock() -> (LayoutProxy, LayoutProxy) -> Void {
         return self.edgeInsetsBlock(UIEdgeInsetsZero)
     }
 
+    @discardableResult
     public func constrainView(_ view: UIView, withInsets insets: UIEdgeInsets = UIEdgeInsetsZero) -> ConstraintGroup {
         return constrain(self, view, block: UIView.edgeInsetsBlock(insets))
     }
 
+    @discardableResult
     public func addAndConstrainView(_ view: UIView, withInsets insets: UIEdgeInsets = UIEdgeInsetsZero) -> ConstraintGroup {
         view.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(view)
         return self.constrainView(view, withInsets: insets)
     }
 
+    @discardableResult
     public func replaceAndConstrain(view: UIView, withBlock block: ((LayoutProxy, LayoutProxy) -> Void)) -> ConstraintGroup {
         let filteredConstraints = self.constraints.filter { constraint in
             return (constraint.firstItem === view || constraint.secondItem === view)
@@ -67,10 +70,12 @@ public extension UIView {
         return constrain(self, view, block: block)
     }
 
+    @discardableResult
     public func replaceAndConstrainFirstView(block: ((LayoutProxy, LayoutProxy) -> Void)) -> ConstraintGroup {
         return self.replaceAndConstrain(view: self.subviews[0], withBlock: block)
     }
 
+    @discardableResult
     public func replaceAndConstrainFirstView(withInsets insets: UIEdgeInsets) -> ConstraintGroup {
         return self.replaceAndConstrainFirstView(block: UIView.edgeInsetsBlock(insets))
     }

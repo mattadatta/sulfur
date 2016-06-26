@@ -70,10 +70,6 @@ public func angleBetween(u: CGVector, v: CGVector) -> CGFloat {
     return acos(dotProduct / (u.length * v.length))
 }
 
-public var CGVectorZero: CGVector {
-    return CGVector(dx: 0.0, dy: 0.0)
-}
-
 public extension CGVector {
 
     public var length: CGFloat {
