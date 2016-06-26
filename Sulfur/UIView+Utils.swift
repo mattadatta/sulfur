@@ -95,10 +95,12 @@ public extension UIViewController {
         }
     }
 
+    @discardableResult
     public func addAndConstrainChildViewController(_ viewController: UIViewController, withInsets insets: UIEdgeInsets = .zero) -> ConstraintGroup {
         return self.addAndConstrainChildViewController(viewController, withInsets: insets, transitionFn: { $0() })
     }
 
+    @discardableResult
     public func addAndConstrainChildViewController(_ viewController: UIViewController, withInsets insets: UIEdgeInsets = .zero, transitionFn: @noescape (completionFn: () -> Void) -> Void) -> ConstraintGroup {
         self.addChildViewController(viewController)
         let constraintGroup = self.view.addAndConstrainView(viewController.view, withInsets: insets)
