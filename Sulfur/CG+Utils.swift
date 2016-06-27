@@ -181,6 +181,75 @@ public extension CGRect {
     }
 }
 
+public extension CGAffineTransform {
+
+    public init(xScale: CGFloat, yScale: CGFloat, angle: CGFloat, xTranslate: CGFloat, yTranslate: CGFloat) {
+        self.a = xScale * cos(angle)
+        self.b = yScale * sin(angle)
+        self.c = xScale * -sin(angle)
+        self.d = yScale * cos(angle)
+        self.tx = xTranslate
+        self.ty = yTranslate
+    }
+
+    public init(xScale: CGFloat, yScale: CGFloat) {
+        self.init(xScale: xScale, yScale: yScale, angle: 0.0, xTranslate: 0.0, yTranslate: 0.0)
+    }
+
+    public init(angle: CGFloat) {
+        self.init(xScale: 1.0, yScale: 1.0, angle: angle, xTranslate: 0.0, yTranslate: 0.0)
+    }
+
+    public init(xTranslate: CGFloat, yTranslate: CGFloat) {
+        self.init(xScale: 1.0, yScale: 1.0, angle: 0.0, xTranslate: xTranslate, yTranslate: yTranslate)
+    }
+
+    public var xScale: CGFloat {
+        get {
+            return sqrt((self.a * self.a) + (self.c * self.c))
+        }
+        mutating set {
+            self = CGAffineTransform(xScale: newValue, yScale: self.yScale, angle: self.angle, xTranslate: self.xTranslate, yTranslate: self.yTranslate)
+        }
+    }
+
+    public var yScale: CGFloat {
+        get {
+            return sqrt((self.b * self.b) + (self.d * self.d))
+        }
+        mutating set {
+            self = CGAffineTransform(xScale: self.xScale, yScale: newValue, angle: self.angle, xTranslate: self.xTranslate, yTranslate: self.yTranslate)
+        }
+    }
+
+    public var angle: CGFloat {
+        get {
+            return atan2(self.b, self.a)
+        }
+        mutating set {
+            self = CGAffineTransform(xScale: self.xScale, yScale: self.yScale, angle: newValue, xTranslate: self.xTranslate, yTranslate: self.yTranslate)
+        }
+    }
+
+    public var xTranslate: CGFloat {
+        get {
+            return self.tx
+        }
+        mutating set {
+            self = CGAffineTransform(xScale: self.xScale, yScale: self.yScale, angle: self.angle, xTranslate: newValue, yTranslate: self.yTranslate)
+        }
+    }
+
+    public var yTranslate: CGFloat {
+        get {
+            return self.ty
+        }
+        mutating set {
+            self = CGAffineTransform(xScale: self.xScale, yScale: self.yScale, angle: self.angle, xTranslate: self.xTranslate, yTranslate: newValue)
+        }
+    }
+}
+
 public extension CGRect {
 
     public func rectForTransform(_ transform: CGAffineTransform) -> CGRect {
@@ -194,10 +263,11 @@ public extension CGRect {
     public func transformToRect(_ rect: CGRect, anchorPoint: CGPoint = CGPoint.zero) -> CGAffineTransform {
         let xScale = rect.width / self.width
         let yScale = rect.height / self.height
-        var transform = CGAffineTransform(scaleX: xScale, y: yScale)
+        var transform = CGAffineTransform(xScale: xScale, yScale: yScale)
 
         let translationVector = rect.pointAtAnchor(anchorPoint).toVector - self.pointAtAnchor(anchorPoint).toVector
-        transform = transform.translateBy(x: translationVector.dx, y: translationVector.dy)
+        transform.xTranslate = translationVector.dx
+        transform.yTranslate = translationVector.dy
 
         return transform
     }
