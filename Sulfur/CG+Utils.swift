@@ -277,7 +277,7 @@ public extension UIView {
 
     public func transformToRect(_ rect: CGRect) -> CGAffineTransform {
         let oldTransform = self.transform
-        self.transform = CGAffineTransform()
+        self.transform = .identity
         let newTransform = self.frame.transformToRect(rect, anchorPoint: self.layer.anchorPoint)
         self.transform = oldTransform
         return newTransform
