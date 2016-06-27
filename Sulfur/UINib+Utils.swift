@@ -10,7 +10,6 @@ public protocol UINibViewInflatable: class { }
 
 public extension UINibViewInflatable {
 
-    @warn_unused_result
     public func inflateView() -> UIView {
         return UINib(nibName: "\(Self.self)", bundle: Bundle(for: self.dynamicType)).instantiate(withOwner: self, options: nil).first as! UIView
     }
@@ -18,6 +17,7 @@ public extension UINibViewInflatable {
 
 public extension UINibViewInflatable where Self: UIView {
 
+    @discardableResult
     public func inflateAddAndConstrainView() -> (UIView, ConstraintGroup) {
         let view = self.inflateView()
         return (view, self.addAndConstrainView(view))
