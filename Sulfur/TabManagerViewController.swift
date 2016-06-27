@@ -8,23 +8,23 @@ import Cartography
 
 // MARK: - TabManagerViewController
 
-final class TabManagerViewController: UIViewController {
+public final class TabManagerViewController: UIViewController {
 
-    weak var delegate: TabManagerViewControllerDelegate?
+    public weak var delegate: TabManagerViewControllerDelegate?
 
-    private(set) var activeViewController: UIViewController?
+    public private(set) var activeViewController: UIViewController?
 
-    private(set) weak var tabManagerView: TabManagerView!
-    var tabBarView: TabBarView {
+    public private(set) weak var tabManagerView: TabManagerView!
+    public var tabBarView: TabBarView {
         return self.tabManagerView.tabBarView
     }
 
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+    override public init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         self.commonInit()
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         self.commonInit()
     }
@@ -33,12 +33,12 @@ final class TabManagerViewController: UIViewController {
         self.loadViewIfNeeded()
     }
 
-    override func loadView() {
+    override public func loadView() {
         let tabManagerView = TabManagerView()
         self.view = tabManagerView
     }
 
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         self.tabManagerView = self.view as! TabManagerView
         self.tabManagerView.translatesAutoresizingMaskIntoConstraints = false
@@ -48,7 +48,7 @@ final class TabManagerViewController: UIViewController {
 
 // MARK: - TabManagerViewControllerDelegate
 
-protocol TabManagerViewControllerDelegate: class {
+public protocol TabManagerViewControllerDelegate: class {
 
     func tabManagerViewController(_ tabManagerViewController: TabManagerViewController, didSelectTabItem tabItem: TabBarView.TabItem?) -> Bool
     func tabManagerViewController(_ tabManagerViewController: TabManagerViewController, viewControllerForTabItem tabItem: TabBarView.TabItem?) -> UIViewController
@@ -69,47 +69,47 @@ private extension TabManagerViewController {
 
 extension TabManagerViewController: TabManagerViewDelegate {
 
-    func tabManagerView(_ tabManagerView: TabManagerView, didSelectTabItem tabItem: TabBarView.TabItem?) -> Bool {
+    public func tabManagerView(_ tabManagerView: TabManagerView, didSelectTabItem tabItem: TabBarView.TabItem?) -> Bool {
         return self.didSelectTabItem(tabItem)
     }
 
-    func tabManagerView(_ tabManagerView: TabManagerView, viewForTabItem tabItem: TabBarView.TabItem?) -> UIView {
+    public func tabManagerView(_ tabManagerView: TabManagerView, viewForTabItem tabItem: TabBarView.TabItem?) -> UIView {
         let viewController = self.viewControllerForTabItem(tabItem)
         self.activeViewController = viewController
         return viewController.view
     }
 
-    func tabManagerView(_ tabManagerView: TabManagerView, willRemoveView view: UIView, forTabItem tabItem: TabBarView.TabItem?) {
+    public func tabManagerView(_ tabManagerView: TabManagerView, willRemoveView view: UIView, forTabItem tabItem: TabBarView.TabItem?) {
         self.activeViewController?.willMove(toParentViewController: nil)
     }
 
-    func tabManagerView(_ tabManagerView: TabManagerView, didRemoveView view: UIView, forTabItem tabItem: TabBarView.TabItem?) {
+    public func tabManagerView(_ tabManagerView: TabManagerView, didRemoveView view: UIView, forTabItem tabItem: TabBarView.TabItem?) {
         self.activeViewController?.removeFromParentViewController()
         self.activeViewController = nil
     }
 
-    func tabManagerView(_ tabManagerView: TabManagerView, willAddView view: UIView, forTabItem tabItem: TabBarView.TabItem?) {
+    public func tabManagerView(_ tabManagerView: TabManagerView, willAddView view: UIView, forTabItem tabItem: TabBarView.TabItem?) {
         self.addChildViewController(self.activeViewController!)
     }
 
-    func tabManagerView(_ tabManagerView: TabManagerView, didAddView view: UIView, forTabItem tabItem: TabBarView.TabItem?) {
+    public func tabManagerView(_ tabManagerView: TabManagerView, didAddView view: UIView, forTabItem tabItem: TabBarView.TabItem?) {
         self.activeViewController?.didMove(toParentViewController: self)
     }
 }
 
 // MARK: - TabManagerView
 
-final class TabManagerView: UIView {
+public final class TabManagerView: UIView {
 
-    weak var containerView: UIView!
-    var tabBarView: TabBarView!
-    weak var delegate: TabManagerViewDelegate?
+    private weak var containerView: UIView!
+    public private(set) var tabBarView: TabBarView!
+    public weak var delegate: TabManagerViewDelegate?
 
-    private(set) var activeView: UIView?
+    public private(set) var activeView: UIView?
 
     private var tabBarHeightConstraintGroup: ConstraintGroup!
 
-    var tabBarHeight: CGFloat = 60 {
+    public var tabBarHeight: CGFloat = 60 {
         didSet {
             guard self.tabBarHeight != oldValue else {
                 return
@@ -120,12 +120,12 @@ final class TabManagerView: UIView {
         }
     }
 
-    override init(frame: CGRect) {
+    override public init(frame: CGRect) {
         super.init(frame: frame)
         self.commonInit()
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         self.commonInit()
     }
@@ -154,7 +154,7 @@ final class TabManagerView: UIView {
 
 // MARK: - TabManagerViewDelegate
 
-protocol TabManagerViewDelegate: class {
+public protocol TabManagerViewDelegate: class {
 
     func tabManagerView(_ tabManagerView: TabManagerView, didSelectTabItem tabItem: TabBarView.TabItem?) -> Bool
     func tabManagerView(_ tabManagerView: TabManagerView, viewForTabItem tabItem: TabBarView.TabItem?) -> UIView
@@ -196,11 +196,11 @@ private extension TabManagerView {
 
 extension TabManagerView: TabBarViewDelegate {
 
-    func tabBarView(_ tabBarView: TabBarView, didSelectTabItem tabItem: TabBarView.TabItem?) -> Bool {
+    public func tabBarView(_ tabBarView: TabBarView, didSelectTabItem tabItem: TabBarView.TabItem?) -> Bool {
         return self.didSelectTabItem(tabItem)
     }
 
-    func tabBarView(_ tabBarView: TabBarView, didChangeFromTabItem fromTabItem: TabBarView.TabItem?, toTabItem: TabBarView.TabItem?) {
+    public func tabBarView(_ tabBarView: TabBarView, didChangeFromTabItem fromTabItem: TabBarView.TabItem?, toTabItem: TabBarView.TabItem?) {
         if let activeView = self.activeView {
             self.willRemoveView(activeView, forTabItem: fromTabItem)
             activeView.removeFromSuperview()
@@ -218,15 +218,15 @@ extension TabManagerView: TabBarViewDelegate {
 
 // MARK: - TabBarView
 
-final class TabBarView: UIView {
+public final class TabBarView: UIView {
 
-    struct TabItem {
+    public struct TabItem {
 
-        let tag: String
-        let view: UIView
-        let delegate: TabBarViewItemDelegate?
+        public let tag: String
+        public let view: UIView
+        public let delegate: TabBarViewItemDelegate?
 
-        init(tag: String, view: UIView, delegate: TabBarViewItemDelegate? = nil) {
+        public init(tag: String, view: UIView, delegate: TabBarViewItemDelegate? = nil) {
             self.tag = tag
             self.view = view
             self.delegate = delegate ?? (view as? TabBarViewItemDelegate)
@@ -269,7 +269,7 @@ final class TabBarView: UIView {
         }
     }
 
-    var tabItems: [TabItem] {
+    public var tabItems: [TabItem] {
         get {
             return self.tabItemManagers.map({ $0.tabItem })
         }
@@ -296,14 +296,14 @@ final class TabBarView: UIView {
 
     private weak var stackView: UIStackView!
 
-    weak var delegate: TabBarViewDelegate?
+    public weak var delegate: TabBarViewDelegate?
 
     private var forceTabReselection = false
     private var dirtySelection = false
     private var desiredIndex: Int?
 
     private var _selectedIndex: Int?
-    var selectedIndex: Int? {
+    public var selectedIndex: Int? {
         get {
             if self.dirtySelection {
                 return self.desiredIndex
@@ -358,7 +358,7 @@ final class TabBarView: UIView {
         self.didChangeFromTabItem(currentTabItemManager?.tabItem, toTabItem: desiredTabItemManager?.tabItem)
     }
 
-    var selectedTab: (index: Int, item: TabItem)? {
+    public var selectedTab: (index: Int, item: TabItem)? {
         guard let selectedIndex = self.selectedIndex else {
             return nil
         }
@@ -373,12 +373,12 @@ final class TabBarView: UIView {
         }
     }
 
-    override init(frame: CGRect) {
+    override public init(frame: CGRect) {
         super.init(frame: frame)
         self.commonInit()
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         self.commonInit()
     }
@@ -392,7 +392,7 @@ final class TabBarView: UIView {
         self.stackView = stackView
     }
 
-    override func layoutSubviews() {
+    override public func layoutSubviews() {
         super.layoutSubviews()
         self.ensureDesiredIndexSelected()
     }
@@ -411,7 +411,7 @@ private final class TabItemView: UIView {
 
 // MARK: - TabBarViewDelegate
 
-protocol TabBarViewDelegate: class {
+public protocol TabBarViewDelegate: class {
 
     func tabBarView(_ tabBarView: TabBarView, didSelectTabItem tabItem: TabBarView.TabItem?) -> Bool
     func tabBarView(_ tabBarView: TabBarView, didChangeFromTabItem fromTabItem: TabBarView.TabItem?, toTabItem: TabBarView.TabItem?)
@@ -430,7 +430,7 @@ private extension TabBarView {
 
 // MARK: - TabBarViewItemDelegate
 
-protocol TabBarViewItemDelegate {
+public protocol TabBarViewItemDelegate {
 
     func tabBarView(_ tabBarView: TabBarView, tabItem: TabBarView.TabItem, shouldIndicateSelected selected: Bool)
 }
