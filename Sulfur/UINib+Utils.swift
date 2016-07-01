@@ -18,6 +18,7 @@ public extension UINibViewInflatable {
 
 public extension UINibViewInflatable where Self: UIView {
 
+    @discardableResult
     public func inflateAddAndConstrainView() -> (UIView, ConstraintGroup) {
         let view = self.inflateView()
         return (view, self.addAndConstrainView(view))
