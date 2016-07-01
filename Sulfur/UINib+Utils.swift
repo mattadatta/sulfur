@@ -12,7 +12,7 @@ public extension UINibViewInflatable {
 
     @warn_unused_result
     public func inflateView() -> UIView {
-        return UINib(nibName: "\(Self.self)", bundle: NSBundle(forClass: self.dynamicType)).instantiateWithOwner(self, options: nil).first as! UIView
+        return UINib(nibName: String(Self.self), bundle: NSBundle(forClass: Self.self)).instantiateWithOwner(self, options: nil).first as! UIView
     }
 }
 

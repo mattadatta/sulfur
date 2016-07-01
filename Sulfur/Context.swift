@@ -58,21 +58,21 @@ public final class Context {
     public func store < Tag: ContextServiceTag, Service where Service == Tag.Service >
     (service service: Service?, forTag tag: Tag)
     {
-        if let existingService = self.services[tag.absoluteServiceId] as? Service {
+        if let existingService = self.services[tag.computedServiceId] as? Service {
             existingService.removedFrom(context: self)
             existingService.contextFn = nil
-            self.dispatch(serviceChange: .Removed, forServiceId: tag.absoluteServiceId)
+            self.dispatch(serviceChange: .Removed, forServiceId: tag.computedServiceId)
         }
-        self.services[tag.absoluteServiceId] = service
+        self.services[tag.computedServiceId] = service
         if let service = service {
             service.contextFn = { [weak self] in return self }
             service.addedTo(context: self)
-            self.dispatch(serviceChange: .Added(service), forServiceId: tag.absoluteServiceId)
+            self.dispatch(serviceChange: .Added(service), forServiceId: tag.computedServiceId)
         }
     }
 
     func rawService < Tag: ContextServiceTag, Service where Service == Tag.Service > (forTag tag: Tag) -> Service? {
-        return self.services[tag.absoluteServiceId] as? Service
+        return self.services[tag.computedServiceId] as? Service
     }
 
     public func service < Tag: ContextServiceTag, Service where Service == Tag.Service > (forTag tag: Tag) -> Service.Component? {
@@ -95,6 +95,9 @@ public final class Context {
             viewController.loadViewIfNeeded()
             self.setupContextAwareIfNecessary(viewController)
             self.wrap(viewController.view)
+        } else if let view = obj as? UIView {
+            view.inflateAddAndConstrainIfPossible()
+            self.setupContextAwareIfNecessary(view)
         } else {
             self.setupContextAwareIfNecessary(obj)
         }
@@ -142,7 +145,7 @@ public final class StoryboardContextWrapper: NSObject, ConfigurableStoryboardDel
     }
 
     public func configureViewController(viewController: UIViewController) {
-        context.wrap(viewController)
+        self.context.wrap(viewController)
     }
 }
 
@@ -167,20 +170,16 @@ public extension ContextAware {
         return self.contextToken!.context
     }
 
-    func contextWrap<Object>(@autoclosure objFn: (() -> Object)) -> Object {
-        return self.context.wrap(objFn())
+    func contextWrap<Object>(obj: Object) -> Object {
+        return self.context.wrap(obj)
     }
 
     func newViewController<ViewController: UIViewController>() -> ViewController {
-        let viewController = ViewController()
-        self.context.wrap(viewController)
-        return viewController
+        return self.context.wrap(ViewController())
     }
 
     func newView<View: UIView>() -> View {
-        let view = View()
-        self.context.wrap(view)
-        return view
+        return self.context.wrap(View())
     }
 }
 
@@ -226,6 +225,15 @@ extension UIView: ContextAwareContainer {
     }
 }
 
+extension UIView {
+
+    func inflateAddAndConstrainIfPossible() {
+        guard let inflatable = self as? UINibViewInflatable else { return }
+        let view = inflatable.inflateView()
+        self.addAndConstrainView(view)
+    }
+}
+
 // MARK: - ContextService
 
 public protocol ContextServiceTag {
@@ -233,9 +241,9 @@ public protocol ContextServiceTag {
     var serviceId: String? { get }
 }
 
-private extension ContextServiceTag {
+public extension ContextServiceTag {
 
-    var absoluteServiceId: String {
+    public var computedServiceId: String {
         return self.serviceId ?? String(Self)
     }
 }
