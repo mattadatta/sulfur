@@ -75,3 +75,31 @@ public extension UIView {
         return self.replaceAndConstrainFirstView(block: UIView.edgeInsetsBlock(insets))
     }
 }
+
+public extension UIViewController {
+
+    public func removeSelf() {
+        self.removeSelf(transitionFn: { $0() })
+    }
+
+    public func removeSelf(@noescape transitionFn transitionFn: (completionFn: () -> Void) -> Void) {
+        self.willMoveToParentViewController(nil)
+        transitionFn() {
+            self.view.removeFromSuperview()
+            self.removeFromParentViewController()
+        }
+    }
+
+    public func addAndConstrainChildViewController(viewController: UIViewController, withInsets insets: UIEdgeInsets = UIEdgeInsetsZero) -> ConstraintGroup {
+        return self.addAndConstrainChildViewController(viewController, withInsets: insets, transitionFn: { $0() })
+    }
+
+    public func addAndConstrainChildViewController(viewController: UIViewController, withInsets insets: UIEdgeInsets = UIEdgeInsetsZero, @noescape transitionFn: (completionFn: () -> Void) -> Void) -> ConstraintGroup {
+        self.addChildViewController(viewController)
+        let constraintGroup = self.view.addAndConstrainView(viewController.view, withInsets: insets)
+        transitionFn() {
+            viewController.didMoveToParentViewController(self)
+        }
+        return constraintGroup
+    }
+}
