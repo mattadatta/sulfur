@@ -10,7 +10,7 @@ import UIKit
 public final class TableViewCell<View: UIView>: UITableViewCell {
 
     public static var viewReuseIdentifier: String {
-        return "\(self)"
+        return String(self)
     }
 
     public class func registerInTableView(_ tableView: UITableView) {
@@ -46,7 +46,7 @@ public final class TableViewCell<View: UIView>: UITableViewCell {
 public final class TableViewHeaderFooterView<View: UIView>: UITableViewHeaderFooterView {
 
     public static var viewReuseIdentifier: String {
-        return "\(self)"
+        return String(self)
     }
 
     public class func registerInTableView(_ tableView: UITableView) {
@@ -82,7 +82,7 @@ public final class TableViewHeaderFooterView<View: UIView>: UITableViewHeaderFoo
 public final class CollectionViewCell<View: UIView>: UICollectionViewCell {
 
     public class var viewReuseIdentifier: String {
-        return "\(self)"
+        return String(self)
     }
 
     public class func registerInCollectionView(_ collectionView: UICollectionView) {
@@ -118,7 +118,7 @@ public final class CollectionViewCell<View: UIView>: UICollectionViewCell {
 public final class CollectionReusableView<View: UIView>: UICollectionReusableView {
 
     public static var viewReuseIdentifier: String {
-        return "\(self)"
+        return String(self)
     }
 
     public class func registerInCollectionView(_ collectionView: UICollectionView, forSupplementaryViewOfKind kind: String) {
