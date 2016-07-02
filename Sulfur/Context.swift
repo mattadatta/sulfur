@@ -94,8 +94,8 @@ public final class Context {
     public func wrap<Object>(_ obj: Object) -> Object {
         if let viewController = obj as? UIViewController {
             viewController.loadViewIfNeeded()
-            self.setupContextAwareIfNecessary(viewController)
             self.wrap(viewController.view)
+            self.setupContextAwareIfNecessary(viewController)
         } else if let view = obj as? UIView {
             view.inflateAddAndConstrainIfPossible()
             self.setupContextAwareIfNecessary(view)
