@@ -96,7 +96,9 @@ public final class Context {
             self.wrap(viewController.view)
             self.setupContextAwareIfNecessary(viewController)
         } else if let view = obj as? UIView {
-            view.inflateAddAndConstrainIfPossible()
+            if view is ContextAware {
+                view.inflateAddAndConstrainIfPossible()
+            }
             self.setupContextAwareIfNecessary(view)
         } else {
             self.setupContextAwareIfNecessary(obj)
