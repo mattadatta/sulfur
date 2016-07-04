@@ -34,6 +34,7 @@
 		32BC05961D1B3BE1008573BC /* Aminating+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05951D1B3BE1008573BC /* Aminating+Utils.swift */; };
 		32BC05981D1B3C39008573BC /* DebugFns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05971D1B3C39008573BC /* DebugFns.swift */; };
 		32BC059A1D1B3D75008573BC /* Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05991D1B3D75008573BC /* Context.swift */; };
+		32D450461D2A125B00637DE9 /* HierarchyPrinter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D450451D2A125B00637DE9 /* HierarchyPrinter.swift */; };
 		C4ADD0A249B30919490EAD71 /* Pods_SulfurTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33508068B01975F4BE987303 /* Pods_SulfurTests.framework */; };
 		FF5DF861D8622D5F35E67351 /* Pods_Sulfur.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 308DD552E6F1255043497577 /* Pods_Sulfur.framework */; };
 /* End PBXBuildFile section */
@@ -80,6 +81,7 @@
 		32BC05951D1B3BE1008573BC /* Aminating+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Aminating+Utils.swift"; sourceTree = "<group>"; };
 		32BC05971D1B3C39008573BC /* DebugFns.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugFns.swift; sourceTree = "<group>"; };
 		32BC05991D1B3D75008573BC /* Context.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Context.swift; sourceTree = "<group>"; };
+		32D450451D2A125B00637DE9 /* HierarchyPrinter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HierarchyPrinter.swift; sourceTree = "<group>"; };
 		33508068B01975F4BE987303 /* Pods_SulfurTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SulfurTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DEC0F1850456DF28C79858C /* Pods-Sulfur.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sulfur.release.xcconfig"; path = "Pods/Target Support Files/Pods-Sulfur/Pods-Sulfur.release.xcconfig"; sourceTree = "<group>"; };
 		5C8B141792ECACC3DEF93D64 /* Pods-SulfurTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SulfurTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SulfurTests/Pods-SulfurTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -144,6 +146,7 @@
 				3269DC501CDFF6A900716F0A /* Environment.swift */,
 				32389E3E1CDFDD1F009475F6 /* Gradient.swift */,
 				32389E3F1CDFDD1F009475F6 /* GradientView.swift */,
+				32D450451D2A125B00637DE9 /* HierarchyPrinter.swift */,
 				32389E401CDFDD1F009475F6 /* Optional+Utils.swift */,
 				32389E411CDFDD1F009475F6 /* Random.swift */,
 				32389E421CDFDD1F009475F6 /* Reference.swift */,
@@ -411,6 +414,7 @@
 				32389E541CDFDD1F009475F6 /* Optional+Utils.swift in Sources */,
 				32389E521CDFDD1F009475F6 /* Gradient.swift in Sources */,
 				32BC05961D1B3BE1008573BC /* Aminating+Utils.swift in Sources */,
+				32D450461D2A125B00637DE9 /* HierarchyPrinter.swift in Sources */,
 				32389E5E1CDFDD1F009475F6 /* UIView+Utils.swift in Sources */,
 				32389E561CDFDD1F009475F6 /* Reference.swift in Sources */,
 				32389E4F1CDFDD1F009475F6 /* CG+Utils.swift in Sources */,
