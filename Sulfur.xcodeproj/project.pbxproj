@@ -31,7 +31,7 @@
 		32389E5C1CDFDD1F009475F6 /* UINib+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E481CDFDD1F009475F6 /* UINib+Utils.swift */; };
 		32389E5E1CDFDD1F009475F6 /* UIView+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E4A1CDFDD1F009475F6 /* UIView+Utils.swift */; };
 		3269DC511CDFF6A900716F0A /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3269DC501CDFF6A900716F0A /* Environment.swift */; };
-		32BC05961D1B3BE1008573BC /* Aminating+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05951D1B3BE1008573BC /* Aminating+Utils.swift */; };
+		32BC05961D1B3BE1008573BC /* ContextTransitioning+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05951D1B3BE1008573BC /* ContextTransitioning+Utils.swift */; };
 		32BC05981D1B3C39008573BC /* DebugFns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05971D1B3C39008573BC /* DebugFns.swift */; };
 		32BC059A1D1B3D75008573BC /* Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05991D1B3D75008573BC /* Context.swift */; };
 		32D450461D2A125B00637DE9 /* HierarchyPrinter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D450451D2A125B00637DE9 /* HierarchyPrinter.swift */; };
@@ -78,7 +78,7 @@
 		32389E481CDFDD1F009475F6 /* UINib+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UINib+Utils.swift"; sourceTree = "<group>"; };
 		32389E4A1CDFDD1F009475F6 /* UIView+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Utils.swift"; sourceTree = "<group>"; };
 		3269DC501CDFF6A900716F0A /* Environment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Environment.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		32BC05951D1B3BE1008573BC /* Aminating+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Aminating+Utils.swift"; sourceTree = "<group>"; };
+		32BC05951D1B3BE1008573BC /* ContextTransitioning+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ContextTransitioning+Utils.swift"; sourceTree = "<group>"; };
 		32BC05971D1B3C39008573BC /* DebugFns.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugFns.swift; sourceTree = "<group>"; };
 		32BC05991D1B3D75008573BC /* Context.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Context.swift; sourceTree = "<group>"; };
 		32D450451D2A125B00637DE9 /* HierarchyPrinter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HierarchyPrinter.swift; sourceTree = "<group>"; };
@@ -133,7 +133,6 @@
 		32389E1F1CDFDCD1009475F6 /* Sulfur */ = {
 			isa = PBXGroup;
 			children = (
-				32BC05951D1B3BE1008573BC /* Aminating+Utils.swift */,
 				32389E371CDFDD1F009475F6 /* Array+Utils.swift */,
 				32389E381CDFDD1F009475F6 /* Async.swift */,
 				32389E391CDFDD1F009475F6 /* CAAnimation+Callbacks.swift */,
@@ -142,6 +141,7 @@
 				32389E3C1CDFDD1F009475F6 /* ConfigurableStoryboard.h */,
 				32389E3D1CDFDD1F009475F6 /* ConfigurableStoryboard.m */,
 				32BC05991D1B3D75008573BC /* Context.swift */,
+				32BC05951D1B3BE1008573BC /* ContextTransitioning+Utils.swift */,
 				32BC05971D1B3C39008573BC /* DebugFns.swift */,
 				3269DC501CDFF6A900716F0A /* Environment.swift */,
 				32389E3E1CDFDD1F009475F6 /* Gradient.swift */,
@@ -413,7 +413,7 @@
 				32389E4B1CDFDD1F009475F6 /* Array+Utils.swift in Sources */,
 				32389E541CDFDD1F009475F6 /* Optional+Utils.swift in Sources */,
 				32389E521CDFDD1F009475F6 /* Gradient.swift in Sources */,
-				32BC05961D1B3BE1008573BC /* Aminating+Utils.swift in Sources */,
+				32BC05961D1B3BE1008573BC /* ContextTransitioning+Utils.swift in Sources */,
 				32D450461D2A125B00637DE9 /* HierarchyPrinter.swift in Sources */,
 				32389E5E1CDFDD1F009475F6 /* UIView+Utils.swift in Sources */,
 				32389E561CDFDD1F009475F6 /* Reference.swift in Sources */,
