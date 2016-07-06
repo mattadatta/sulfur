@@ -19,7 +19,7 @@ CHECKOUT OPTIONS:
     :commit: dc1731ea64a6e874a2fb73e1b60ff30a1d53fafb
     :git: https://github.com/mattadatta/Cartography.git
   XCGLogger:
-    :commit: 4f4e358b72e37d0a6a2a063acea5470ae83b4f0d
+    :commit: 0bea7f66a76662672c0d83fada96057c02ba3eec
     :git: https://github.com/mattadatta/XCGLogger.git
 
 SPEC CHECKSUMS:
