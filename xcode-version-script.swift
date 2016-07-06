@@ -31,7 +31,7 @@ func shell(_ args: String ...) -> (statusCode: Int, output: String) {
 }
 
 func setPlistProperty(_ property: String, toValue value: Any) {
-    let environment = ProcessInfo.processInfo().environment
+    let environment = ProcessInfo.processInfo.environment
 
     guard let projectDir = environment["PROJECT_DIR"] else {
         print("\'PROJECT_DIR\' environment variable not set!")

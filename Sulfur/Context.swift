@@ -199,7 +199,7 @@ public extension ContextAware where Self: UIViewController {
         guard let storyboard = self.storyboard else {
             return nil
         }
-        let controller = storyboard.instantiateViewController(withIdentifier: String(Controller)) as! Controller
+        let controller = storyboard.instantiateViewController(withIdentifier: String(Controller.self)) as! Controller
         if !storyboard.hasContextWrapper {
             self.context.wrap(controller)
         }
@@ -247,7 +247,7 @@ public protocol ContextServiceTag {
 public extension ContextServiceTag {
 
     public var computedServiceId: String {
-        return self.serviceId ?? String(Self)
+        return self.serviceId ?? String(Self.self)
     }
 }
 

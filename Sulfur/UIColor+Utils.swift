@@ -9,8 +9,8 @@ public extension UIColor {
 
     public convenience init(hex: String) {
         // TODO: Swift 3 bug that makes me use this can gdiaf
-        let characterSet = NSMutableCharacterSet.whitespacesAndNewlines()
-        characterSet.formUnion(with: CharacterSet(charactersIn: "#"))
+        var characterSet = CharacterSet.whitespacesAndNewlines
+        characterSet.formUnion(CharacterSet(charactersIn: "#"))
 
         let colorString = hex.trimmingCharacters(in: characterSet as CharacterSet).uppercased()
         let charCount = colorString.characters.count

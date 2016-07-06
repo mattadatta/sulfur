@@ -7,7 +7,6 @@ import UIKit
 
 public extension UIImage {
 
-    @warn_unused_result
     public func centerCropImage() -> UIImage? {
         let imageWidth = self.size.width
         let imageHeight = self.size.height
@@ -22,7 +21,6 @@ public extension UIImage {
         return UIImage(cgImage: cgImage)
     }
 
-    @warn_unused_result
     public func circleCropImage() -> UIImage {
         let imageSize = self.size
         let minDimension = min(imageSize.width, imageSize.height)
