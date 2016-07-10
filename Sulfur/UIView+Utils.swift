@@ -28,10 +28,10 @@ public extension UIEdgeInsets {
 extension UIEdgeInsets: Hashable {
 
     public var hashValue: Int {
-        var hash = Float(self.left).hashValue
-        hash = hash ^ 31 + Float(self.top).hashValue
-        hash = hash ^ 31 + Float(self.right).hashValue
-        hash = hash ^ 31 + Float(self.bottom).hashValue
+        var hash = self.left.hashValue
+        hash = hash &* 31 &+ self.top.hashValue
+        hash = hash &* 31 &+ self.right.hashValue
+        hash = hash &* 31 &+ self.bottom.hashValue
         return hash
     }
 }
