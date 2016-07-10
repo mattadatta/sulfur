@@ -92,7 +92,7 @@ public final class Context {
 
     public func wrap<Object>(obj: Object) -> Object {
         // Always wrap children first so parents may interact with them
-        // during their contextAvailable() initializations. 
+        // during their contextAvailable() initializations.
         if let contextAwareContainer = obj as? ContextAwareContainer {
             contextAwareContainer.childObjects.forEach({ self.wrap($0) })
         }
