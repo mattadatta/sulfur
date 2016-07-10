@@ -263,16 +263,14 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = Mattadatta;
 				TargetAttributes = {
 					32389E1C1CDFDCD1009475F6 = {
 						CreatedOnToolsVersion = 7.3;
-						LastSwiftMigration = 0800;
 					};
 					32389E261CDFDCD1009475F6 = {
 						CreatedOnToolsVersion = 7.3;
-						LastSwiftMigration = 0800;
 					};
 				};
 			};
@@ -551,7 +549,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B814FC28DB7F84A60643C807 /* Pods-Sulfur.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -565,7 +562,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -573,7 +569,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4DEC0F1850456DF28C79858C /* Pods-Sulfur.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -586,8 +581,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.mattadatta.Sulfur;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -599,7 +592,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mattadatta.SulfurTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -611,8 +603,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mattadatta.SulfurTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
