@@ -393,13 +393,13 @@ public func == (lhs: GridCollectionController.Component.Kind, rhs: GridCollectio
 
 public protocol GridCollectionControllerDelegate: class {
 
-    func entityGridController(controller: GridCollectionController, didSelectComponent component: GridCollectionController.Component)
+    func gridCollectionController(gridCollectionController: GridCollectionController, didSelect component: GridCollectionController.Component)
 }
 
 private extension GridCollectionController {
 
     func didSelectComponent(component: Component) {
-        self.delegate?.entityGridController(self, didSelectComponent: component)
+        self.delegate?.gridCollectionController(self, didSelect: component)
     }
 }
 
