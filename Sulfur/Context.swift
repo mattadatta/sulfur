@@ -92,7 +92,9 @@ public final class Context {
 
     public func wrap<Object>(obj: Object) -> Object {
         if let contextAwareContainer = obj as? ContextAwareContainer {
-            contextAwareContainer.childObjects.forEach({ self.wrap($0) })
+            contextAwareContainer.childObjects.forEach { child in
+                self.wrap(child)
+            }
         }
         if let viewController = obj as? UIViewController {
             viewController.loadViewIfNeeded()
