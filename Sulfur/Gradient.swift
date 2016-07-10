@@ -99,7 +99,7 @@ extension Gradient.Stop: Hashable {
 
     var hashValue: Int {
         var hash = self.color.hashValue
-        hash = hash * 31 + self.percent.hashValue
+        hash = hash &* 31 &+ self.percent.hashValue
         return hash
     }
 }
