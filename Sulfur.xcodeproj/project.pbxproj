@@ -32,6 +32,8 @@
 		32BC05961D1B3BE1008573BC /* ContextTransitioning+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05951D1B3BE1008573BC /* ContextTransitioning+Utils.swift */; };
 		32BC05981D1B3C39008573BC /* DebugFns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05971D1B3C39008573BC /* DebugFns.swift */; };
 		32BC059A1D1B3D75008573BC /* Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05991D1B3D75008573BC /* Context.swift */; };
+		32D04B101D31C0CB00EB8D5D /* GridCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D04B0F1D31C0CB00EB8D5D /* GridCollectionViewLayout.swift */; };
+		32D04B121D31C16200EB8D5D /* GridCollectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D04B111D31C16200EB8D5D /* GridCollectionController.swift */; };
 		32D450461D2A125B00637DE9 /* HierarchyPrinter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D450451D2A125B00637DE9 /* HierarchyPrinter.swift */; };
 		C4ADD0A249B30919490EAD71 /* Pods_SulfurTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33508068B01975F4BE987303 /* Pods_SulfurTests.framework */; };
 		FF5DF861D8622D5F35E67351 /* Pods_Sulfur.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 308DD552E6F1255043497577 /* Pods_Sulfur.framework */; };
@@ -77,6 +79,8 @@
 		32BC05951D1B3BE1008573BC /* ContextTransitioning+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ContextTransitioning+Utils.swift"; sourceTree = "<group>"; };
 		32BC05971D1B3C39008573BC /* DebugFns.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugFns.swift; sourceTree = "<group>"; };
 		32BC05991D1B3D75008573BC /* Context.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Context.swift; sourceTree = "<group>"; };
+		32D04B0F1D31C0CB00EB8D5D /* GridCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GridCollectionViewLayout.swift; sourceTree = "<group>"; };
+		32D04B111D31C16200EB8D5D /* GridCollectionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GridCollectionController.swift; sourceTree = "<group>"; };
 		32D450451D2A125B00637DE9 /* HierarchyPrinter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HierarchyPrinter.swift; sourceTree = "<group>"; };
 		33508068B01975F4BE987303 /* Pods_SulfurTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SulfurTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DEC0F1850456DF28C79858C /* Pods-Sulfur.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sulfur.release.xcconfig"; path = "Pods/Target Support Files/Pods-Sulfur/Pods-Sulfur.release.xcconfig"; sourceTree = "<group>"; };
@@ -140,6 +144,8 @@
 				3269DC501CDFF6A900716F0A /* Environment.swift */,
 				32389E3E1CDFDD1F009475F6 /* Gradient.swift */,
 				32389E3F1CDFDD1F009475F6 /* GradientView.swift */,
+				32D04B111D31C16200EB8D5D /* GridCollectionController.swift */,
+				32D04B0F1D31C0CB00EB8D5D /* GridCollectionViewLayout.swift */,
 				32D450451D2A125B00637DE9 /* HierarchyPrinter.swift */,
 				32389E401CDFDD1F009475F6 /* Optional+Utils.swift */,
 				32389E411CDFDD1F009475F6 /* Random.swift */,
@@ -251,16 +257,14 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = Mattadatta;
 				TargetAttributes = {
 					32389E1C1CDFDCD1009475F6 = {
 						CreatedOnToolsVersion = 7.3;
-						LastSwiftMigration = 0800;
 					};
 					32389E261CDFDCD1009475F6 = {
 						CreatedOnToolsVersion = 7.3;
-						LastSwiftMigration = 0800;
 					};
 				};
 			};
@@ -398,6 +402,7 @@
 			files = (
 				32389E5A1CDFDD1F009475F6 /* UIColor+Utils.swift in Sources */,
 				32389E4E1CDFDD1F009475F6 /* CancelableScrollView.swift in Sources */,
+				32D04B121D31C16200EB8D5D /* GridCollectionController.swift in Sources */,
 				32BC05981D1B3C39008573BC /* DebugFns.swift in Sources */,
 				32389E571CDFDD1F009475F6 /* SequenceType+Utils.swift in Sources */,
 				3203E9EC1CEFBA9000D14253 /* ViewCellWrappers.swift in Sources */,
@@ -411,6 +416,7 @@
 				32389E5E1CDFDD1F009475F6 /* UIView+Utils.swift in Sources */,
 				32389E561CDFDD1F009475F6 /* Reference.swift in Sources */,
 				32389E4F1CDFDD1F009475F6 /* CG+Utils.swift in Sources */,
+				32D04B101D31C0CB00EB8D5D /* GridCollectionViewLayout.swift in Sources */,
 				32389E5B1CDFDD1F009475F6 /* UIImage+Utils.swift in Sources */,
 				32389E591CDFDD1F009475F6 /* TabManagerViewController.swift in Sources */,
 				32389E5C1CDFDD1F009475F6 /* UINib+Utils.swift in Sources */,
@@ -535,7 +541,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B814FC28DB7F84A60643C807 /* Pods-Sulfur.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -549,7 +554,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -557,7 +561,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4DEC0F1850456DF28C79858C /* Pods-Sulfur.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -570,8 +573,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.mattadatta.Sulfur;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -583,7 +584,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mattadatta.SulfurTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -595,8 +595,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mattadatta.SulfurTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

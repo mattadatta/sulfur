@@ -181,6 +181,33 @@ public extension CGRect {
     }
 }
 
+extension CGPoint: Hashable {
+
+    public var hashValue: Int {
+        var hash = self.x.hashValue
+        hash = hash &* 31 &+ self.y.hashValue
+        return hash
+    }
+}
+
+extension CGSize: Hashable {
+
+    public var hashValue: Int {
+        var hash = self.width.hashValue
+        hash = hash &* 31 &+ self.height.hashValue
+        return hash
+    }
+}
+
+extension CGRect: Hashable {
+
+    public var hashValue: Int {
+        var hash = self.origin.hashValue
+        hash = hash &* 31 &+ self.size.hashValue
+        return hash
+    }
+}
+
 public extension CGAffineTransform {
 
     public init(xScale: CGFloat, yScale: CGFloat, angle: CGFloat, xTranslate: CGFloat, yTranslate: CGFloat) {
