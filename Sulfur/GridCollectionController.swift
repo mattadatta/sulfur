@@ -34,24 +34,24 @@ public final class GridCollectionController: NSObject {
 
         public enum Kind {
 
-            case Header
-            case Footer
+            case header
+            case footer
 
             public var collectionViewKind: String {
                 switch self {
-                case .Header:
+                case .header:
                     return UICollectionElementKindSectionHeader
-                case .Footer:
+                case .footer:
                     return UICollectionElementKindSectionFooter
                 }
             }
 
-            public static func kindForCollectionViewKind(elementKind: String) -> Kind? {
+            public static func kind(forCollectionViewKind elementKind: String) -> Kind? {
                 switch elementKind {
                 case UICollectionElementKindSectionHeader:
-                    return .Header
+                    return .header
                 case UICollectionElementKindSectionFooter:
-                    return .Footer
+                    return .footer
                 default:
                     return nil
                 }
@@ -115,14 +115,14 @@ public final class GridCollectionController: NSObject {
 
         public enum Kind: Hashable {
 
-            case Item(GridCollectionController.Item, ItemViewCell)
-            case Supplementary(GridCollectionController.Supplementary, ItemReusableView)
+            case item(GridCollectionController.Item, ItemViewCell)
+            case supplementary(GridCollectionController.Supplementary, ItemReusableView)
 
             public var hashValue: Int {
                 switch self {
-                case .Item(let item, _):
+                case .item(let item, _):
                     return item.hashValue
-                case .Supplementary(let supplementary, _):
+                case .supplementary(let supplementary, _):
                     return supplementary.hashValue
                 }
             }
@@ -132,12 +132,12 @@ public final class GridCollectionController: NSObject {
         public var view: UIView?
 
         public init(item: Item, itemViewCell: ItemViewCell) {
-            self.kind = .Item(item, itemViewCell)
+            self.kind = .item(item, itemViewCell)
             self.view = itemViewCell.nestedView
         }
 
         public init(supplementary: Supplementary, itemReusableView: ItemReusableView) {
-            self.kind = .Supplementary(supplementary, itemReusableView)
+            self.kind = .supplementary(supplementary, itemReusableView)
             self.view = itemReusableView.nestedView
         }
 
@@ -147,25 +147,25 @@ public final class GridCollectionController: NSObject {
 
         public func attach() {
             switch self.kind {
-            case .Item(let item, _):
-                item.controller.attachToComponent(self)
-            case .Supplementary(let supplementary, _):
-                supplementary.controller.attachToComponent(self)
+            case .item(let item, _):
+                item.controller.attach(to: self)
+            case .supplementary(let supplementary, _):
+                supplementary.controller.attach(to: self)
             }
         }
 
         public func detach() {
             switch self.kind {
-            case .Item(let item, _):
-                item.controller.detachFromComponent(self)
-            case .Supplementary(let supplementary, _):
-                supplementary.controller.detachFromComponent(self)
+            case .item(let item, _):
+                item.controller.detach(from: self)
+            case .supplementary(let supplementary, _):
+                supplementary.controller.detach(from: self)
             }
         }
 
         public var itemAndCell: (item: Item, cell: ItemViewCell)? {
             switch self.kind {
-            case .Item(let item, let cell):
+            case .item(let item, let cell):
                 return (item, cell)
             default:
                 return nil
@@ -178,7 +178,7 @@ public final class GridCollectionController: NSObject {
 
         public var supplementaryAndView: (supplementary: Supplementary, view: ItemReusableView)? {
             switch self.kind {
-            case .Supplementary(let supplementary, let view):
+            case .supplementary(let supplementary, let view):
                 return (supplementary, view)
             default:
                 return nil
@@ -194,18 +194,18 @@ public final class GridCollectionController: NSObject {
     public let gridLayout: GridCollectionViewLayout
     public weak var delegate: GridCollectionControllerDelegate?
 
-    private var itemIndexPaths: [ItemIndex: NSIndexPath] = [:]
+    private var itemIndexPaths: [ItemIndex: IndexPath] = [:]
     private var itemsBySection: [[Item]] = []
 
     public var items: [Item] = [] {
         didSet {
             let oldIdentifiers = Set(oldValue.map({ $0.controller.computedViewIdentifier }))
             let newIdentifiers = Set(self.items.map({ $0.controller.computedViewIdentifier }))
-            oldIdentifiers.subtract(newIdentifiers).forEach {
-                self.collectionView.registerClass(nil, forCellWithReuseIdentifier: $0)
+            oldIdentifiers.subtracting(newIdentifiers).forEach {
+                self.collectionView.register(nil as AnyClass?, forCellWithReuseIdentifier: $0)
             }
-            newIdentifiers.subtract(oldIdentifiers).forEach {
-                self.collectionView.registerClass(ItemViewCell.self, forCellWithReuseIdentifier: $0)
+            newIdentifiers.subtracting(oldIdentifiers).forEach {
+                self.collectionView.register(ItemViewCell.self, forCellWithReuseIdentifier: $0)
             }
 
             self.itemIndexPaths = [:]
@@ -218,7 +218,7 @@ public final class GridCollectionController: NSObject {
                 storedItems.append(item)
                 itemsBySectionDict[section] = storedItems
 
-                self.itemIndexPaths[item.index] = NSIndexPath(forItem: storedItems.count - 1, inSection: section)
+                self.itemIndexPaths[item.index] = IndexPath(item: storedItems.count - 1, section: section)
 
                 maxSection = max(maxSection, section)
             }
@@ -228,21 +228,21 @@ public final class GridCollectionController: NSObject {
         }
     }
 
-    private var supplementaryIndexPaths: [SupplementaryIndex: NSIndexPath] = [:]
+    private var supplementaryIndexPaths: [SupplementaryIndex: IndexPath] = [:]
     private var supplementariesByIndex: [SupplementaryIndex: Supplementary] = [:]
 
     public var supplementaries: [Supplementary] = [] {
         didSet {
             let oldSupplementaries = Set(oldValue)
             let newSupplementaries = Set(self.supplementaries)
-            oldSupplementaries.subtract(newSupplementaries).forEach { supplementary in
-                self.collectionView.registerClass(
-                    nil,
+            oldSupplementaries.subtracting(newSupplementaries).forEach { supplementary in
+                self.collectionView.register(
+                    nil as AnyClass?,
                     forSupplementaryViewOfKind: supplementary.index.kind.collectionViewKind,
                     withReuseIdentifier: supplementary.controller.computedViewIdentifier)
             }
-            newSupplementaries.subtract(oldSupplementaries).forEach { supplementary in
-                self.collectionView.registerClass(
+            newSupplementaries.subtracting(oldSupplementaries).forEach { supplementary in
+                self.collectionView.register(
                     ItemReusableView.self,
                     forSupplementaryViewOfKind: supplementary.index.kind.collectionViewKind,
                     withReuseIdentifier: supplementary.controller.computedViewIdentifier)
@@ -251,7 +251,7 @@ public final class GridCollectionController: NSObject {
             self.supplementaryIndexPaths = [:]
             self.supplementariesByIndex = [:]
             self.supplementaries.forEach { supplementary in
-                self.supplementaryIndexPaths[supplementary.index] = NSIndexPath(forItem: 0, inSection: supplementary.index.section)
+                self.supplementaryIndexPaths[supplementary.index] = IndexPath(item: 0, section: supplementary.index.section)
                 self.supplementariesByIndex[supplementary.index] = supplementary
             }
 
@@ -268,92 +268,92 @@ public final class GridCollectionController: NSObject {
         self.collectionView.dataSource = self
         self.collectionView.delegate = self
         self.gridLayout.delegate = self
-        self.collectionView.registerClass(ItemReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "\(ItemReusableView.self)")
-        self.collectionView.registerClass(ItemReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionFooter, withReuseIdentifier: "\(ItemReusableView.self)")
+        self.collectionView.register(ItemReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "\(ItemReusableView.self)")
+        self.collectionView.register(ItemReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionFooter, withReuseIdentifier: "\(ItemReusableView.self)")
     }
 
     // MARK: API
 
     public func visibleComponents() -> [Component] {
         var components: [Component] = []
-        components.appendContentsOf(self.visibleItemComponents())
-        components.appendContentsOf(self.visibleSupplementaryComponentsForKind(.Header))
-        components.appendContentsOf(self.visibleSupplementaryComponentsForKind(.Footer))
+        components.append(contentsOf: self.visibleItemComponents())
+        components.append(contentsOf: self.visibleSupplementaryComponents(of: .header))
+        components.append(contentsOf: self.visibleSupplementaryComponents(of: .footer))
         return components
     }
 
     public func visibleItemComponents() -> [Component] {
-        return self.collectionView.indexPathsForVisibleItems().map({ self.itemCompontentForIndexPath($0)! })
+        return self.collectionView.indexPathsForVisibleItems().map({ self.itemCompontent(for: $0)! })
     }
 
-    public func visibleSupplementaryComponentsForKind(kind: SupplementaryIndex.Kind) -> [Component] {
-        return self.collectionView.indexPathsForVisibleSupplementaryElementsOfKind(kind.collectionViewKind).map({
-            self.supplementaryCompontentOfKind(kind, forIndexPath: $0)
+    public func visibleSupplementaryComponents(of kind: SupplementaryIndex.Kind) -> [Component] {
+        return self.collectionView.indexPathsForVisibleSupplementaryElements(ofKind: kind.collectionViewKind).map({
+            self.supplementaryCompontent(of: kind, for: $0)
         }).flatMap({ $0 })
     }
 
-    public func componentForItemIndex(index: ItemIndex) -> Component? {
+    public func component(for index: ItemIndex) -> Component? {
         guard let indexPath = self.itemIndexPaths[index] else {
             return nil
         }
-        return self.itemCompontentForIndexPath(indexPath)
+        return self.itemCompontent(for: indexPath)
     }
 
-    public func componentForSupplementaryIndex(index: SupplementaryIndex) -> Component? {
+    public func component(for index: SupplementaryIndex) -> Component? {
         guard let indexPath = self.supplementaryIndexPaths[index] else {
             return nil
         }
-        return self.supplementaryCompontentOfKind(index.kind, forIndexPath: indexPath)
+        return self.supplementaryCompontent(of: index.kind, for: indexPath)
     }
 
     // MARK: Internal
 
-    private func itemCompontentForIndexPath(indexPath: NSIndexPath) -> Component? {
-        guard let cell = self.collectionView.cellForItemAtIndexPath(indexPath) else {
+    private func itemCompontent(for indexPath: IndexPath) -> Component? {
+        guard let cell = self.collectionView.cellForItem(at: indexPath) else {
             return nil
         }
-        return self.itemCompontentForIndexPath(indexPath, cell: cell)
+        return self.itemCompontent(for: indexPath, with: cell)
     }
 
-    private func supplementaryCompontentOfKind(kind: SupplementaryIndex.Kind, forIndexPath indexPath: NSIndexPath) -> Component? {
+    private func supplementaryCompontent(of kind: SupplementaryIndex.Kind, for indexPath: IndexPath) -> Component? {
         // Uhh?
-        let view = self.collectionView.supplementaryViewForElementKind(kind.collectionViewKind, atIndexPath: indexPath)
-        return self.supplementaryCompontentOfKind(kind, forSection: indexPath.section, view: view)
+        let view = self.collectionView.supplementaryView(forElementKind: kind.collectionViewKind, at: indexPath)
+        return self.supplementaryCompontent(of: kind, inSection: indexPath.section, with: view!)
     }
 
-    private func itemCompontentForIndexPath(indexPath: NSIndexPath, cell: UICollectionViewCell) -> Component {
-        let item = self.itemForIndexPath(indexPath)
+    private func itemCompontent(for indexPath: IndexPath, with cell: UICollectionViewCell) -> Component {
+        let item = self.item(for: indexPath)
         let itemCell = cell as! ItemViewCell
         return Component(item: item, itemViewCell: itemCell)
     }
 
-    private func supplementaryCompontentOfCollectionViewKind(elementKind: String, forSection section: Int, view: UICollectionReusableView) -> Component? {
-        guard let kind = GridCollectionController.SupplementaryIndex.Kind.kindForCollectionViewKind(elementKind) else {
+    private func supplementaryCompontent(ofCollectionViewKind elementKind: String, inSection section: Int, with view: UICollectionReusableView) -> Component? {
+        guard let kind = GridCollectionController.SupplementaryIndex.Kind.kind(forCollectionViewKind: elementKind) else {
             return nil
         }
-        return supplementaryCompontentOfKind(kind, forSection: section, view: view)
+        return supplementaryCompontent(of: kind, inSection: section, with: view)
     }
 
-    private func supplementaryCompontentOfKind(kind: SupplementaryIndex.Kind, forSection section: Int, view: UICollectionReusableView) -> Component? {
-        guard let supplementary = self.supplementaryOfKind(kind, forSection: section) else {
+    private func supplementaryCompontent(of kind: SupplementaryIndex.Kind, inSection section: Int, with view: UICollectionReusableView) -> Component? {
+        guard let supplementary = self.supplementary(of: kind, inSection: section) else {
             return nil
         }
         let supplementaryView = view as! ItemReusableView
         return Component(supplementary: supplementary, itemReusableView: supplementaryView)
     }
 
-    private func itemForIndexPath(indexPath: NSIndexPath) -> Item {
+    private func item(for indexPath: IndexPath) -> Item {
         return self.itemsBySection[indexPath.section][indexPath.row]
     }
 
-    private func supplementaryOfCollectionViewKind(elementKind: String, forSection section: Int) -> Supplementary? {
-        guard let kind = GridCollectionController.SupplementaryIndex.Kind.kindForCollectionViewKind(elementKind) else {
+    private func supplementary(ofCollectionViewKind elementKind: String, inSection section: Int) -> Supplementary? {
+        guard let kind = GridCollectionController.SupplementaryIndex.Kind.kind(forCollectionViewKind: elementKind) else {
             return nil
         }
-        return self.supplementaryOfKind(kind, forSection: section)
+        return self.supplementary(of: kind, inSection: section)
     }
 
-    private func supplementaryOfKind(kind: SupplementaryIndex.Kind, forSection section: Int) -> Supplementary? {
+    private func supplementary(of kind: SupplementaryIndex.Kind, inSection section: Int) -> Supplementary? {
         return self.supplementariesByIndex[SupplementaryIndex(section: section, kind: kind)]
     }
 }
@@ -380,9 +380,9 @@ public func == (lhs: GridCollectionController.Component, rhs: GridCollectionCont
 
 public func == (lhs: GridCollectionController.Component.Kind, rhs: GridCollectionController.Component.Kind) -> Bool {
     switch (lhs, rhs) {
-    case (.Item(let lhs, _), .Item(let rhs, _)):
+    case (.item(let lhs, _), .item(let rhs, _)):
         return lhs == rhs
-    case (.Supplementary(let lhs, _), .Supplementary(let rhs, _)):
+    case (.supplementary(let lhs, _), .supplementary(let rhs, _)):
         return lhs == rhs
     default:
         return false
@@ -393,12 +393,12 @@ public func == (lhs: GridCollectionController.Component.Kind, rhs: GridCollectio
 
 public protocol GridCollectionControllerDelegate: class {
 
-    func gridCollectionController(gridCollectionController: GridCollectionController, didSelect component: GridCollectionController.Component)
+    func gridCollectionController(_ gridCollectionController: GridCollectionController, didSelect component: GridCollectionController.Component)
 }
 
 private extension GridCollectionController {
 
-    func didSelectComponent(component: Component) {
+    func didSelectComponent(_ component: Component) {
         self.delegate?.gridCollectionController(self, didSelect: component)
     }
 }
@@ -407,70 +407,70 @@ extension GridCollectionController: UICollectionViewDataSource, UICollectionView
 
     // MARK: UICollectionView
 
-    public func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+    public func numberOfSections(in collectionView: UICollectionView) -> Int {
         return self.itemsBySection.count
     }
 
-    public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.itemsBySection[section].count
     }
 
-    public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let item = self.itemForIndexPath(indexPath)
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(item.controller.computedViewIdentifier, forIndexPath: indexPath) as! ItemViewCell
-        cell.nestedView = item.controller.viewForItem(item, reusingView: cell.nestedView)
-        let component = self.itemCompontentForIndexPath(indexPath, cell: cell)
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let item = self.item(for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: item.controller.computedViewIdentifier, for: indexPath) as! ItemViewCell
+        cell.nestedView = item.controller.view(forItem: item, reusingView: cell.nestedView)
+        let component = self.itemCompontent(for: indexPath, with: cell)
         component.attach()
         return cell
     }
 
-    public func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
-        let component = self.itemCompontentForIndexPath(indexPath, cell: cell)
+    public func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        let component = self.itemCompontent(for: indexPath, with: cell)
         component.detach()
     }
 
-    public func collectionView(collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionReusableView {
-        guard let supplementary = self.supplementaryOfCollectionViewKind(kind, forSection: indexPath.section) else {
-            return collectionView.dequeueReusableSupplementaryViewOfKind(kind, withReuseIdentifier: ItemReusableView.cellIdentifier, forIndexPath: indexPath)
+    public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard let supplementary = self.supplementary(ofCollectionViewKind: kind, inSection: indexPath.section) else {
+            return collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: ItemReusableView.cellIdentifier, for: indexPath)
         }
 
-        let view = collectionView.dequeueReusableSupplementaryViewOfKind(kind, withReuseIdentifier: supplementary.controller.computedViewIdentifier, forIndexPath: indexPath) as! ItemReusableView
-        view.nestedView = supplementary.controller.viewForSupplementary(supplementary, reusingView: view.nestedView)
-        guard let component = self.supplementaryCompontentOfCollectionViewKind(kind, forSection: indexPath.section, view: view) else {
+        let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: supplementary.controller.computedViewIdentifier, for: indexPath) as! ItemReusableView
+        view.nestedView = supplementary.controller.view(forSupplementary: supplementary, reusingView: view.nestedView)
+        guard let component = self.supplementaryCompontent(ofCollectionViewKind: kind, inSection: indexPath.section, with: view) else {
             return view
         }
         component.attach()
         return view
     }
 
-    public func collectionView(collectionView: UICollectionView, didEndDisplayingSupplementaryView view: UICollectionReusableView, forElementOfKind elementKind: String, atIndexPath indexPath: NSIndexPath) {
-        guard let component = self.supplementaryCompontentOfCollectionViewKind(elementKind, forSection: indexPath.section, view: view) else {
+    public func collectionView(_ collectionView: UICollectionView, didEndDisplayingSupplementaryView view: UICollectionReusableView, forElementOfKind elementKind: String, at indexPath: IndexPath) {
+        guard let component = self.supplementaryCompontent(ofCollectionViewKind: elementKind, inSection: indexPath.section, with: view) else {
             return
         }
         component.detach()
     }
 
-    public func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        let cell = collectionView.cellForItemAtIndexPath(indexPath)!
-        let component = self.itemCompontentForIndexPath(indexPath, cell: cell)
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath)!
+        let component = self.itemCompontent(for: indexPath, with: cell)
         self.didSelectComponent(component)
     }
 
     // MARK: GridCollectionViewLayout
 
-    public func gridCollectionViewLayout(layout: GridCollectionViewLayout, rectForIndexPath indexPath: NSIndexPath) -> GridCollectionViewLayout.GridRect {
-        return self.itemForIndexPath(indexPath).index.rect
+    public func gridCollectionViewLayout(_ layout: GridCollectionViewLayout, gridRectFor indexPath: IndexPath) -> GridCollectionViewLayout.GridRect {
+        return self.item(for: indexPath).index.rect
     }
 
-    public func gridCollectionViewLayout(layout: GridCollectionViewLayout, propertiesForHeaderForSection section: Int) -> GridCollectionViewLayout.SupplementaryProperties? {
-        guard let supplementary = self.supplementaryOfKind(.Header, forSection: section) else {
+    public func gridCollectionViewLayout(_ layout: GridCollectionViewLayout, propertiesForHeaderInSection section: Int) -> GridCollectionViewLayout.SupplementaryProperties? {
+        guard let supplementary = self.supplementary(of: .header, inSection: section) else {
             return nil
         }
         return GridCollectionViewLayout.SupplementaryProperties(length: supplementary.length, insets: supplementary.insets)
     }
 
-    public func gridCollectionViewLayout(layout: GridCollectionViewLayout, propertiesForFooterForSection section: Int) -> GridCollectionViewLayout.SupplementaryProperties? {
-        guard let supplementary = self.supplementaryOfKind(.Footer, forSection: section) else {
+    public func gridCollectionViewLayout(_ layout: GridCollectionViewLayout, propertiesForFooterInSection section: Int) -> GridCollectionViewLayout.SupplementaryProperties? {
+        guard let supplementary = self.supplementary(of: .footer, inSection: section) else {
             return nil
         }
         return GridCollectionViewLayout.SupplementaryProperties(length: supplementary.length, insets: supplementary.insets)
@@ -530,25 +530,25 @@ public final class ItemReusableView: UICollectionReusableView {
 public protocol ComponentController: class {
 
     var viewIdentifier: String? { get }
-    func attachToComponent(component: GridCollectionController.Component)
-    func detachFromComponent(component: GridCollectionController.Component)
+    func attach(to component: GridCollectionController.Component)
+    func detach(from component: GridCollectionController.Component)
 }
 
 private extension ComponentController {
 
     var computedViewIdentifier: String {
-        return self.viewIdentifier ?? String(Self)
+        return self.viewIdentifier ?? String(Self.self)
     }
 }
 
 public protocol ItemController: ComponentController {
 
-    func viewForItem(item: GridCollectionController.Item, reusingView reuseView: UIView?) -> UIView
+    func view(forItem item: GridCollectionController.Item, reusingView reuseView: UIView?) -> UIView
 }
 
 public protocol SupplementaryController: ComponentController {
 
-    func viewForSupplementary(supplementary: GridCollectionController.Supplementary, reusingView reuseView: UIView?) -> UIView
+    func view(forSupplementary supplementary: GridCollectionController.Supplementary, reusingView reuseView: UIView?) -> UIView
 }
 
 // MARK: LinearGrid
@@ -558,20 +558,20 @@ public struct LinearGrid {
     public var numUnits: Int
     public var direction: GridCollectionViewLayout.Direction
 
-    public init(numUnits: Int, direction: GridCollectionViewLayout.Direction = .Vertical) {
+    public init(numUnits: Int, direction: GridCollectionViewLayout.Direction = .vertical) {
         self.numUnits = numUnits
         self.direction = direction
     }
 
     public func rect(forIndex index: Int, width: CGFloat = 1.0, height: CGFloat = 1.0) -> GridCollectionViewLayout.GridRect {
         switch self.direction {
-        case .Vertical:
+        case .vertical:
             return GridCollectionViewLayout.GridRect(
                 x: CGFloat(index % self.numUnits),
                 y: CGFloat(index / self.numUnits),
                 width: width,
                 height: height)
-        case .Horizontal:
+        case .horizontal:
             return GridCollectionViewLayout.GridRect(
                 x: CGFloat(index / self.numUnits),
                 y: CGFloat(index % self.numUnits),

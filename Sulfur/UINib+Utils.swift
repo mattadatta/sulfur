@@ -10,7 +10,6 @@ public protocol UINibViewInflatable: class { }
 
 public extension UINibViewInflatable {
 
-    @warn_unused_result
     public func inflateView() -> UIView {
         return UINib(nibName: String(Self.self), bundle: Bundle(for: Self.self)).instantiate(withOwner: self, options: nil).first as! UIView
     }
