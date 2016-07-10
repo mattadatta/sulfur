@@ -91,11 +91,6 @@ public final class Context {
     // MARK: Wrapping
 
     public func wrap<Object>(obj: Object) -> Object {
-        // Always wrap children first so parents may interact with them
-        // during their initializations.
-        if let contextAwareContainer = obj as? ContextAwareContainer {
-            contextAwareContainer.childObjects.forEach({ self.wrap($0) })
-        }
         if let viewController = obj as? UIViewController {
             viewController.loadViewIfNeeded()
             self.wrap(viewController.view)
@@ -107,6 +102,9 @@ public final class Context {
             self.setupContextAwareIfNecessary(view)
         } else {
             self.setupContextAwareIfNecessary(obj)
+        }
+        if let contextAwareContainer = obj as? ContextAwareContainer {
+            contextAwareContainer.childObjects.forEach({ self.wrap($0) })
         }
         return obj
     }
