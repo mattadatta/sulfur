@@ -35,17 +35,6 @@ public final class Context {
         self.contextTokens = Set(self.contextTokens.filter({ $0.referent != token }))
     }
 
-    private func setupContextAwareIfNecessary(_ obj: Any?) {
-        guard let contextAware = obj as? ContextAware where contextAware.contextToken == nil else {
-            return
-        }
-
-        let contextToken = self.generateTokenForContextAware(contextAware)
-        contextToken.contextAware = contextAware
-        contextAware.contextToken = contextToken
-        contextAware.contextAvailable()
-    }
-
     // MARK: Services
 
     public enum ServiceChange {
@@ -92,22 +81,38 @@ public final class Context {
 
     @discardableResult
     public func wrap<Object>(_ obj: Object) -> Object {
-        if let viewController = obj as? UIViewController {
-            viewController.loadViewIfNeeded()
-            self.wrap(viewController.view)
-            self.setupContextAwareIfNecessary(viewController)
-        } else if let view = obj as? UIView {
-            if view is ContextAware {
-                view.inflateAddAndConstrainIfPossible()
-            }
-            self.setupContextAwareIfNecessary(view)
-        } else {
-            self.setupContextAwareIfNecessary(obj)
+        if let contextPreloadable = obj as? ContextPreloadable {
+            contextPreloadable.contextPreload()
         }
         if let contextAwareContainer = obj as? ContextAwareContainer {
-            contextAwareContainer.childObjects.forEach({ self.wrap($0) })
+            for child in contextAwareContainer.childObjects {
+                self.wrap(child)
+            }
         }
+        if let viewController = obj as? UIViewController {
+            self.wrap(viewController.view)
+        }
+        self.setupContextAwareIfNecessary(obj)
         return obj
+    }
+
+    private func setupContextAwareIfNecessary(obj: Any?) {
+        guard let contextAware = obj as? ContextAware where contextAware.contextToken == nil else {
+            return
+        }
+
+        let contextToken = self.generateTokenForContextAware(contextAware)
+        contextToken.contextAware = contextAware
+        contextAware.contextToken = contextToken
+        contextAware.contextAvailable()
+    }
+
+    public func newViewController<ViewController: UIViewController>() -> ViewController {
+        return self.wrap(ViewController())
+    }
+
+    public func newView<View: UIView>() -> View {
+        return self.wrap(View())
     }
 }
 
@@ -169,20 +174,20 @@ public protocol ContextAware: class {
 
 public extension ContextAware {
 
-    var context: Context {
+    public var context: Context {
         return self.contextToken!.context
     }
 
-    func contextWrap<Object>(obj: Object) -> Object {
+    public func contextWrap<Object>(obj: Object) -> Object {
         return self.context.wrap(obj)
     }
 
-    func newViewController<ViewController: UIViewController>() -> ViewController {
-        return self.context.wrap(ViewController())
+    public func newViewController<ViewController: UIViewController>() -> ViewController {
+        return self.context.newViewController()
     }
 
-    func newView<View: UIView>() -> View {
-        return self.context.wrap(View())
+    public func newView<View: UIView>() -> View {
+        return self.context.newView()
     }
 }
 
@@ -228,9 +233,23 @@ extension UIView: ContextAwareContainer {
     }
 }
 
-extension UIView {
+public protocol ContextPreloadable {
 
-    func inflateAddAndConstrainIfPossible() {
+    func contextPreload()
+}
+
+extension UIViewController: ContextPreloadable {
+
+    public func contextPreload() {
+        guard let contextAware = self as? ContextAware where contextAware.contextToken == nil else { return }
+        self.loadViewIfNeeded()
+    }
+}
+
+extension UIView: ContextPreloadable {
+
+    public func contextPreload() {
+        guard let contextAware = self as? ContextAware where contextAware.contextToken == nil else { return }
         guard let inflatable = self as? UINibViewInflatable else { return }
         let view = inflatable.inflateView()
         self.addAndConstrainView(view)
