@@ -96,7 +96,7 @@ public final class Context {
         return obj
     }
 
-    private func setupContextAwareIfNecessary(obj: Any?) {
+    private func setupContextAwareIfNecessary(_ obj: Any?) {
         guard let contextAware = obj as? ContextAware where contextAware.contextToken == nil else {
             return
         }
