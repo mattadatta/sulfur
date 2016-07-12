@@ -79,7 +79,8 @@ public final class Context {
 
     // MARK: Wrapping
 
-    public func wrap<Object>(obj: Object) -> Object {
+    public func wrap<Object>(@autoclosure objFn: () -> Object) -> Object {
+        let obj = objFn()
         if let contextPreloadable = obj as? ContextPreloadable {
             contextPreloadable.contextPreload()
         }
@@ -95,7 +96,7 @@ public final class Context {
         return obj
     }
 
-    private func setupContextAwareIfNecessary(obj: Any?) {
+    private func setupContextAwareIfNecessary(obj: Any) {
         guard let contextAware = obj as? ContextAware where contextAware.contextToken == nil else {
             return
         }
@@ -177,8 +178,8 @@ public extension ContextAware {
         return self.contextToken!.context
     }
 
-    public func contextWrap<Object>(obj: Object) -> Object {
-        return self.context.wrap(obj)
+    public func contextWrap<Object>(@autoclosure objFn: () -> Object) -> Object {
+        return self.context.wrap(objFn)
     }
 
     public func newViewController<ViewController: UIViewController>() -> ViewController {
