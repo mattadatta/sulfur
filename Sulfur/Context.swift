@@ -80,7 +80,7 @@ public final class Context {
     // MARK: Wrapping
 
     @discardableResult
-    public func wrap<Object>(@autoclosure objFn: () -> Object) -> Object {
+    public func wrap<Object>(_ objFn: @autoclosure () -> Object) -> Object {
         let obj = objFn()
         if let contextPreloadable = obj as? ContextPreloadable {
             contextPreloadable.contextPreload()
@@ -179,7 +179,7 @@ public extension ContextAware {
         return self.contextToken!.context
     }
 
-    public func contextWrap<Object>(@autoclosure objFn: () -> Object) -> Object {
+    public func contextWrap<Object>(_ objFn: @autoclosure () -> Object) -> Object {
         return self.context.wrap(objFn)
     }
 
