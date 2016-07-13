@@ -76,11 +76,13 @@ public final class GridCollectionController: NSObject {
     public struct Item: Hashable {
 
         public var index: ItemIndex
+        public var insets: UIEdgeInsets
         public var controller: ItemController
         public var data: Any?
 
-        public init(section: Int = 0, rect: GridRect, controller: ItemController, data: Any? = nil) {
+        public init(section: Int = 0, rect: GridRect, insets: UIEdgeInsets = UIEdgeInsetsZero, controller: ItemController, data: Any? = nil) {
             self.index = ItemIndex(section: section, rect: rect)
+            self.insets = insets
             self.controller = controller
             self.data = data
         }
@@ -93,15 +95,13 @@ public final class GridCollectionController: NSObject {
     public struct Supplementary: Hashable {
 
         public var index: SupplementaryIndex
-        public var length: CGFloat
-        public var insets: UIEdgeInsets
+        public var properties: GridCollectionViewLayout.SupplementaryProperties
         public var controller: SupplementaryController
         public var data: Any?
 
-        public init(section: Int = 0, kind: SupplementaryIndex.Kind, length: CGFloat, insets: UIEdgeInsets = UIEdgeInsetsZero, controller: SupplementaryController, data: Any? = nil) {
+        public init(section: Int = 0, kind: SupplementaryIndex.Kind, properties: GridCollectionViewLayout.SupplementaryProperties, controller: SupplementaryController, data: Any? = nil) {
             self.index = SupplementaryIndex(section: section, kind: kind)
-            self.length = length
-            self.insets = insets
+            self.properties = properties
             self.controller = controller
             self.data = data
         }
@@ -268,8 +268,8 @@ public final class GridCollectionController: NSObject {
         self.collectionView.dataSource = self
         self.collectionView.delegate = self
         self.gridLayout.delegate = self
-        self.collectionView.register(ItemReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "\(ItemReusableView.self)")
-        self.collectionView.register(ItemReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionFooter, withReuseIdentifier: "\(ItemReusableView.self)")
+        self.collectionView.register(ItemReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: String(ItemReusableView.self))
+        self.collectionView.register(ItemReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionFooter, withReuseIdentifier: String(ItemReusableView.self))
     }
 
     // MARK: API
@@ -367,11 +367,11 @@ public func == (lhs: GridCollectionController.SupplementaryIndex, rhs: GridColle
 }
 
 public func == (lhs: GridCollectionController.Item, rhs: GridCollectionController.Item) -> Bool {
-    return lhs.index == rhs.index && ObjectIdentifier(lhs.controller) == ObjectIdentifier(rhs.controller)
+    return lhs.index == rhs.index
 }
 
 public func == (lhs: GridCollectionController.Supplementary, rhs: GridCollectionController.Supplementary) -> Bool {
-    return lhs.index == rhs.index && ObjectIdentifier(lhs.controller) == ObjectIdentifier(rhs.controller)
+    return lhs.index == rhs.index
 }
 
 public func == (lhs: GridCollectionController.Component, rhs: GridCollectionController.Component) -> Bool {
@@ -458,22 +458,17 @@ extension GridCollectionController: UICollectionViewDataSource, UICollectionView
 
     // MARK: GridCollectionViewLayout
 
-    public func gridCollectionViewLayout(_ layout: GridCollectionViewLayout, gridRectFor indexPath: IndexPath) -> GridCollectionViewLayout.GridRect {
-        return self.item(for: indexPath).index.rect
+    public func gridCollectionViewLayout(_ layout: GridCollectionViewLayout, propertiesFor indexPath: IndexPath) -> GridCollectionViewLayout.ItemProperties {
+        let item = self.item(for: indexPath)
+        return GridCollectionViewLayout.ItemProperties(gridRect: item.index.rect, insets: item.insets)
     }
 
     public func gridCollectionViewLayout(_ layout: GridCollectionViewLayout, propertiesForHeaderInSection section: Int) -> GridCollectionViewLayout.SupplementaryProperties? {
-        guard let supplementary = self.supplementary(of: .header, inSection: section) else {
-            return nil
-        }
-        return GridCollectionViewLayout.SupplementaryProperties(length: supplementary.length, insets: supplementary.insets)
+        return self.supplementary(of: .header, inSection: section)?.properties
     }
 
     public func gridCollectionViewLayout(_ layout: GridCollectionViewLayout, propertiesForFooterInSection section: Int) -> GridCollectionViewLayout.SupplementaryProperties? {
-        guard let supplementary = self.supplementary(of: .footer, inSection: section) else {
-            return nil
-        }
-        return GridCollectionViewLayout.SupplementaryProperties(length: supplementary.length, insets: supplementary.insets)
+        return self.supplementary(of: .footer, inSection: section)?.properties
     }
 }
 
@@ -503,7 +498,7 @@ public final class ItemViewCell: UICollectionViewCell {
 
 public final class ItemReusableView: UICollectionReusableView {
 
-    static let cellIdentifier = "\(ItemReusableView.self)"
+    static let cellIdentifier = String(ItemReusableView.self)
 
     public internal(set) var nestedView: UIView? {
         willSet {
@@ -578,6 +573,5 @@ public struct LinearGrid {
                 width: width,
                 height: height)
         }
-
     }
 }

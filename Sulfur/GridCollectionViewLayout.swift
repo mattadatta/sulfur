@@ -62,23 +62,21 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
 
         public enum Kind: Hashable {
 
-            case item(GridRect)
-            case supplementary(SupplementaryProperties)
+            case item(ItemProperties)
+            case supplementary(String, SupplementaryProperties)
 
             public var hashValue: Int {
                 switch self {
-                case .item(let rect):
-                    return rect.hashValue
-                case .supplementary(let properties):
-                    var hash = properties.length.hashValue
-                    hash = hash &* 31 &+ properties.insets.hashValue
-                    return hash
+                case .item(let properties):
+                    return properties.hashValue
+                case .supplementary(let kind, _):
+                    return kind.hashValue
                 }
             }
         }
 
         public var section: Int = 0
-        public var kind: Kind = .item(GridRect())
+        public var kind: Kind = .item(ItemProperties())
 
         override public func copy(with zone: NSZone?) -> AnyObject {
             let attrs = super.copy(with: zone) as! LayoutAttributes
@@ -94,8 +92,8 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
 
         public var rect: GridRect? {
             switch self.kind {
-            case .item(let rect):
-                return rect
+            case .item(let properties):
+                return properties.gridRect
             default:
                 return nil
             }
@@ -103,7 +101,7 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
 
         public var properties: SupplementaryProperties? {
             switch self.kind {
-            case .supplementary(let properties):
+            case .supplementary(_, let properties):
                 return properties
             default:
                 return nil
@@ -120,26 +118,41 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
         }
     }
 
-    // MARK: SupplementartProperties
+    public struct ItemProperties: Hashable {
 
-    public struct SupplementaryProperties: Hashable {
-
-        public var length: CGFloat
+        public var gridRect: GridRect
         public var insets: UIEdgeInsets
 
         public init() {
-            self.init(length: 0, insets: UIEdgeInsetsZero)
+            self.init(gridRect: GridRect())
         }
 
-        public init(length: CGFloat, insets: UIEdgeInsets) {
-            self.length = length
+        public init(gridRect: GridRect, insets: UIEdgeInsets = UIEdgeInsetsZero) {
+            self.gridRect = gridRect
             self.insets = insets
         }
 
         public var hashValue: Int {
-            var hash = self.length.hashValue
+            var hash = self.gridRect.hashValue
             hash = hash &* 31 &+ self.insets.hashValue
             return hash
+        }
+    }
+
+    // MARK: SupplementartProperties
+
+    public struct SupplementaryProperties {
+
+        public var lengthFn: (CGFloat) -> CGFloat
+        public var insets: UIEdgeInsets
+
+        public init() {
+            self.init(lengthFn: { _ in return 0 })
+        }
+
+        public init(lengthFn: (CGFloat) -> CGFloat, insets: UIEdgeInsets = UIEdgeInsetsZero) {
+            self.lengthFn = lengthFn
+            self.insets = insets
         }
     }
 
@@ -318,21 +331,25 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
 
             // HEADER
             let headerLayoutAttrs = LayoutAttributes(forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, with: sectionIndexPath)
-            let headerProperties = self.propertiesForHeader(inSection: section)
-            let (headerLength, headerInsets) = (headerProperties.length, headerProperties.insets)
+            let headerProperties = self.delegate?.gridCollectionViewLayout(self, propertiesForHeaderInSection: section) ?? SupplementaryProperties()
+            let headerInsets = headerProperties.insets
 
             let totalHeaderLength: CGFloat
             switch self.direction {
             case .vertical:
+                let headerWidth = spaceMinusPadding - headerInsets.width
+                let headerLength = headerProperties.lengthFn(headerWidth)
+                headerLayoutAttrs.frame = CGRect(x: headerInsets.left, y: cumulativeLength + headerInsets.top, width: headerWidth, height: headerLength)
                 totalHeaderLength = headerLength + headerInsets.height
-                headerLayoutAttrs.frame = CGRect(x: headerInsets.left, y: cumulativeLength + headerInsets.top, width: spaceMinusPadding - headerInsets.width, height: headerLength)
             case .horizontal:
+                let headerHeight = spaceMinusPadding - headerInsets.height
+                let headerLength = headerProperties.lengthFn(headerHeight)
+                headerLayoutAttrs.frame = CGRect(x: cumulativeLength + headerInsets.left, y: headerInsets.top, width: headerLength, height: headerHeight)
                 totalHeaderLength = headerLength + headerInsets.width
-                headerLayoutAttrs.frame = CGRect(x: cumulativeLength + headerInsets.left, y: headerInsets.top, width: headerLength, height: spaceMinusPadding - headerInsets.height)
             }
 
             headerLayoutAttrs.section = section
-            headerLayoutAttrs.kind = .supplementary(headerProperties)
+            headerLayoutAttrs.kind = .supplementary(UICollectionElementKindSectionHeader, headerProperties)
             self.headerLayoutAttrs[sectionIndexPath] = headerLayoutAttrs
             self.layoutAttrs.append(headerLayoutAttrs)
 
@@ -349,9 +366,10 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
             let numberOfItems = collectionView.numberOfItems(inSection: section)
             (0..<numberOfItems).forEach { item in
                 let indexPath = IndexPath(item: item, section: section)
-                let rect = self.gridRect(for: indexPath)
+                let properties = self.delegate?.gridCollectionViewLayout(self, propertiesFor: indexPath) ?? ItemProperties()
+                let rect = properties.gridRect
                 let attrs = LayoutAttributes(forCellWith: indexPath)
-                let originalFrame = GridMeasurementUtils.frame(for: rect, cellSize: self.cellSize, spacingSize: self.spacingSize)
+                let originalFrame = GridMeasurementUtils.frame(for: rect, cellSize: self.cellSize, spacingSize: self.spacingSize).insetted(with: properties.insets)
 
                 switch self.direction {
                 case .vertical:
@@ -363,7 +381,7 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
                 }
 
                 attrs.section = section
-                attrs.kind = .item(rect)
+                attrs.kind = .item(properties)
                 self.itemLayoutAttrs[indexPath] = attrs
                 self.layoutAttrs.append(attrs)
             }
@@ -377,21 +395,25 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
 
             // FOOTER
             let footerLayoutAttrs = LayoutAttributes(forSupplementaryViewOfKind: UICollectionElementKindSectionFooter, with: sectionIndexPath)
-            let footerProperties = self.propertiesForFooter(inSection: section)
-            let (footerLength, footerInsets) = (footerProperties.length, footerProperties.insets)
+            let footerProperties = self.delegate?.gridCollectionViewLayout(self, propertiesForFooterInSection: section) ?? SupplementaryProperties()
+            let footerInsets = footerProperties.insets
 
             let totalFooterLength: CGFloat
             switch self.direction {
             case .vertical:
+                let footerWidth = spaceMinusPadding - footerInsets.width
+                let footerLength = footerProperties.lengthFn(footerWidth)
+                footerLayoutAttrs.frame = CGRect(x: footerInsets.left, y: cumulativeLength + footerInsets.top, width: footerWidth, height: footerLength)
                 totalFooterLength = footerLength + footerInsets.height
-                footerLayoutAttrs.frame = CGRect(x: footerInsets.left, y: cumulativeLength + footerInsets.top, width: spaceMinusPadding - footerInsets.width, height: footerLength)
             case .horizontal:
+                let footerHeight = spaceMinusPadding - footerInsets.height
+                let footerLength = footerProperties.lengthFn(footerHeight)
+                footerLayoutAttrs.frame = CGRect(x: cumulativeLength + footerInsets.left, y: footerInsets.top, width: footerLength, height: footerHeight)
                 totalFooterLength = footerLength + footerInsets.width
-                footerLayoutAttrs.frame = CGRect(x: cumulativeLength + footerInsets.left, y: footerInsets.top, width: footerLength, height: spaceMinusPadding - footerInsets.height)
             }
 
             footerLayoutAttrs.section = section
-            footerLayoutAttrs.kind = .supplementary(footerProperties)
+            footerLayoutAttrs.kind = .supplementary(UICollectionElementKindSectionFooter, footerProperties)
             self.footerLayoutAttrs[sectionIndexPath] = footerLayoutAttrs
             self.layoutAttrs.append(footerLayoutAttrs)
 
@@ -532,32 +554,16 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
 
 public protocol GridCollectionViewLayoutDelegate: class {
 
-    func gridCollectionViewLayout(_ layout: GridCollectionViewLayout, gridRectFor indexPath: IndexPath) -> GridCollectionViewLayout.GridRect
+    func gridCollectionViewLayout(_ layout: GridCollectionViewLayout, propertiesFor indexPath: IndexPath) -> GridCollectionViewLayout.ItemProperties
     func gridCollectionViewLayout(_ layout: GridCollectionViewLayout, propertiesForHeaderInSection section: Int) -> GridCollectionViewLayout.SupplementaryProperties?
     func gridCollectionViewLayout(_ layout: GridCollectionViewLayout, propertiesForFooterInSection section: Int) -> GridCollectionViewLayout.SupplementaryProperties?
 }
-
-private extension GridCollectionViewLayout {
-
-    func gridRect(for indexPath: IndexPath) -> GridRect {
-        return self.delegate?.gridCollectionViewLayout(self, gridRectFor: indexPath) ?? GridRect()
-    }
-
-    func propertiesForHeader(inSection section: Int) -> SupplementaryProperties {
-        return self.delegate?.gridCollectionViewLayout(self, propertiesForHeaderInSection: section) ?? SupplementaryProperties()
-    }
-
-    func propertiesForFooter(inSection section: Int) -> SupplementaryProperties {
-        return self.delegate?.gridCollectionViewLayout(self, propertiesForFooterInSection: section) ?? SupplementaryProperties()
-    }
-}
-
 public func == (lhs: GridCollectionViewLayout.GridRect, rhs: GridCollectionViewLayout.GridRect) -> Bool {
     return lhs.x == rhs.x && lhs.y == rhs.y && lhs.width == rhs.width && lhs.height == rhs.height
 }
 
-public func == (lhs: GridCollectionViewLayout.SupplementaryProperties, rhs: GridCollectionViewLayout.SupplementaryProperties) -> Bool {
-    return lhs.length == rhs.length && lhs.insets == rhs.insets
+public func == (lhs: GridCollectionViewLayout.ItemProperties, rhs: GridCollectionViewLayout.ItemProperties) -> Bool {
+    return lhs.gridRect == rhs.gridRect && lhs.insets == rhs.insets
 }
 
 public func == (lhs: GridCollectionViewLayout.UnitInformation, rhs: GridCollectionViewLayout.UnitInformation) -> Bool {
@@ -583,7 +589,7 @@ public func == (lhs: GridCollectionViewLayout.LayoutAttributes.Kind, rhs: GridCo
     switch (lhs, rhs) {
     case (.item(let lhs), .item(let rhs)):
         return lhs == rhs
-    case (.supplementary(let lhs), .supplementary(let rhs)):
+    case (.supplementary(let lhs, _), .supplementary(let rhs, _)):
         return lhs == rhs
     default:
         return false

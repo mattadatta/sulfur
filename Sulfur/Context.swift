@@ -25,7 +25,7 @@ public final class Context {
         return Set(self.contextTokens.flatMap({ $0.referent }))
     }
 
-    private func generateTokenForContextAware(_ contextAware: ContextAware) -> ContextToken {
+    private func generateToken() -> ContextToken {
         let token = ContextToken(context: self)
         self.contextTokens.insert(WeakReference(referent: token))
         return token
@@ -70,9 +70,7 @@ public final class Context {
 
     private func dispatch(serviceChange: ServiceChange, forServiceId serviceId: String) {
         self.unwrappedTokens.forEach { token in
-            guard let contextServiceAware = token.contextAware as? ContextServiceAware else {
-                return
-            }
+            guard let contextServiceAware = token.contextAware as? ContextServiceAware else { return }
             contextServiceAware.contextDispatched(serviceChange: serviceChange, forServiceId: serviceId)
         }
     }
@@ -80,8 +78,7 @@ public final class Context {
     // MARK: Wrapping
 
     @discardableResult
-    public func wrap<Object>(_ objFn: @autoclosure () -> Object) -> Object {
-        let obj = objFn()
+    public func wrap<Object>(_ obj: Object) -> Object {
         if let contextPreloadable = obj as? ContextPreloadable {
             contextPreloadable.contextPreload()
         }
@@ -102,7 +99,7 @@ public final class Context {
             return
         }
 
-        let contextToken = self.generateTokenForContextAware(contextAware)
+        let contextToken = self.generateToken()
         contextToken.contextAware = contextAware
         contextAware.contextToken = contextToken
         contextAware.contextAvailable()
@@ -179,8 +176,8 @@ public extension ContextAware {
         return self.contextToken!.context
     }
 
-    public func contextWrap<Object>(_ objFn: @autoclosure () -> Object) -> Object {
-        return self.context.wrap(objFn)
+    public func contextWrap<Object>(_ obj: Object) -> Object {
+        return self.context.wrap(obj)
     }
 
     public func newViewController<ViewController: UIViewController>() -> ViewController {
