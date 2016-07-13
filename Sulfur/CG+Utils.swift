@@ -287,6 +287,22 @@ public extension CGAffineTransform {
 
 public extension CGRect {
 
+    public mutating func inset(with insets: UIEdgeInsets) {
+        self.origin.x += insets.left
+        self.origin.y += insets.top
+        self.size.width -= insets.width
+        self.size.height -= insets.height
+    }
+
+    public func insetted(with insets: UIEdgeInsets) -> CGRect {
+        var rect = self
+        rect.inset(with: insets)
+        return rect
+    }
+}
+
+public extension CGRect {
+
     public func rectForTransform(transform: CGAffineTransform) -> CGRect {
         return CGRectApplyAffineTransform(self, transform)
     }

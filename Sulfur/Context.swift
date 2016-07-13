@@ -25,7 +25,7 @@ public final class Context {
         return Set(self.contextTokens.flatMap({ $0.referent }))
     }
 
-    private func generateTokenForContextAware(contextAware: ContextAware) -> ContextToken {
+    private func generateToken() -> ContextToken {
         let token = ContextToken(context: self)
         self.contextTokens.insert(WeakReference(referent: token))
         return token
@@ -70,17 +70,14 @@ public final class Context {
 
     private func dispatch(serviceChange serviceChange: ServiceChange, forServiceId serviceId: String) {
         self.unwrappedTokens.forEach { token in
-            guard let contextServiceAware = token.contextAware as? ContextServiceAware else {
-                return
-            }
+            guard let contextServiceAware = token.contextAware as? ContextServiceAware else { return }
             contextServiceAware.contextDispatched(serviceChange: serviceChange, forServiceId: serviceId)
         }
     }
 
     // MARK: Wrapping
 
-    public func wrap<Object>(@autoclosure objFn: () -> Object) -> Object {
-        let obj = objFn()
+    public func wrap<Object>(obj: Object) -> Object {
         if let contextPreloadable = obj as? ContextPreloadable {
             contextPreloadable.contextPreload()
         }
@@ -101,7 +98,7 @@ public final class Context {
             return
         }
 
-        let contextToken = self.generateTokenForContextAware(contextAware)
+        let contextToken = self.generateToken()
         contextToken.contextAware = contextAware
         contextAware.contextToken = contextToken
         contextAware.contextAvailable()
@@ -178,8 +175,8 @@ public extension ContextAware {
         return self.contextToken!.context
     }
 
-    public func contextWrap<Object>(@autoclosure objFn: () -> Object) -> Object {
-        return self.context.wrap(objFn)
+    public func contextWrap<Object>(obj: Object) -> Object {
+        return self.context.wrap(obj)
     }
 
     public func newViewController<ViewController: UIViewController>() -> ViewController {
