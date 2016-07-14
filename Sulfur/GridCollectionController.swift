@@ -293,25 +293,19 @@ public final class GridCollectionController: NSObject {
     }
 
     public func component(for index: ItemIndex) -> Component? {
-        guard let indexPath = self.itemIndexPaths[index] else {
-            return nil
-        }
+        guard let indexPath = self.itemIndexPaths[index] else { return nil }
         return self.itemComponent(for: indexPath)
     }
 
     public func component(for index: SupplementaryIndex) -> Component? {
-        guard let indexPath = self.supplementaryIndexPaths[index] else {
-            return nil
-        }
+        guard let indexPath = self.supplementaryIndexPaths[index] else { return nil }
         return self.supplementaryComponent(of: index.kind, for: indexPath)
     }
 
     // MARK: Internal
 
     private func itemComponent(for indexPath: IndexPath) -> Component? {
-        guard let cell = self.collectionView.cellForItem(at: indexPath) else {
-            return nil
-        }
+        guard let cell = self.collectionView.cellForItem(at: indexPath) else { return nil }
         return self.itemComponent(for: indexPath, with: cell)
     }
 
@@ -347,9 +341,7 @@ public final class GridCollectionController: NSObject {
     }
 
     private func supplementary(ofCollectionViewKind elementKind: String, inSection section: Int) -> Supplementary? {
-        guard let kind = GridCollectionController.SupplementaryIndex.Kind.kind(forCollectionViewKind: elementKind) else {
-            return nil
-        }
+        guard let kind = GridCollectionController.SupplementaryIndex.Kind.kind(forCollectionViewKind: elementKind) else { return nil }
         return self.supplementary(of: kind, inSection: section)
     }
 
@@ -419,14 +411,13 @@ extension GridCollectionController: UICollectionViewDataSource, UICollectionView
         let item = self.item(for: indexPath)
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: item.controller.computedViewIdentifier, for: indexPath) as! ItemViewCell
         cell.nestedView = item.controller.view(forItem: item, reusingView: cell.nestedView)
+        cell.didPrepareForReuse = { [weak self, unowned cell] in
+            guard let component = self?.itemComponent(for: indexPath, with: cell) else { return }
+            component.detach()
+        }
         let component = self.itemComponent(for: indexPath, with: cell)
         component.attach()
         return cell
-    }
-
-    public func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        let component = self.itemComponent(for: indexPath, with: cell)
-        component.detach()
     }
 
     public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -436,18 +427,15 @@ extension GridCollectionController: UICollectionViewDataSource, UICollectionView
 
         let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: supplementary.controller.computedViewIdentifier, for: indexPath) as! ItemReusableView
         view.nestedView = supplementary.controller.view(forSupplementary: supplementary, reusingView: view.nestedView)
+        view.didPrepareForReuse = { [weak self, unowned view] in
+            guard let component = self?.supplementaryComponent(ofCollectionViewKind: kind, inSection: indexPath.section, with: view) else { return }
+            component.detach()
+        }
         guard let component = self.supplementaryComponent(ofCollectionViewKind: kind, inSection: indexPath.section, with: view) else {
             return view
         }
         component.attach()
         return view
-    }
-
-    public func collectionView(_ collectionView: UICollectionView, didEndDisplayingSupplementaryView view: UICollectionReusableView, forElementOfKind elementKind: String, at indexPath: IndexPath) {
-        guard let component = self.supplementaryComponent(ofCollectionViewKind: elementKind, inSection: indexPath.section, with: view) else {
-            return
-        }
-        component.detach()
     }
 
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -494,6 +482,13 @@ public final class ItemViewCell: UICollectionViewCell {
             self.contentView.addAndConstrainView(view)
         }
     }
+
+    private var didPrepareForReuse: (() -> Void)?
+
+    override public func prepareForReuse() {
+        super.prepareForReuse()
+        self.didPrepareForReuse?()
+    }
 }
 
 public final class ItemReusableView: UICollectionReusableView {
@@ -519,6 +514,13 @@ public final class ItemReusableView: UICollectionReusableView {
             }
             self.addAndConstrainView(view)
         }
+    }
+
+    private var didPrepareForReuse: (() -> Void)?
+
+    override public func prepareForReuse() {
+        super.prepareForReuse()
+        self.didPrepareForReuse?()
     }
 }
 
