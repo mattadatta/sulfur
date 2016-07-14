@@ -22,7 +22,6 @@ public extension MutableCollection where
         self.indices.dropLast().forEach { index in
             let other = Int(arc4random_uniform(UInt32(self.count - index))) + index
             guard index != other else { return }
-
             swap(&self[other], &self[index])
         }
     }
@@ -41,7 +40,7 @@ public extension Collection where
     }
 
     public var randomElement: Self.Iterator.Element? {
-        guard self.isEmpty else { return nil }
+        guard !self.isEmpty else { return nil }
         return self[Int(arc4random_uniform(UInt32(self.count)))]
     }
     
