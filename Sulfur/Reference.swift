@@ -16,7 +16,7 @@ public struct StrongObjectReference: Hashable {
     }
 
     public var hashValue: Int {
-        return unsafeAddress(of: self.object).hashValue
+        return ObjectIdentifier(self.object).hashValue
     }
 }
 
@@ -43,10 +43,8 @@ public struct WeakReference<Referent where Referent: AnyObject>: Hashable {
     }
 
     public var hashValue: Int {
-        guard let referent = self.referent else {
-            return 0
-        }
-        return unsafeAddress(of: referent).hashValue
+        guard let referent = self.referent else { return 0 }
+        return ObjectIdentifier(referent).hashValue
     }
 }
 

@@ -48,11 +48,8 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
         }
 
         public var hashValue: Int {
-            var hash = self.x.hashValue
-            hash = hash &* 31 &+ self.y.hashValue
-            hash = hash &* 31 &+ self.width.hashValue
-            hash = hash &* 31 &+ self.height.hashValue
-            return hash
+            let parts: [HashablePart] = [self.x, self.y, self.width, self.height]
+            return parts.hashComponent
         }
     }
 
@@ -133,9 +130,8 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
         }
 
         public var hashValue: Int {
-            var hash = self.gridRect.hashValue
-            hash = hash &* 31 &+ self.insets.hashValue
-            return hash
+            let parts: [HashablePart] = [HashableWrapperPart(self.gridRect), HashableWrapperPart(self.insets)]
+            return parts.hashComponent
         }
     }
 
@@ -188,10 +184,8 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
         }
 
         public var hashValue: Int {
-            var hash = self.dimension.hashValue
-            hash = hash &* 31 &+ self.numUnits.hashValue
-            hash = hash &* 31 &+ self.spacingSize.hashValue
-            return hash
+            let parts: [HashablePart] = [HashableWrapperPart(self.dimension), HashableWrapperPart(self.numUnits), HashableWrapperPart(self.spacingSize)]
+            return parts.hashComponent
         }
     }
 
