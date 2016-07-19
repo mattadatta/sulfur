@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		01EE85079F4B3F78C93FEEA0 /* Pods_SulfurProject_SulfurTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A5CD92B27DEB986C3F943E7 /* Pods_SulfurProject_SulfurTests.framework */; };
 		3203E9EC1CEFBA9000D14253 /* ViewCellWrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3203E9EB1CEFBA9000D14253 /* ViewCellWrappers.swift */; };
 		32389E211CDFDCD1009475F6 /* Sulfur.h in Headers */ = {isa = PBXBuildFile; fileRef = 32389E201CDFDCD1009475F6 /* Sulfur.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		32389E281CDFDCD1009475F6 /* Sulfur.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32389E1D1CDFDCD1009475F6 /* Sulfur.framework */; };
@@ -38,8 +39,7 @@
 		32D04B101D31C0CB00EB8D5D /* GridCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D04B0F1D31C0CB00EB8D5D /* GridCollectionViewLayout.swift */; };
 		32D04B121D31C16200EB8D5D /* GridCollectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D04B111D31C16200EB8D5D /* GridCollectionController.swift */; };
 		32D450461D2A125B00637DE9 /* HierarchyPrinter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D450451D2A125B00637DE9 /* HierarchyPrinter.swift */; };
-		C4ADD0A249B30919490EAD71 /* Pods_SulfurTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33508068B01975F4BE987303 /* Pods_SulfurTests.framework */; };
-		FF5DF861D8622D5F35E67351 /* Pods_Sulfur.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 308DD552E6F1255043497577 /* Pods_Sulfur.framework */; };
+		70B04DE84F641312BA828F5E /* Pods_SulfurProject_Sulfur.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1318E88367628EEE396B8F5F /* Pods_SulfurProject_Sulfur.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,7 +53,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		308DD552E6F1255043497577 /* Pods_Sulfur.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Sulfur.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		06DB6704FEF6260CDC66CEB3 /* Pods-SulfurProject-SulfurTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SulfurProject-SulfurTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SulfurProject-SulfurTests/Pods-SulfurProject-SulfurTests.debug.xcconfig"; sourceTree = "<group>"; };
+		0A5CD92B27DEB986C3F943E7 /* Pods_SulfurProject_SulfurTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SulfurProject_SulfurTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1318E88367628EEE396B8F5F /* Pods_SulfurProject_Sulfur.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SulfurProject_Sulfur.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3203E9EB1CEFBA9000D14253 /* ViewCellWrappers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewCellWrappers.swift; sourceTree = "<group>"; };
 		32389E1D1CDFDCD1009475F6 /* Sulfur.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Sulfur.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		32389E201CDFDCD1009475F6 /* Sulfur.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sulfur.h; sourceTree = "<group>"; };
@@ -88,11 +90,9 @@
 		32D04B0F1D31C0CB00EB8D5D /* GridCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GridCollectionViewLayout.swift; sourceTree = "<group>"; };
 		32D04B111D31C16200EB8D5D /* GridCollectionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GridCollectionController.swift; sourceTree = "<group>"; };
 		32D450451D2A125B00637DE9 /* HierarchyPrinter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HierarchyPrinter.swift; sourceTree = "<group>"; };
-		33508068B01975F4BE987303 /* Pods_SulfurTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SulfurTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		4DEC0F1850456DF28C79858C /* Pods-Sulfur.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sulfur.release.xcconfig"; path = "Pods/Target Support Files/Pods-Sulfur/Pods-Sulfur.release.xcconfig"; sourceTree = "<group>"; };
-		5C8B141792ECACC3DEF93D64 /* Pods-SulfurTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SulfurTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SulfurTests/Pods-SulfurTests.debug.xcconfig"; sourceTree = "<group>"; };
-		B814FC28DB7F84A60643C807 /* Pods-Sulfur.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sulfur.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Sulfur/Pods-Sulfur.debug.xcconfig"; sourceTree = "<group>"; };
-		E1AD114E3DE424CFD6BD2661 /* Pods-SulfurTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SulfurTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SulfurTests/Pods-SulfurTests.release.xcconfig"; sourceTree = "<group>"; };
+		3BAB9CE4573403EFD4167EC1 /* Pods-SulfurProject-Sulfur.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SulfurProject-Sulfur.release.xcconfig"; path = "Pods/Target Support Files/Pods-SulfurProject-Sulfur/Pods-SulfurProject-Sulfur.release.xcconfig"; sourceTree = "<group>"; };
+		852F5F0279CABA8982B8C9DE /* Pods-SulfurProject-SulfurTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SulfurProject-SulfurTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SulfurProject-SulfurTests/Pods-SulfurProject-SulfurTests.release.xcconfig"; sourceTree = "<group>"; };
+		F35715E6B42CEA062D79B1A9 /* Pods-SulfurProject-Sulfur.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SulfurProject-Sulfur.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SulfurProject-Sulfur/Pods-SulfurProject-Sulfur.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,7 +100,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FF5DF861D8622D5F35E67351 /* Pods_Sulfur.framework in Frameworks */,
+				70B04DE84F641312BA828F5E /* Pods_SulfurProject_Sulfur.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -109,7 +109,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				32389E281CDFDCD1009475F6 /* Sulfur.framework in Frameworks */,
-				C4ADD0A249B30919490EAD71 /* Pods_SulfurTests.framework in Frameworks */,
+				01EE85079F4B3F78C93FEEA0 /* Pods_SulfurProject_SulfurTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -185,10 +185,10 @@
 		612E9712B5E47FF5C31ED817 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				B814FC28DB7F84A60643C807 /* Pods-Sulfur.debug.xcconfig */,
-				4DEC0F1850456DF28C79858C /* Pods-Sulfur.release.xcconfig */,
-				5C8B141792ECACC3DEF93D64 /* Pods-SulfurTests.debug.xcconfig */,
-				E1AD114E3DE424CFD6BD2661 /* Pods-SulfurTests.release.xcconfig */,
+				F35715E6B42CEA062D79B1A9 /* Pods-SulfurProject-Sulfur.debug.xcconfig */,
+				3BAB9CE4573403EFD4167EC1 /* Pods-SulfurProject-Sulfur.release.xcconfig */,
+				06DB6704FEF6260CDC66CEB3 /* Pods-SulfurProject-SulfurTests.debug.xcconfig */,
+				852F5F0279CABA8982B8C9DE /* Pods-SulfurProject-SulfurTests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -196,8 +196,8 @@
 		AF53F30F593A30CA13EE30D3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				308DD552E6F1255043497577 /* Pods_Sulfur.framework */,
-				33508068B01975F4BE987303 /* Pods_SulfurTests.framework */,
+				1318E88367628EEE396B8F5F /* Pods_SulfurProject_Sulfur.framework */,
+				0A5CD92B27DEB986C3F943E7 /* Pods_SulfurProject_SulfurTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -339,7 +339,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SulfurTests/Pods-SulfurTests-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SulfurProject-SulfurTests/Pods-SulfurProject-SulfurTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		73AE175C368CA23092D98555 /* [CP] Embed Pods Frameworks */ = {
@@ -354,7 +354,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SulfurTests/Pods-SulfurTests-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SulfurProject-SulfurTests/Pods-SulfurProject-SulfurTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A364AFE82D028623836A14FD /* [CP] Check Pods Manifest.lock */ = {
@@ -384,7 +384,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Sulfur/Pods-Sulfur-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SulfurProject-Sulfur/Pods-SulfurProject-Sulfur-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		F7FA6C1E8488BFE05CB2F2D6 /* [CP] Check Pods Manifest.lock */ = {
@@ -551,7 +551,7 @@
 		};
 		32389E321CDFDCD1009475F6 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B814FC28DB7F84A60643C807 /* Pods-Sulfur.debug.xcconfig */;
+			baseConfigurationReference = F35715E6B42CEA062D79B1A9 /* Pods-SulfurProject-Sulfur.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
@@ -571,7 +571,7 @@
 		};
 		32389E331CDFDCD1009475F6 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4DEC0F1850456DF28C79858C /* Pods-Sulfur.release.xcconfig */;
+			baseConfigurationReference = 3BAB9CE4573403EFD4167EC1 /* Pods-SulfurProject-Sulfur.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
@@ -590,7 +590,7 @@
 		};
 		32389E351CDFDCD1009475F6 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5C8B141792ECACC3DEF93D64 /* Pods-SulfurTests.debug.xcconfig */;
+			baseConfigurationReference = 06DB6704FEF6260CDC66CEB3 /* Pods-SulfurProject-SulfurTests.debug.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = SulfurTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -601,7 +601,7 @@
 		};
 		32389E361CDFDCD1009475F6 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E1AD114E3DE424CFD6BD2661 /* Pods-SulfurTests.release.xcconfig */;
+			baseConfigurationReference = 852F5F0279CABA8982B8C9DE /* Pods-SulfurProject-SulfurTests.release.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = SulfurTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";

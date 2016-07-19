@@ -4,11 +4,12 @@ use_frameworks!
 project 'Sulfur.xcodeproj'
 workspace 'Sulfur'
 
-target 'Sulfur' do
+abstract_target 'SulfurProject' do
   pod 'Cartography', '~> 0.6'
   pod 'XCGLogger', '~> 3.3'
 
+  target 'Sulfur' do
+  end
   target 'SulfurTests' do
-    inherit! :search_paths
   end
 end
