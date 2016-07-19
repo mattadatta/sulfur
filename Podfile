@@ -4,12 +4,13 @@ use_frameworks!
 project 'Sulfur.xcodeproj'
 workspace 'Sulfur'
 
-target 'Sulfur' do
+abstract_target 'SulfurProject' do
   pod 'Cartography', :git => 'https://github.com/mattadatta/Cartography.git', :branch => 'feature/swift-3'
   pod 'XCGLogger', :git => 'https://github.com/mattadatta/XCGLogger.git', :branch => 'feature/swift-3'
 
+  target 'Sulfur' do
+  end
   target 'SulfurTests' do
-    inherit! :search_paths
   end
 end
 
