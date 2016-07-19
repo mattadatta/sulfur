@@ -24,8 +24,10 @@ public final class GridCollectionController: NSObject {
         }
 
         public var hashValue: Int {
-            let parts: [HashablePart] = [self.section, HashableWrapperPart(self.rect)]
-            return parts.hashComponent
+            return Hasher()
+                .adding(part: self.section)
+                .adding(hashable: self.rect)
+                .hashValue
         }
     }
 
@@ -66,8 +68,10 @@ public final class GridCollectionController: NSObject {
         }
 
         public var hashValue: Int {
-            let parts: [HashablePart] = [self.section, HashableWrapperPart(self.kind)]
-            return parts.hashComponent
+            return Hasher()
+                .adding(part: self.section)
+                .adding(hashable: self.kind)
+                .hashValue
         }
     }
 

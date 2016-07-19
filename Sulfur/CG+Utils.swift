@@ -188,22 +188,30 @@ public extension CGRect {
 extension CGPoint: Hashable {
 
     public var hashValue: Int {
-        return [self.x, self.y].hashComponent
+        return Hasher()
+            .adding(part: self.x)
+            .adding(part: self.y)
+            .hashValue
     }
 }
 
 extension CGSize: Hashable {
 
     public var hashValue: Int {
-        return [self.width, self.height].hashComponent
+        return Hasher()
+            .adding(part: self.width)
+            .adding(part: self.height)
+            .hashValue
     }
 }
 
 extension CGRect: Hashable {
 
     public var hashValue: Int {
-        let parts: [HashablePart] = [HashableWrapperPart(self.origin), HashableWrapperPart(self.size)]
-        return parts.hashComponent
+        return Hasher()
+            .adding(hashable: self.origin)
+            .adding(hashable: self.size)
+            .hashValue
     }
 }
 

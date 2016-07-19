@@ -98,8 +98,10 @@ struct Gradient {
 extension Gradient.Stop: Hashable {
 
     var hashValue: Int {
-        let parts: [HashablePart] = [HashableWrapperPart(self.color), self.percent]
-        return parts.hashComponent
+        return Hasher()
+            .adding(hashable: self.color)
+            .adding(part: self.percent)
+            .hashValue
     }
 }
 

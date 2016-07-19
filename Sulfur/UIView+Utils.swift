@@ -28,7 +28,12 @@ public extension UIEdgeInsets {
 extension UIEdgeInsets: Hashable {
 
     public var hashValue: Int {
-        return [self.left, self.top, self.right, self.bottom].hashComponent
+        return Hasher()
+            .adding(part: self.left)
+            .adding(part: self.top)
+            .adding(part: self.right)
+            .adding(part: self.bottom)
+            .hashValue
     }
 }
 
