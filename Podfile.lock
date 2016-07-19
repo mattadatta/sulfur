@@ -16,16 +16,16 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   Cartography:
-    :commit: dc1731ea64a6e874a2fb73e1b60ff30a1d53fafb
+    :commit: 56e6059235ccfa0c9bdd59269c9bc3c1b76664e4
     :git: https://github.com/mattadatta/Cartography.git
   XCGLogger:
-    :commit: 0bea7f66a76662672c0d83fada96057c02ba3eec
+    :commit: 4b783975156afc2df80c3429d6d1ed26dc475f04
     :git: https://github.com/mattadatta/XCGLogger.git
 
 SPEC CHECKSUMS:
   Cartography: de3e85d2fc2d7288a2e7c89e1ac6cad08599d75e
   XCGLogger: d6e196e78940ff6daab17d6917107876f973fa31
 
-PODFILE CHECKSUM: 138880aa3f2983f8052d1bc23259c2bf87a4b109
+PODFILE CHECKSUM: c80c6389b8a3ca3fbc7f40b59fa3621a60590a44
 
 COCOAPODS: 1.0.1

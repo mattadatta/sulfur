@@ -95,7 +95,7 @@ public final class Context {
     }
 
     private func setupContextAwareIfNecessary(_ obj: Any) {
-        guard let contextAware = obj as? ContextAware where contextAware.contextToken == nil else {
+        guard let contextAware = obj as? ContextAware, contextAware.contextToken == nil else {
             return
         }
 
@@ -239,7 +239,7 @@ public protocol ContextPreloadable {
 extension UIViewController: ContextPreloadable {
 
     public func contextPreload() {
-        guard let contextAware = self as? ContextAware where contextAware.contextToken == nil else { return }
+        guard let contextAware = self as? ContextAware, contextAware.contextToken == nil else { return }
         self.loadViewIfNeeded()
     }
 }
@@ -247,7 +247,7 @@ extension UIViewController: ContextPreloadable {
 extension UIView: ContextPreloadable {
 
     public func contextPreload() {
-        guard let contextAware = self as? ContextAware where contextAware.contextToken == nil else { return }
+        guard let contextAware = self as? ContextAware, contextAware.contextToken == nil else { return }
         guard let inflatable = self as? UINibViewInflatable else { return }
         let view = inflatable.inflateView()
         self.addAndConstrainView(view)
