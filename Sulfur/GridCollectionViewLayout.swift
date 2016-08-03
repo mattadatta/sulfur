@@ -192,7 +192,7 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
         public var hashValue: Int {
             return Hasher()
                 .adding(hashable: self.dimension)
-                .adding(hashable: self.numUnits)
+                .adding(part: self.numUnits)
                 .adding(hashable: self.spacingSize)
                 .hashValue
         }
