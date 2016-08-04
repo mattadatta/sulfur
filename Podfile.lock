@@ -19,13 +19,13 @@ CHECKOUT OPTIONS:
     :commit: 56e6059235ccfa0c9bdd59269c9bc3c1b76664e4
     :git: https://github.com/mattadatta/Cartography.git
   XCGLogger:
-    :commit: 4b783975156afc2df80c3429d6d1ed26dc475f04
+    :commit: 15b41b3542ecaedb2d54d9a41313a66f20979814
     :git: https://github.com/mattadatta/XCGLogger.git
 
 SPEC CHECKSUMS:
   Cartography: de3e85d2fc2d7288a2e7c89e1ac6cad08599d75e
   XCGLogger: d6e196e78940ff6daab17d6917107876f973fa31
 
-PODFILE CHECKSUM: 17b79a145e7fbe5458bf8e1499789df178bd4342
+PODFILE CHECKSUM: fce60b11e45ab87e6e8e13faebf5828435144756
 
 COCOAPODS: 1.0.1

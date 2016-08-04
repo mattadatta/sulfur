@@ -47,16 +47,16 @@ public extension UIView {
     } }
 
     public static func edgeInsetsZeroBlock() -> (LayoutProxy, LayoutProxy) -> Void {
-        return self.edgeInsetsBlock(UIEdgeInsetsZero)
+        return self.edgeInsetsBlock(.zero)
     }
 
     @discardableResult
-    public func constrainView(_ view: UIView, withInsets insets: UIEdgeInsets = UIEdgeInsetsZero) -> ConstraintGroup {
+    public func constrainView(_ view: UIView, withInsets insets: UIEdgeInsets = .zero) -> ConstraintGroup {
         return constrain(self, view, block: UIView.edgeInsetsBlock(insets))
     }
 
     @discardableResult
-    public func addAndConstrainView(_ view: UIView, withInsets insets: UIEdgeInsets = UIEdgeInsetsZero) -> ConstraintGroup {
+    public func addAndConstrainView(_ view: UIView, withInsets insets: UIEdgeInsets = .zero) -> ConstraintGroup {
         view.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(view)
         return self.constrainView(view, withInsets: insets)

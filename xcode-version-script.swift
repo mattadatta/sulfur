@@ -68,7 +68,7 @@ guard let versionStartIndex = branchName.range(of: "/")?.upperBound else {
 
 let versionNumberString = branchName.substring(from: versionStartIndex)
 let versionNumberPattern = "^\\d+(\\.\\d+)*$"
-guard (try! RegularExpression(pattern: versionNumberPattern, options: [])).numberOfMatches(in: versionNumberString, options: [], range: NSRange(location: 0, length: versionNumberString.characters.count)) > 0 else {
+guard (try! NSRegularExpression(pattern: versionNumberPattern, options: [])).numberOfMatches(in: versionNumberString, options: [], range: NSRange(location: 0, length: versionNumberString.characters.count)) > 0 else {
     print("Version number should match regex pattern \"\(versionNumberPattern)\".")
     exit(1)
 }

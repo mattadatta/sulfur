@@ -128,7 +128,7 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
             self.init(gridRect: GridRect())
         }
 
-        public init(gridRect: GridRect, insets: UIEdgeInsets = UIEdgeInsetsZero) {
+        public init(gridRect: GridRect, insets: UIEdgeInsets = .zero) {
             self.gridRect = gridRect
             self.insets = insets
         }
@@ -152,7 +152,7 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
             self.init(lengthFn: { _ in return 0 })
         }
 
-        public init(lengthFn: (CGFloat) -> CGFloat, insets: UIEdgeInsets = UIEdgeInsetsZero) {
+        public init(lengthFn: (CGFloat) -> CGFloat, insets: UIEdgeInsets = .zero) {
             self.lengthFn = lengthFn
             self.insets = insets
         }
@@ -234,7 +234,7 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
         }
     }
 
-    public var sectionInsets: UIEdgeInsets = UIEdgeInsetsZero {
+    public var sectionInsets: UIEdgeInsets = .zero {
         didSet {
             guard self.sectionInsets != oldValue else { return }
             self.invalidateLayout()
@@ -248,8 +248,8 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
         }
     }
 
-    public private(set) var cellSize: CGSize = CGSize.zero
-    public private(set) var spacingSize: CGSize = CGSize.zero
+    public private(set) var cellSize: CGSize = .zero
+    public private(set) var spacingSize: CGSize = .zero
     public private(set) var numUnits: Int = 0
 
     private var layoutAttrs: [LayoutAttributes] = []
@@ -261,7 +261,7 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
 
     // MARK: UICollectionViewLayout overrides
 
-    override public class func layoutAttributesClass() -> AnyClass {
+    override public class var layoutAttributesClass: AnyClass {
         return LayoutAttributes.self
     }
 
@@ -328,7 +328,7 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
 
         var cumulativeLength: CGFloat = 0.0
 
-        let numberOfSections = collectionView.numberOfSections()
+        let numberOfSections = collectionView.numberOfSections
         (0..<numberOfSections).forEach { section in
             let sectionIndexPath = IndexPath(item: 0, section: section)
 
@@ -433,7 +433,7 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
         }
     }
 
-    override public func collectionViewContentSize() -> CGSize {
+    override public var collectionViewContentSize: CGSize {
         return self.contentSize
     }
 

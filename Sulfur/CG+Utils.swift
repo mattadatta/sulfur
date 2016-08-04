@@ -299,7 +299,7 @@ public extension CGRect {
 public extension CGRect {
 
     public func rectForTransform(_ transform: CGAffineTransform) -> CGRect {
-        return self.apply(transform: transform)
+        return self.applying(transform)
     }
 
     public mutating func applyTransform(_ transform: CGAffineTransform) {

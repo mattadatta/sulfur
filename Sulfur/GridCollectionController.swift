@@ -82,7 +82,7 @@ public final class GridCollectionController: NSObject {
         public var controller: ItemController
         public var data: Any?
 
-        public init(section: Int = 0, rect: GridRect, insets: UIEdgeInsets = UIEdgeInsetsZero, controller: ItemController, data: Any? = nil) {
+        public init(section: Int = 0, rect: GridRect, insets: UIEdgeInsets = .zero, controller: ItemController, data: Any? = nil) {
             self.index = ItemIndex(section: section, rect: rect)
             self.insets = insets
             self.controller = controller
@@ -285,7 +285,7 @@ public final class GridCollectionController: NSObject {
     }
 
     public func visibleItemComponents() -> [Component] {
-        return self.collectionView.indexPathsForVisibleItems().map({ self.itemComponent(for: $0)! })
+        return self.collectionView.indexPathsForVisibleItems.map({ self.itemComponent(for: $0)! })
     }
 
     public func visibleSupplementaryComponents(of kind: SupplementaryIndex.Kind) -> [Component] {

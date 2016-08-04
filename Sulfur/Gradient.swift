@@ -12,8 +12,8 @@ struct Gradient {
     private struct Constants {
 
         static let defaultColors = [
-            Stop(color: UIColor.black(), percent: 0.0),
-            Stop(color: UIColor.white(), percent: 1.0),
+            Stop(color: .black, percent: 0.0),
+            Stop(color: .white, percent: 1.0),
         ]
     }
 
@@ -34,7 +34,7 @@ struct Gradient {
                 log.warning("Number of stops must be > 1. Got \(self.stops.count)")
                 self.stops = Constants.defaultColors
             }
-            self.stops.sort(isOrderedBefore: { $0.percent <= $1.percent })
+            self.stops.sort(by: { $0.percent <= $1.percent })
         }
     }
 

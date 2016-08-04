@@ -14,7 +14,7 @@ abstract_target 'SulfurProject' do
   end
 end
 
-# Xcode 8 beta 3
+# Xcode 8 beta 4
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|

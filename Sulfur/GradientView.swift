@@ -9,7 +9,7 @@ public final class GradientView: UIView {
 
     public typealias GradientData = (x: Double, y: Double, color: UIColor)
 
-    override public class func layerClass() -> AnyClass {
+    override public class var layerClass: AnyClass {
         return CAGradientLayer.self
     }
 
@@ -17,13 +17,13 @@ public final class GradientView: UIView {
         return self.layer as! CAGradientLayer
     }
 
-    public var startData: GradientData = (0.5, 0.0, UIColor.white()) {
+    public var startData: GradientData = (0.5, 0.0, .white) {
         didSet {
             self.updateGradient()
         }
     }
 
-    public var endData: GradientData = (0.5, 1.0, UIColor.black()) {
+    public var endData: GradientData = (0.5, 1.0, .black) {
         didSet {
             self.updateGradient()
         }
@@ -62,13 +62,13 @@ public final class TwoPointGradientLayer: CAGradientLayer {
 
     public typealias GradientData = (x: Double, y: Double, color: UIColor)
 
-    public var startData: GradientData = (0.5, 0.0, UIColor.white()) {
+    public var startData: GradientData = (0.5, 0.0, .white) {
         didSet {
             self.updateGradient()
         }
     }
 
-    public var endData: GradientData = (0.5, 1.0, UIColor.black()) {
+    public var endData: GradientData = (0.5, 1.0, .black) {
         didSet {
             self.updateGradient()
         }
