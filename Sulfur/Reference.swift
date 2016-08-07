@@ -5,25 +5,6 @@
 
 import Foundation
 
-// MARK: - StrongObjectReference
-
-public struct StrongObjectReference: Hashable {
-
-    public let object: AnyObject
-
-    public init(_ object: AnyObject) {
-        self.object = object
-    }
-
-    public var hashValue: Int {
-        return ObjectIdentifier(self.object).hashValue
-    }
-}
-
-public func == (lhs: StrongObjectReference, rhs: StrongObjectReference) -> Bool {
-    return lhs.object === rhs.object
-}
-
 // MARK: - WeakReference
 
 public struct WeakReference<Referent where Referent: AnyObject>: Hashable {
@@ -46,8 +27,15 @@ public struct WeakReference<Referent where Referent: AnyObject>: Hashable {
         guard let referent = self.referent else { return 0 }
         return ObjectIdentifier(referent).hashValue
     }
-}
 
-public func == <Referent>(lhs: WeakReference<Referent>, rhs: WeakReference<Referent>) -> Bool {
-    return lhs.referent === rhs.referent
+    public static func == <Referent>(lhs: WeakReference<Referent>, rhs: WeakReference<Referent>) -> Bool {
+        switch (lhs.referent, rhs.referent) {
+        case (.none, .none):
+            return true
+        case (.some(let lhs), .some(let rhs)):
+            return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
+        default:
+            return false
+        }
+    }
 }

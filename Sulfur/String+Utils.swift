@@ -16,9 +16,7 @@ public extension String {
     }
 
     public var nilIfBlank: String? {
-        guard !self.isBlank else {
-            return nil
-        }
+        guard !self.isBlank else { return nil }
         return self
     }
 }

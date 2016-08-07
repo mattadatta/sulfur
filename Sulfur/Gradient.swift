@@ -9,7 +9,7 @@ import UIKit
 
 struct Gradient {
 
-    private struct Constants {
+    private enum Constants {
 
         static let defaultColors = [
             Stop(color: .black, percent: 0.0),
@@ -17,7 +17,7 @@ struct Gradient {
         ]
     }
 
-    struct Stop {
+    struct Stop: Hashable {
 
         var color: UIColor
         var percent: Double
@@ -26,12 +26,23 @@ struct Gradient {
             self.color = color
             self.percent = max(0.0, min(1.0, percent))
         }
+
+        var hashValue: Int {
+            return Hasher()
+                .adding(hashable: self.color)
+                .adding(part: self.percent)
+                .hashValue
+        }
+
+        static func == (lhs: Stop, rhs: Stop) -> Bool {
+            return lhs.color == rhs.color && lhs.percent == rhs.percent
+        }
     }
 
     var stops: [Stop] {
         didSet {
             if self.stops.count < 2 {
-                log.warning("Number of stops must be > 1. Got \(self.stops.count)")
+                SulfurSDK.log.warning("Number of stops must be > 1. Got \(self.stops.count)")
                 self.stops = Constants.defaultColors
             }
             self.stops.sort(by: { $0.percent <= $1.percent })
@@ -44,7 +55,7 @@ struct Gradient {
         }
         set {
             guard newValue.count > 1 else {
-                log.warning("Number of colors must be > 1. Got \(self.stops.count)")
+                SulfurSDK.log.warning("Number of colors must be > 1. Got \(self.stops.count)")
                 self.stops = Constants.defaultColors
                 return
             }
@@ -93,18 +104,4 @@ struct Gradient {
 
         return UIColor(red: resultRed, green: resultGreen, blue: resultBlue, alpha: resultAlpha)
     }
-}
-
-extension Gradient.Stop: Hashable {
-
-    var hashValue: Int {
-        return Hasher()
-            .adding(hashable: self.color)
-            .adding(part: self.percent)
-            .hashValue
-    }
-}
-
-func == (lhs: Gradient.Stop, rhs: Gradient.Stop) -> Bool {
-    return lhs.color == rhs.color && lhs.percent == rhs.percent
 }

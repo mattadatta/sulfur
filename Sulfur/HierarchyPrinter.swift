@@ -67,7 +67,7 @@ public struct ViewNodeInspector: NodeInspector {
 
 public extension UIView {
 
-    var hierarchyString: String {
+    public var hierarchyString: String {
         return HierarchyPrinter(root: self, inspector: ViewNodeInspector()).hierarchyString
     }
 }

@@ -8,9 +8,7 @@ import UIKit
 public final class CancelableScrollView: UIScrollView {
 
     override public func touchesShouldCancel(in view: UIView) -> Bool {
-        if view is UIButton {
-            return true
-        }
-        return super.touchesShouldCancel(in: view)
+        guard view is UIButton else { return super.touchesShouldCancel(in: view) }
+        return true
     }
 }

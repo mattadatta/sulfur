@@ -22,12 +22,22 @@ public struct Hasher: Hashable {
                 return hash
             }
         }
+
+        static func == (lhs: State, rhs: State) -> Bool {
+            switch (lhs, rhs) {
+            case (.initial, .initial):
+                return true
+            case (.computed(let lhs), .computed(let rhs)):
+                return lhs == rhs
+            default:
+                return false
+            }
+        }
     }
 
     private var state: State = .initial
 
-    public init() {
-    }
+    public init() {}
 
     private mutating func hash(value: Int) {
         switch self.state {
@@ -72,24 +82,15 @@ public struct Hasher: Hashable {
         return hasher
     }
 
+    // MARK: Hashable conformance
+
     public var hashValue: Int {
         return self.state.hashValue
     }
-}
 
-private func == (lhs: Hasher.State, rhs: Hasher.State) -> Bool {
-    switch (lhs, rhs) {
-    case (.initial, .initial):
-        return true
-    case (.computed(let lhs), .computed(let rhs)):
-        return lhs == rhs
-    default:
-        return false
+    public static func == (lhs: Hasher, rhs: Hasher) -> Bool {
+        return lhs.state == rhs.state
     }
-}
-
-public func == (lhs: Hasher, rhs: Hasher) -> Bool {
-    return lhs.state == rhs.state
 }
 
 // MARK: - HashablePart

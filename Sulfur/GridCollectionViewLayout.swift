@@ -47,6 +47,8 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
             self.height = height
         }
 
+        // MARK: Hashable conformance
+
         public var hashValue: Int {
             return Hasher()
                 .adding(part: self.x)
@@ -54,6 +56,10 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
                 .adding(part: self.width)
                 .adding(part: self.height)
                 .hashValue
+        }
+
+        public static func == (lhs: GridRect, rhs: GridRect) -> Bool {
+            return lhs.x == rhs.x && lhs.y == rhs.y && lhs.width == rhs.width && lhs.height == rhs.height
         }
     }
 
@@ -66,12 +72,25 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
             case item(ItemProperties)
             case supplementary(String, SupplementaryProperties)
 
+            // MARK: Hashable conformance
+
             public var hashValue: Int {
                 switch self {
                 case .item(let properties):
                     return properties.hashValue
                 case .supplementary(let kind, _):
                     return kind.hashValue
+                }
+            }
+
+            public static func == (lhs: Kind, rhs: Kind) -> Bool {
+                switch (lhs, rhs) {
+                case (.item(let lhs), .item(let rhs)):
+                    return lhs == rhs
+                case (.supplementary(let lhs, _), .supplementary(let rhs, _)):
+                    return lhs == rhs
+                default:
+                    return false
                 }
             }
         }
@@ -133,11 +152,17 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
             self.insets = insets
         }
 
+        // MARK: Hashable conformance
+
         public var hashValue: Int {
             return Hasher()
                 .adding(hashable: self.gridRect)
                 .adding(hashable: self.insets)
                 .hashValue
+        }
+
+        public static func == (lhs: ItemProperties, rhs: ItemProperties) -> Bool {
+            return lhs.gridRect == rhs.gridRect && lhs.insets == rhs.insets
         }
     }
 
@@ -189,12 +214,18 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
             self.oppositeSideFn = oppositeSideFn
         }
 
+        // MARK: Hashable conformance
+
         public var hashValue: Int {
             return Hasher()
                 .adding(hashable: self.dimension)
                 .adding(part: self.numUnits)
                 .adding(hashable: self.spacingSize)
                 .hashValue
+        }
+
+        public static func == (lhs: UnitInformation, rhs: UnitInformation) -> Bool {
+            return lhs.dimension == rhs.dimension && lhs.numUnits == rhs.numUnits && lhs.spacingSize == rhs.spacingSize
         }
     }
 
@@ -208,8 +239,14 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
             self.oppositeDimensionSpacingFn = oppositeDimensionSpacingFn
         }
 
+        // MARK: Hashable conformance
+
         public var hashValue: Int {
             return self.cellSize.hashValue
+        }
+
+        public static func == (lhs: CellSizeInformation, rhs: CellSizeInformation) -> Bool {
+            return lhs.cellSize == rhs.cellSize
         }
     }
 
@@ -218,12 +255,25 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
         case units(UnitInformation)
         case cellSize(CellSizeInformation)
 
+        // MARK: Hashable conformance
+
         public var hashValue: Int {
             switch self {
             case .units(let info):
                 return info.hashValue
             case .cellSize(let info):
                 return info.hashValue
+            }
+        }
+
+        public static func == (lhs: GridComputation, rhs: GridComputation) -> Bool {
+            switch (lhs, rhs) {
+            case (.units(let lhs), .units(let rhs)):
+                return lhs == rhs
+            case (.cellSize(let lhs), .cellSize(let rhs)):
+                return lhs == rhs
+            default:
+                return false
             }
         }
     }
@@ -455,146 +505,13 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
             fatalError("Unkown element kind: \(elementKind)")
         }
     }
-
-//    public var gridSnapping = true
-//
-//    override public func targetContentOffsetForProposedContentOffset(proposedContentOffset: CGPoint, withScrollingVelocity velocity: CGPoint) -> CGPoint {
-//        guard let collectionView = self.collectionView where self.gridSnapping else {
-//            return proposedContentOffset
-//        }
-//
-//        let contentInset: CGFloat
-//        let contentOffset: CGFloat
-//        let contentSize: CGFloat
-//        let boundsSize: CGFloat
-//        let sectionStartLength: CGFloat
-//        let sectionEndLength: CGFloat
-//        switch self.direction {
-//        case .Vertical:
-//            contentInset = collectionView.contentInset.top
-//            contentOffset = proposedContentOffset.y
-//            contentSize = self.contentSize.height
-//            boundsSize = collectionView.bounds.height
-//            sectionStartLength = self.sectionInsets.top
-//            sectionEndLength = self.sectionInsets.bottom
-//        case .Horizontal:
-//            contentInset = collectionView.contentInset.left
-//            contentOffset = proposedContentOffset.x
-//            contentSize = self.contentSize.width
-//            boundsSize = collectionView.bounds.width
-//            sectionStartLength = self.sectionInsets.left
-//            sectionEndLength = self.sectionInsets.right
-//        }
-//
-//        var cumulatedOffset: CGFloat = 0.0
-//        var minDistance: CGFloat = CGFloat.max
-//        var finalOffset: CGFloat = 0.0
-//        for (headerLength, contentLength, footerLength) in self.contentOffsets {
-//            // HEADER
-//            if headerLength > 0 {
-//                let headerDistance = contentOffset - cumulatedOffset
-//                if (abs(headerDistance) < minDistance) {
-//                    minDistance = abs(headerDistance)
-//                } else {
-//                    break
-//                }
-//
-//                finalOffset = cumulatedOffset
-//                cumulatedOffset += (headerLength + sectionStartLength)
-//            }
-//
-//            // CONTENT
-//            let numCells = Int(round(contentLength - ((self.dimensionAndUnits.units - 1) * self.itemSpacing)) / self.cellDimension)
-//            var itemFound = false
-//            let cellRange = (0..<numCells)
-//            for i in cellRange {
-//                let itemDistance = contentOffset - cumulatedOffset
-//                if (abs(itemDistance) < minDistance) {
-//                    minDistance = abs(itemDistance)
-//                } else {
-//                    itemFound = true
-//                    break
-//                }
-//
-//                finalOffset = cumulatedOffset
-//                cumulatedOffset += self.cellDimension
-//                if i < cellRange.count - 1 {
-//                    cumulatedOffset += self.itemSpacing
-//                }
-//            }
-//            if itemFound {
-//                break
-//            }
-//
-//            if footerLength > 0 {
-//                cumulatedOffset += sectionEndLength
-//
-//                // FOOTER
-//                let footerDistance = contentOffset - cumulatedOffset
-//                if (abs(footerDistance) < minDistance) {
-//                    minDistance = abs(footerDistance)
-//                } else {
-//                    break
-//                }
-//
-//                finalOffset = cumulatedOffset
-//            }
-//        }
-//
-//        finalOffset = min(finalOffset, contentSize - boundsSize)
-//        finalOffset -= contentInset
-//
-//        switch self.direction {
-//        case .Vertical:
-//            return CGPoint(x: 0.0, y: finalOffset)
-//        case .Horizontal:
-//            return CGPoint(x: finalOffset, y: 0.0)
-//        }
-//    }
 }
 
 // MARK: - GridCellCollectionViewLayoutDelegate
 
 public protocol GridCollectionViewLayoutDelegate: class {
-
+    
     func gridCollectionViewLayout(_ layout: GridCollectionViewLayout, propertiesFor indexPath: IndexPath) -> GridCollectionViewLayout.ItemProperties
     func gridCollectionViewLayout(_ layout: GridCollectionViewLayout, propertiesForHeaderInSection section: Int) -> GridCollectionViewLayout.SupplementaryProperties?
     func gridCollectionViewLayout(_ layout: GridCollectionViewLayout, propertiesForFooterInSection section: Int) -> GridCollectionViewLayout.SupplementaryProperties?
-}
-public func == (lhs: GridCollectionViewLayout.GridRect, rhs: GridCollectionViewLayout.GridRect) -> Bool {
-    return lhs.x == rhs.x && lhs.y == rhs.y && lhs.width == rhs.width && lhs.height == rhs.height
-}
-
-public func == (lhs: GridCollectionViewLayout.ItemProperties, rhs: GridCollectionViewLayout.ItemProperties) -> Bool {
-    return lhs.gridRect == rhs.gridRect && lhs.insets == rhs.insets
-}
-
-public func == (lhs: GridCollectionViewLayout.UnitInformation, rhs: GridCollectionViewLayout.UnitInformation) -> Bool {
-    return lhs.dimension == rhs.dimension && lhs.numUnits == rhs.numUnits && lhs.spacingSize == rhs.spacingSize
-}
-
-public func == (lhs: GridCollectionViewLayout.CellSizeInformation, rhs: GridCollectionViewLayout.CellSizeInformation) -> Bool {
-    return lhs.cellSize == rhs.cellSize
-}
-
-public func == (lhs: GridCollectionViewLayout.GridComputation, rhs: GridCollectionViewLayout.GridComputation) -> Bool {
-    switch (lhs, rhs) {
-    case (.units(let lhs), .units(let rhs)):
-        return lhs == rhs
-    case (.cellSize(let lhs), .cellSize(let rhs)):
-        return lhs == rhs
-    default:
-        return false
-    }
-}
-
-public func == (lhs: GridCollectionViewLayout.LayoutAttributes.Kind, rhs: GridCollectionViewLayout.LayoutAttributes.Kind) -> Bool {
-    switch (lhs, rhs) {
-    case (.item(let lhs), .item(let rhs)):
-        return lhs == rhs
-    case (.supplementary(let lhs, _), .supplementary(let rhs, _)):
-        return lhs == rhs
-    default:
-        return false
-    }
 }
