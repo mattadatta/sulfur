@@ -23,11 +23,17 @@ public final class GridCollectionController: NSObject {
             self.rect = rect
         }
 
+        // MARK: Hashable conformance
+
         public var hashValue: Int {
             return Hasher()
                 .adding(part: self.section)
                 .adding(hashable: self.rect)
                 .hashValue
+        }
+
+        public static func == (lhs: ItemIndex, rhs: ItemIndex) -> Bool {
+            return lhs.section == rhs.section && lhs.rect == rhs.rect
         }
     }
 
@@ -67,11 +73,17 @@ public final class GridCollectionController: NSObject {
             self.kind = kind
         }
 
+        // MARK: Hashable conformance
+
         public var hashValue: Int {
             return Hasher()
                 .adding(part: self.section)
                 .adding(hashable: self.kind)
                 .hashValue
+        }
+
+        public static func == (lhs: SupplementaryIndex, rhs: SupplementaryIndex) -> Bool {
+            return lhs.section == rhs.section && lhs.kind == rhs.kind
         }
     }
 
@@ -89,8 +101,14 @@ public final class GridCollectionController: NSObject {
             self.data = data
         }
 
+        // MARK: Hashable conformance
+
         public var hashValue: Int {
             return self.index.hashValue
+        }
+
+        public static func == (lhs: Item, rhs: Item) -> Bool {
+            return lhs.index == rhs.index
         }
     }
 
@@ -108,8 +126,14 @@ public final class GridCollectionController: NSObject {
             self.data = data
         }
 
+        // MARK: Hashable conformance
+
         public var hashValue: Int {
             return self.index.hashValue
+        }
+
+        public static func == (lhs: Supplementary, rhs: Supplementary) -> Bool {
+            return lhs.index == rhs.index
         }
     }
 
@@ -120,12 +144,25 @@ public final class GridCollectionController: NSObject {
             case item(GridCollectionController.Item, ItemViewCell)
             case supplementary(GridCollectionController.Supplementary, ItemReusableView)
 
+            // MARK: Hashable conformance
+
             public var hashValue: Int {
                 switch self {
                 case .item(let item, _):
                     return item.hashValue
                 case .supplementary(let supplementary, _):
                     return supplementary.hashValue
+                }
+            }
+
+            public static func == (lhs: Kind, rhs: Kind) -> Bool {
+                switch (lhs, rhs) {
+                case (.item(let lhs, _), .item(let rhs, _)):
+                    return lhs == rhs
+                case (.supplementary(let lhs, _), .supplementary(let rhs, _)):
+                    return lhs == rhs
+                default:
+                    return false
                 }
             }
         }
@@ -141,10 +178,6 @@ public final class GridCollectionController: NSObject {
         public init(supplementary: Supplementary, itemReusableView: ItemReusableView) {
             self.kind = .supplementary(supplementary, itemReusableView)
             self.view = itemReusableView.nestedView
-        }
-
-        public var hashValue: Int {
-            return self.kind.hashValue
         }
 
         public func attach() {
@@ -189,6 +222,16 @@ public final class GridCollectionController: NSObject {
 
         public var supplementary: Supplementary? {
             return self.supplementaryAndView?.supplementary
+        }
+
+        // MARK: Hashable conformance
+
+        public var hashValue: Int {
+            return self.kind.hashValue
+        }
+
+        public static func == (lhs: Component, rhs: Component) -> Bool {
+            return lhs.kind == rhs.kind
         }
     }
 
@@ -312,9 +355,8 @@ public final class GridCollectionController: NSObject {
     }
 
     private func supplementaryComponent(of kind: SupplementaryIndex.Kind, for indexPath: IndexPath) -> Component? {
-        // Uhh?
-        let view = self.collectionView.supplementaryView(forElementKind: kind.collectionViewKind, at: indexPath)
-        return self.supplementaryComponent(of: kind, inSection: indexPath.section, with: view!)
+        guard let view = self.collectionView.supplementaryView(forElementKind: kind.collectionViewKind, at: indexPath) else { return nil }
+        return self.supplementaryComponent(of: kind, inSection: indexPath.section, with: view)
     }
 
     private func itemComponent(for indexPath: IndexPath, with cell: UICollectionViewCell) -> Component {
@@ -352,49 +394,11 @@ public final class GridCollectionController: NSObject {
     }
 }
 
-public func == (lhs: GridCollectionController.ItemIndex, rhs: GridCollectionController.ItemIndex) -> Bool {
-    return lhs.section == rhs.section && lhs.rect == rhs.rect
-}
-
-public func == (lhs: GridCollectionController.SupplementaryIndex, rhs: GridCollectionController.SupplementaryIndex) -> Bool {
-    return lhs.section == rhs.section && lhs.kind == rhs.kind
-}
-
-public func == (lhs: GridCollectionController.Item, rhs: GridCollectionController.Item) -> Bool {
-    return lhs.index == rhs.index
-}
-
-public func == (lhs: GridCollectionController.Supplementary, rhs: GridCollectionController.Supplementary) -> Bool {
-    return lhs.index == rhs.index
-}
-
-public func == (lhs: GridCollectionController.Component, rhs: GridCollectionController.Component) -> Bool {
-    return lhs.kind == rhs.kind
-}
-
-public func == (lhs: GridCollectionController.Component.Kind, rhs: GridCollectionController.Component.Kind) -> Bool {
-    switch (lhs, rhs) {
-    case (.item(let lhs, _), .item(let rhs, _)):
-        return lhs == rhs
-    case (.supplementary(let lhs, _), .supplementary(let rhs, _)):
-        return lhs == rhs
-    default:
-        return false
-    }
-}
-
 // MARK: - GridCollectionControllerDelegate
 
 public protocol GridCollectionControllerDelegate: class {
 
     func gridCollectionController(_ gridCollectionController: GridCollectionController, didSelect component: GridCollectionController.Component)
-}
-
-private extension GridCollectionController {
-
-    func didSelectComponent(_ component: Component) {
-        self.delegate?.gridCollectionController(self, didSelect: component)
-    }
 }
 
 extension GridCollectionController: UICollectionViewDataSource, UICollectionViewDelegate, GridCollectionViewLayoutDelegate {
@@ -443,7 +447,7 @@ extension GridCollectionController: UICollectionViewDataSource, UICollectionView
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath)!
         let component = self.itemComponent(for: indexPath, with: cell)
-        self.didSelectComponent(component)
+        self.delegate?.gridCollectionController(self, didSelect: component)
     }
 
     // MARK: GridCollectionViewLayout
@@ -466,22 +470,14 @@ public final class ItemViewCell: UICollectionViewCell {
 
     public internal(set) var nestedView: UIView? {
         willSet {
-            guard self.nestedView != newValue else {
-                return
-            }
-            guard let view = self.nestedView else {
-                return
-            }
+            guard self.nestedView != newValue else { return }
+            guard let view = self.nestedView else { return }
             view.removeFromSuperview()
         }
         didSet {
-            guard self.nestedView != oldValue else {
-                return
-            }
-            guard let view = self.nestedView else {
-                return
-            }
-            self.contentView.addAndConstrainView(view)
+            guard self.nestedView != oldValue else { return }
+            guard let view = self.nestedView else { return }
+            self.contentView.addAndConstrain(view)
         }
     }
 
@@ -499,22 +495,14 @@ public final class ItemReusableView: UICollectionReusableView {
 
     public internal(set) var nestedView: UIView? {
         willSet {
-            guard self.nestedView != newValue else {
-                return
-            }
-            guard let view = self.nestedView else {
-                return
-            }
+            guard self.nestedView != newValue else { return }
+            guard let view = self.nestedView else { return }
             view.removeFromSuperview()
         }
         didSet {
-            guard self.nestedView != oldValue else {
-                return
-            }
-            guard let view = self.nestedView else {
-                return
-            }
-            self.addAndConstrainView(view)
+            guard self.nestedView != oldValue else { return }
+            guard let view = self.nestedView else { return }
+            self.addAndConstrain(view)
         }
     }
 
@@ -561,7 +549,7 @@ public struct LinearGrid {
         self.numUnits = numUnits
         self.direction = direction
     }
-
+    
     public func rect(forIndex index: Int, width: CGFloat = 1.0, height: CGFloat = 1.0) -> GridCollectionViewLayout.GridRect {
         switch self.direction {
         case .vertical:

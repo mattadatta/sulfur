@@ -10,6 +10,38 @@ import Cartography
 
 public final class TabManagerViewController: UIViewController {
 
+    public typealias TabItem = TabManagerView.TabItem
+    public typealias TabItemViewBinding = TabManagerView.TabItemViewBinding
+    public typealias TabItemViewControllerBinding = TabItemBinding<UIViewController>
+
+    private var tabMappings: [TabItem: TabItemViewControllerBinding] = [:]
+    public var tabBindings: [TabItemViewControllerBinding] = [] {
+        didSet {
+            self.tabManagerView.tabBindings = self.tabBindings.map { viewControllerBinding in
+                return TabItemViewBinding(
+                    tabItem: viewControllerBinding.tabItem,
+                    action: {
+                        switch viewControllerBinding.action {
+                        case .performAction(let performAction):
+                            return .performAction(performAction)
+
+                        case .displayContent(let retrieveViewController):
+                            return .displayContent({ [weak self] tabItem in
+                                let viewController = retrieveViewController(tabItem)
+                                self?.activeViewController = viewController
+                                return viewController.view
+                                })
+                        }
+                    }())
+            }
+            self.tabMappings = self.tabBindings.reduce([:]) { partial, binding in
+                var dict = partial
+                dict[binding.tabItem] = binding
+                return dict
+            }
+        }
+    }
+
     public weak var delegate: TabManagerViewControllerDelegate?
 
     public private(set) var activeViewController: UIViewController?
@@ -50,50 +82,49 @@ public final class TabManagerViewController: UIViewController {
 
 public protocol TabManagerViewControllerDelegate: class {
 
-    func tabManagerViewController(_ tabManagerViewController: TabManagerViewController, didSelectTabItem tabItem: TabBarView.TabItem?) -> Bool
-    func tabManagerViewController(_ tabManagerViewController: TabManagerViewController, viewControllerForTabItem tabItem: TabBarView.TabItem?) -> UIViewController
-}
-
-private extension TabManagerViewController {
-
-    func didSelectTabItem(_ tabItem: TabBarView.TabItem?) -> Bool {
-        return self.delegate!.tabManagerViewController(self, didSelectTabItem: tabItem)
-    }
-
-    func viewControllerForTabItem(_ tabItem: TabBarView.TabItem?) -> UIViewController {
-        return self.delegate!.tabManagerViewController(self, viewControllerForTabItem: tabItem)
-    }
+    func tabManagerViewController(_ tabManagerViewController: TabManagerViewController, isTabItemEnabled tabItem: TabBarView.TabItem?) -> Bool
+    func tabManagerViewController(_ tabManagerViewController: TabManagerViewController, didChangeFromTabItem fromTabItem: TabBarView.TabItem?, toTabItem: TabBarView.TabItem?)
+    func tabManagerViewController(_ tabManagerViewController: TabManagerViewController, willRemove viewController: UIViewController, for tabItem: TabBarView.TabItem)
+    func tabManagerViewController(_ tabManagerViewController: TabManagerViewController, didRemove viewController: UIViewController, for tabItem: TabBarView.TabItem)
+    func tabManagerViewController(_ tabManagerViewController: TabManagerViewController, willAdd viewController: UIViewController, for tabItem: TabBarView.TabItem)
+    func tabManagerViewController(_ tabManagerViewController: TabManagerViewController, didAdd viewController: UIViewController, for tabItem: TabBarView.TabItem)
 }
 
 // MARK: - TabManagerViewController: TabManagerViewDelegate
 
 extension TabManagerViewController: TabManagerViewDelegate {
 
-    public func tabManagerView(_ tabManagerView: TabManagerView, didSelectTabItem tabItem: TabBarView.TabItem?) -> Bool {
-        return self.didSelectTabItem(tabItem)
+    public func tabManagerView(_ tabManagerView: TabManagerView, isTabItemEnabled tabItem: TabBarView.TabItem?) -> Bool {
+        return self.delegate?.tabManagerViewController(self, isTabItemEnabled: tabItem) ?? true
     }
 
-    public func tabManagerView(_ tabManagerView: TabManagerView, viewForTabItem tabItem: TabBarView.TabItem?) -> UIView {
-        let viewController = self.viewControllerForTabItem(tabItem)
-        self.activeViewController = viewController
-        return viewController.view
+    public func tabManagerView(_ tabManagerView: TabManagerView, didChangeFromTabItem fromTabItem: TabBarView.TabItem?, toTabItem: TabBarView.TabItem?) {
+        self.delegate?.tabManagerViewController(self, didChangeFromTabItem: fromTabItem, toTabItem: toTabItem)
     }
 
-    public func tabManagerView(_ tabManagerView: TabManagerView, willRemoveView view: UIView, forTabItem tabItem: TabBarView.TabItem?) {
-        self.activeViewController?.willMove(toParentViewController: nil)
+    public func tabManagerView(_ tabManagerView: TabManagerView, willRemove view: UIView, for tabItem: TabBarView.TabItem) {
+        guard let viewController = self.activeViewController else { return }
+        self.delegate?.tabManagerViewController(self, willRemove: viewController, for: tabItem)
+        viewController.willMove(toParentViewController: nil)
     }
 
-    public func tabManagerView(_ tabManagerView: TabManagerView, didRemoveView view: UIView, forTabItem tabItem: TabBarView.TabItem?) {
-        self.activeViewController?.removeFromParentViewController()
+    public func tabManagerView(_ tabManagerView: TabManagerView, didRemove view: UIView, for tabItem: TabBarView.TabItem) {
+        guard let viewController = self.activeViewController else { return }
+        viewController.removeFromParentViewController()
         self.activeViewController = nil
+        self.delegate?.tabManagerViewController(self, didRemove: viewController, for: tabItem)
     }
 
-    public func tabManagerView(_ tabManagerView: TabManagerView, willAddView view: UIView, forTabItem tabItem: TabBarView.TabItem?) {
-        self.addChildViewController(self.activeViewController!)
+    public func tabManagerView(_ tabManagerView: TabManagerView, willAdd view: UIView, for tabItem: TabBarView.TabItem) {
+        guard let viewController = self.activeViewController else { return }
+        self.delegate?.tabManagerViewController(self, willAdd: viewController, for: tabItem)
+        self.addChildViewController(viewController)
     }
 
-    public func tabManagerView(_ tabManagerView: TabManagerView, didAddView view: UIView, forTabItem tabItem: TabBarView.TabItem?) {
-        self.activeViewController?.didMove(toParentViewController: self)
+    public func tabManagerView(_ tabManagerView: TabManagerView, didAdd view: UIView, for tabItem: TabBarView.TabItem) {
+        guard let viewController = self.activeViewController else { return }
+        viewController.didMove(toParentViewController: self)
+        self.delegate?.tabManagerViewController(self, didAdd: viewController, for: tabItem)
     }
 }
 
@@ -101,20 +132,54 @@ extension TabManagerViewController: TabManagerViewDelegate {
 
 public final class TabManagerView: UIView {
 
+    public typealias TabItem = TabBarView.TabItem
+    public typealias TabItemViewBinding = TabItemBinding<UIView>
+
     private weak var containerView: UIView!
-    public private(set) var tabBarView: TabBarView!
+    public private(set) weak var tabBarView: TabBarView!
+
+    private var tabMappings: [TabItem: TabItemViewBinding] = [:]
+    public var tabBindings: [TabItemViewBinding] = [] {
+        didSet {
+            self.tabBarView.tabItems = self.tabBindings.map({ $0.tabItem })
+            self.tabMappings = self.tabBindings.reduce([:]) { partial, binding in
+                var dict = partial
+                dict[binding.tabItem] = binding
+                return dict
+            }
+        }
+    }
+
     public weak var delegate: TabManagerViewDelegate?
 
     public private(set) var activeView: UIView?
 
-    private var tabBarHeightConstraintGroup: ConstraintGroup!
+    public enum TabBarAlignment {
+        case top
+        case bottom
+    }
 
-    public var tabBarHeight: CGFloat = 60 {
+    private var tabBarConstraintGroup = ConstraintGroup()
+    public var tabBarAlignment: TabBarAlignment = .top {
         didSet {
-            guard self.tabBarHeight != oldValue else {
-                return
+            self.tabBarConstraintGroup = Cartography.constrain(self, self.tabBarView, replace: self.tabBarConstraintGroup) { superview, tabBarView in
+                superview.left == tabBarView.left
+                superview.right == tabBarView.right
+                switch self.tabBarAlignment {
+                case .top:
+                    superview.top == tabBarView.top
+                case .bottom:
+                    superview.bottom == tabBarView.bottom
+                }
             }
-            self.tabBarHeightConstraintGroup = constrain(self.tabBarView, replace: self.tabBarHeightConstraintGroup) { (tabBarView) in
+        }
+    }
+
+    private var tabBarHeightConstraintGroup = ConstraintGroup()
+    public var tabBarHeight: CGFloat = -1 {
+        didSet {
+            guard self.tabBarHeight != oldValue else { return }
+            self.tabBarHeightConstraintGroup = Cartography.constrain(self.tabBarView, replace: self.tabBarHeightConstraintGroup) { tabBarView in
                 tabBarView.height == self.tabBarHeight
             }
         }
@@ -132,23 +197,17 @@ public final class TabManagerView: UIView {
 
     private func commonInit() {
         let containerView = UIView()
-        self.addAndConstrainView(containerView)
+        self.addAndConstrain(containerView)
         self.containerView = containerView
 
         let tabBarView = TabBarView()
         tabBarView.delegate = self
         tabBarView.translatesAutoresizingMaskIntoConstraints = false
-        self.tabBarView = tabBarView
         self.addSubview(tabBarView)
-        constrain(self, self.tabBarView) { (superview, tabBarView) in
-            superview.left == tabBarView.left
-            superview.right == tabBarView.right
-            superview.bottom == tabBarView.bottom
-        }
+        self.tabBarView = tabBarView
 
-        self.tabBarHeightConstraintGroup = constrain(self.tabBarView) { (tabBarView) in
-            tabBarView.height == self.tabBarHeight
-        }
+        self.tabBarAlignment = .bottom
+        self.tabBarHeight = 60
     }
 }
 
@@ -156,63 +215,92 @@ public final class TabManagerView: UIView {
 
 public protocol TabManagerViewDelegate: class {
 
-    func tabManagerView(_ tabManagerView: TabManagerView, didSelectTabItem tabItem: TabBarView.TabItem?) -> Bool
-    func tabManagerView(_ tabManagerView: TabManagerView, viewForTabItem tabItem: TabBarView.TabItem?) -> UIView
-
-    func tabManagerView(_ tabManagerView: TabManagerView, willRemoveView view: UIView, forTabItem tabItem: TabBarView.TabItem?)
-    func tabManagerView(_ tabManagerView: TabManagerView, didRemoveView view: UIView, forTabItem tabItem: TabBarView.TabItem?)
-    func tabManagerView(_ tabManagerView: TabManagerView, willAddView view: UIView, forTabItem tabItem: TabBarView.TabItem?)
-    func tabManagerView(_ tabManagerView: TabManagerView, didAddView view: UIView, forTabItem tabItem: TabBarView.TabItem?)
-}
-
-private extension TabManagerView {
-
-    func didSelectTabItem(_ tabItem: TabBarView.TabItem?) -> Bool {
-        return self.delegate!.tabManagerView(self, didSelectTabItem: tabItem)
-    }
-
-    func viewForTabItem(_ tabItem: TabBarView.TabItem?) -> UIView {
-        return self.delegate!.tabManagerView(self, viewForTabItem: tabItem)
-    }
-
-    func willRemoveView(_ view: UIView, forTabItem tabItem: TabBarView.TabItem?) {
-        self.delegate!.tabManagerView(self, willRemoveView: view, forTabItem: tabItem)
-    }
-
-    func didRemoveView(_ view: UIView, forTabItem tabItem: TabBarView.TabItem?) {
-        self.delegate!.tabManagerView(self, didRemoveView: view, forTabItem: tabItem)
-    }
-
-    func willAddView(_ view: UIView, forTabItem tabItem: TabBarView.TabItem?) {
-        self.delegate!.tabManagerView(self, willAddView: view, forTabItem: tabItem)
-    }
-
-    func didAddView(_ view: UIView, forTabItem tabItem: TabBarView.TabItem?) {
-        self.delegate!.tabManagerView(self, didAddView: view, forTabItem: tabItem)
-    }
+    func tabManagerView(_ tabManagerView: TabManagerView, isTabItemEnabled tabItem: TabBarView.TabItem?) -> Bool
+    func tabManagerView(_ tabManagerView: TabManagerView, didChangeFromTabItem fromTabItem: TabBarView.TabItem?, toTabItem: TabBarView.TabItem?)
+    func tabManagerView(_ tabManagerView: TabManagerView, willRemove view: UIView, for tabItem: TabBarView.TabItem)
+    func tabManagerView(_ tabManagerView: TabManagerView, didRemove view: UIView, for tabItem: TabBarView.TabItem)
+    func tabManagerView(_ tabManagerView: TabManagerView, willAdd view: UIView, for tabItem: TabBarView.TabItem)
+    func tabManagerView(_ tabManagerView: TabManagerView, didAdd view: UIView, for tabItem: TabBarView.TabItem)
 }
 
 // MARK: - TabManagerView: TabBarViewDelegate
 
 extension TabManagerView: TabBarViewDelegate {
 
-    public func tabBarView(_ tabBarView: TabBarView, didSelectTabItem tabItem: TabBarView.TabItem?) -> Bool {
-        return self.didSelectTabItem(tabItem)
+    public func tabBarView(_ tabBarView: TabBarView, shouldChangeTo tabItem: TabBarView.TabItem?) -> Bool {
+        let isEnabled = self.delegate?.tabManagerView(self, isTabItemEnabled: tabItem) ?? true
+        guard let tabItem = tabItem, let binding = self.tabMappings[tabItem] else { return isEnabled }
+        return isEnabled && binding.action.isDisplayContent
     }
 
     public func tabBarView(_ tabBarView: TabBarView, didChangeFromTabItem fromTabItem: TabBarView.TabItem?, toTabItem: TabBarView.TabItem?) {
-        if let activeView = self.activeView {
-            self.willRemoveView(activeView, forTabItem: fromTabItem)
+        if let activeView = self.activeView, let tabItem = fromTabItem {
+            self.delegate?.tabManagerView(self, willRemove: activeView, for: tabItem)
             activeView.removeFromSuperview()
-            self.didRemoveView(activeView, forTabItem: fromTabItem)
             self.activeView = nil
+            self.delegate?.tabManagerView(self, didRemove: activeView, for: tabItem)
         }
 
-        let view = self.viewForTabItem(toTabItem)
-        self.willAddView(view, forTabItem: toTabItem)
-        self.containerView.addAndConstrainView(view)
-        self.didAddView(view, forTabItem: toTabItem)
-        self.activeView = view
+        guard let tabItem = toTabItem else { return }
+        guard let binding = self.tabMappings[tabItem] else { return }
+        switch binding.action {
+        case .performAction(let performAction):
+            performAction(tabItem)
+
+        case .displayContent(let retrieveView):
+            let view = retrieveView(tabItem)
+            self.delegate?.tabManagerView(self, willAdd: view, for: tabItem)
+            self.containerView.addAndConstrain(view)
+            self.activeView = view
+            self.delegate?.tabManagerView(self, didAdd: view, for: tabItem)
+        }
+    }
+}
+
+public enum TabItemAction<ContentType> {
+
+    public typealias TabItem = TabBarView.TabItem
+    public typealias PerformAction = (TabItem) -> Void
+    public typealias RetrieveContent = (TabItem) -> ContentType
+
+    case performAction(PerformAction)
+    case displayContent(RetrieveContent)
+
+    private var isPerformAction: Bool {
+        switch self {
+        case .performAction(_): return true
+        default: return false
+        }
+    }
+
+    private var isDisplayContent: Bool {
+        switch self {
+        case .displayContent(_): return true
+        default: return false
+        }
+    }
+}
+
+public struct TabItemBinding<ContentType>: Hashable {
+
+    public typealias TabItem = TabBarView.TabItem
+
+    public var tabItem: TabItem
+    public var action: TabItemAction<ContentType>
+
+    public init(tabItem: TabItem, action: TabItemAction<ContentType>) {
+        self.tabItem = tabItem
+        self.action = action
+    }
+
+    // MARK: Hashable conformance
+
+    public var hashValue: Int {
+        return self.tabItem.hashValue
+    }
+
+    public static func ==<ContentType> (lhs: TabItemBinding<ContentType>, rhs: TabItemBinding<ContentType>) -> Bool {
+        return lhs.tabItem == rhs.tabItem
     }
 }
 
@@ -220,49 +308,57 @@ extension TabManagerView: TabBarViewDelegate {
 
 public final class TabBarView: UIView {
 
-    public struct TabItem {
+    public struct TabItem: Hashable {
 
-        public let tag: String
-        public let view: UIView
-        public let delegate: TabBarViewItemDelegate?
+        public var tag: String
+        public var view: UIView
+        public var delegate: TabBarViewItemDelegate?
 
         public init(tag: String, view: UIView, delegate: TabBarViewItemDelegate? = nil) {
             self.tag = tag
             self.view = view
             self.delegate = delegate ?? (view as? TabBarViewItemDelegate)
         }
+
+        // MARK: Hashable conformance
+
+        public var hashValue: Int {
+            return self.tag.hashValue
+        }
+
+        public static func == (lhs: TabItem, rhs: TabItem) -> Bool {
+            return lhs.tag == rhs.tag
+        }
     }
 
     private final class TabItemManager {
 
         unowned let tabBarView: TabBarView
-
         let tabItem: TabItem
         let index: Int
-        let tabItemView: TabItemView
-        let tapGestureRecognizer: UITapGestureRecognizer
+
+        let tabItemView = TabItemView()
+        let tapGestureRecognizer = UITapGestureRecognizer()
 
         init(tabBarView: TabBarView, tabItem: TabItem, index: Int) {
             self.tabBarView = tabBarView
             self.tabItem = tabItem
             self.index = index
-            self.tabItemView = TabItemView()
-            self.tapGestureRecognizer = UITapGestureRecognizer()
 
             self.tabItemView.translatesAutoresizingMaskIntoConstraints = false
-            self.tabItemView.addAndConstrainView(self.tabItem.view)
+            self.tabItemView.addAndConstrain(self.tabItem.view)
 
-            self.tapGestureRecognizer.addTarget(self, action: #selector(TabItemManager.tabItemViewDidTap(_:)))
+            self.tapGestureRecognizer.addTarget(self, action: #selector(self.tabItemViewDidTap(_:)))
             self.tabItemView.addGestureRecognizer(self.tapGestureRecognizer)
         }
 
         dynamic func tabItemViewDidTap(_ tapGestureRecognizer: UITapGestureRecognizer) {
             if tapGestureRecognizer.state == .ended {
-                self.tabBarView.didTapViewWithTabItemManager(self)
+                self.tabBarView.didTapView(for: self)
             }
         }
 
-        func cleanup() {
+        func uninstall() {
             self.tabItemView.removeGestureRecognizer(self.tapGestureRecognizer)
             self.tabItemView.removeFromSuperview()
             self.tabItem.view.removeFromSuperview()
@@ -270,12 +366,11 @@ public final class TabBarView: UIView {
     }
 
     public var tabItems: [TabItem] {
-        get {
-            return self.tabItemManagers.map({ $0.tabItem })
-        }
+        get { return self.tabItemManagers.map({ $0.tabItem }) }
         set(newTabItems) {
             self.tabItemManagers = newTabItems.enumerated().map({ TabItemManager(tabBarView: self, tabItem: $1, index: $0) })
-            self.selectedIndex = self.tabItemManagers.isEmpty ? nil : 0
+            self._selectedIndex = nil
+            self.desiredIndex = self.tabItemManagers.isEmpty ? nil : 0
             self.forceTabReselection = true
             self.setNeedsLayout()
         }
@@ -283,12 +378,12 @@ public final class TabBarView: UIView {
 
     private var tabItemManagers: [TabItemManager] = [] {
         willSet {
-            self.tabItemManagers.forEach { (tabItemManager) in
-                tabItemManager.cleanup()
+            self.tabItemManagers.forEach { tabItemManager in
+                tabItemManager.uninstall()
             }
         }
         didSet {
-            self.tabItemManagers.forEach { (tabItemManager) in
+            self.tabItemManagers.forEach { tabItemManager in
                 self.stackView.addArrangedSubview(tabItemManager.tabItemView)
             }
         }
@@ -305,17 +400,13 @@ public final class TabBarView: UIView {
     private var _selectedIndex: Int?
     public var selectedIndex: Int? {
         get {
-            if self.dirtySelection {
-                return self.desiredIndex
-            }
+            if self.dirtySelection { return self.desiredIndex }
             return self._selectedIndex
         }
-        set {
-            self.shouldChangeToIndex(newValue)
-        }
+        set { self.setDesiredIndex(newValue) }
     }
 
-    private func shouldChangeToIndex(_ index: Int?) {
+    private func setDesiredIndex(_ index: Int?, needsLayout: Bool = true) {
         if index < 0 || index >= self.tabItemManagers.count {
             self.desiredIndex = nil
         } else {
@@ -324,38 +415,32 @@ public final class TabBarView: UIView {
 
         self.dirtySelection = (self.desiredIndex != self._selectedIndex)
 
-        if self.dirtySelection {
+        if needsLayout && self.dirtySelection {
             self.setNeedsLayout()
         }
     }
 
-    private func ensureDesiredIndexSelected() {
-        guard self.dirtySelection || self.forceTabReselection else {
-            return
-        }
+    private func updateSelectedIndexIfNecessary() {
+        guard self.dirtySelection || self.forceTabReselection else { return }
 
-        self.dirtySelection = false
-        self.forceTabReselection = false
+        let desiredTabItemManager = self.tabItemManager(forIndex: self.desiredIndex)
+        let shouldChangeTo = self.delegate?.tabBarView(self, shouldChangeTo: desiredTabItemManager?.tabItem) ?? true
 
-        let desiredTabItemManager = self.tabItemManagerForIndex(self.desiredIndex)
-        let shouldSelectTab = self.didSelectTabItem(desiredTabItemManager?.tabItem)
+        guard shouldChangeTo else { return }
 
-        guard shouldSelectTab else {
-            return
-        }
-
-        let currentTabItemManager = self.tabItemManagerForIndex(self._selectedIndex)
-
+        let currentTabItemManager = self.tabItemManager(forIndex: self._selectedIndex)
         self._selectedIndex = desiredTabItemManager?.index
 
-        if let tabItemManager = currentTabItemManager {
-            tabItemManager.tabItem.delegate?.tabBarView(self, tabItem: tabItemManager.tabItem, shouldIndicateSelected: false)
-        }
-        if let tabItemManager = desiredTabItemManager {
-            tabItemManager.tabItem.delegate?.tabBarView(self, tabItem: tabItemManager.tabItem, shouldIndicateSelected: true)
+        let indicateSelected = { (manager: TabItemManager?, selected: Bool) in
+            guard let manager = manager else { return }
+            manager.tabItem.delegate?.tabBarView(self, tabItem: manager.tabItem, shouldIndicateSelected: selected)
         }
 
-        self.didChangeFromTabItem(currentTabItemManager?.tabItem, toTabItem: desiredTabItemManager?.tabItem)
+        indicateSelected(currentTabItemManager, false)
+        indicateSelected(desiredTabItemManager, true)
+        self.dirtySelection = false
+        self.forceTabReselection = false
+        self.delegate?.tabBarView(self, didChangeFromTabItem: currentTabItemManager?.tabItem, toTabItem: desiredTabItemManager?.tabItem)
     }
 
     public var selectedTab: (index: Int, item: TabItem)? {
@@ -365,7 +450,7 @@ public final class TabBarView: UIView {
         return (selectedIndex, self.tabItemManagers[selectedIndex].tabItem)
     }
 
-    private func tabItemManagerForIndex(_ index: Int?) -> TabItemManager? {
+    private func tabItemManager(forIndex index: Int?) -> TabItemManager? {
         if let index = index {
             return self.tabItemManagers[index]
         } else {
@@ -388,20 +473,21 @@ public final class TabBarView: UIView {
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
         stackView.alignment = .fill
-        self.addAndConstrainView(stackView)
+        self.addAndConstrain(stackView)
         self.stackView = stackView
     }
 
     override public func layoutSubviews() {
         super.layoutSubviews()
-        self.ensureDesiredIndexSelected()
+        self.updateSelectedIndexIfNecessary()
     }
 
-    private func didTapViewWithTabItemManager(_ tabItemManager: TabItemManager) {
-        self.shouldChangeToIndex(tabItemManager.index)
-        self.ensureDesiredIndexSelected()
+    private func didTapView(for tabItemManager: TabItemManager) {
+        self.setDesiredIndex(tabItemManager.index, needsLayout: false)
+        self.updateSelectedIndexIfNecessary()
     }
 }
+// performAction, displayContent
 
 // MARK: - TabItemView
 
@@ -413,19 +499,8 @@ private final class TabItemView: UIView {
 
 public protocol TabBarViewDelegate: class {
 
-    func tabBarView(_ tabBarView: TabBarView, didSelectTabItem tabItem: TabBarView.TabItem?) -> Bool
+    func tabBarView(_ tabBarView: TabBarView, shouldChangeTo tabItem: TabBarView.TabItem?) -> Bool
     func tabBarView(_ tabBarView: TabBarView, didChangeFromTabItem fromTabItem: TabBarView.TabItem?, toTabItem: TabBarView.TabItem?)
-}
-
-private extension TabBarView {
-
-    func didSelectTabItem(_ tabItem: TabItem?) -> Bool {
-        return self.delegate?.tabBarView(self, didSelectTabItem: tabItem) ?? true
-    }
-
-    func didChangeFromTabItem(_ fromTabItem: TabItem?, toTabItem: TabItem?) {
-        self.delegate?.tabBarView(self, didChangeFromTabItem: fromTabItem, toTabItem: toTabItem)
-    }
 }
 
 // MARK: - TabBarViewItemDelegate

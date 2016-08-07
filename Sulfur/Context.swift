@@ -250,7 +250,7 @@ extension UIView: ContextPreloadable {
         guard let contextAware = self as? ContextAware, contextAware.contextToken == nil else { return }
         guard let inflatable = self as? UINibViewInflatable else { return }
         let view = inflatable.inflateView()
-        self.addAndConstrainView(view)
+        self.addAndConstrain(view)
     }
 }
 

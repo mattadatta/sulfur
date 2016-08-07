@@ -39,7 +39,7 @@ extension UIEdgeInsets: Hashable {
 
 public extension UIView {
 
-    public static func edgeInsetsBlock(_ insets: UIEdgeInsets) -> (LayoutProxy, LayoutProxy) -> Void { return { (containerView, view) in
+    public static func edgeInsetsBlock(_ insets: UIEdgeInsets) -> (LayoutProxy, LayoutProxy) -> Void { return { containerView, view in
         view.left == containerView.left + insets.left
         view.top == containerView.top + insets.top
         view.right == containerView.right - insets.right
@@ -51,33 +51,33 @@ public extension UIView {
     }
 
     @discardableResult
-    public func constrainView(_ view: UIView, withInsets insets: UIEdgeInsets = .zero) -> ConstraintGroup {
-        return constrain(self, view, block: UIView.edgeInsetsBlock(insets))
+    public func constrain(_ view: UIView, with insets: UIEdgeInsets = .zero) -> ConstraintGroup {
+        return Cartography.constrain(self, view, block: UIView.edgeInsetsBlock(insets))
     }
 
     @discardableResult
-    public func addAndConstrainView(_ view: UIView, withInsets insets: UIEdgeInsets = .zero) -> ConstraintGroup {
+    public func addAndConstrain(_ view: UIView, with insets: UIEdgeInsets = .zero) -> ConstraintGroup {
         view.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(view)
-        return self.constrainView(view, withInsets: insets)
+        return self.constrain(view, with: insets)
     }
 
     @discardableResult
-    public func replaceAndConstrain(view: UIView, withBlock block: ((LayoutProxy, LayoutProxy) -> Void)) -> ConstraintGroup {
+    public func replaceAndConstrain(_ view: UIView, withBlock block: ((LayoutProxy, LayoutProxy) -> Void)) -> ConstraintGroup {
         let filteredConstraints = self.constraints.filter { constraint in
             return (constraint.firstItem === view || constraint.secondItem === view)
         }
         NSLayoutConstraint.deactivate(filteredConstraints)
-        return constrain(self, view, block: block)
+        return Cartography.constrain(self, view, block: block)
     }
 
     @discardableResult
     public func replaceAndConstrainFirstView(block: ((LayoutProxy, LayoutProxy) -> Void)) -> ConstraintGroup {
-        return self.replaceAndConstrain(view: self.subviews[0], withBlock: block)
+        return self.replaceAndConstrain(self.subviews[0], withBlock: block)
     }
 
     @discardableResult
-    public func replaceAndConstrainFirstView(withInsets insets: UIEdgeInsets) -> ConstraintGroup {
+    public func replaceAndConstrainFirstView(with insets: UIEdgeInsets) -> ConstraintGroup {
         return self.replaceAndConstrainFirstView(block: UIView.edgeInsetsBlock(insets))
     }
 }
@@ -97,14 +97,14 @@ public extension UIViewController {
     }
 
     @discardableResult
-    public func addAndConstrainChildViewController(_ viewController: UIViewController, withInsets insets: UIEdgeInsets = .zero) -> ConstraintGroup {
-        return self.addAndConstrainChildViewController(viewController, withInsets: insets, transitionFn: { $0() })
+    public func addAndConstrain(_ viewController: UIViewController, with insets: UIEdgeInsets = .zero) -> ConstraintGroup {
+        return self.addAndConstrain(viewController, with: insets, transitionFn: { $0() })
     }
 
     @discardableResult
-    public func addAndConstrainChildViewController(_ viewController: UIViewController, withInsets insets: UIEdgeInsets = .zero, transitionFn: @noescape (completionFn: () -> Void) -> Void) -> ConstraintGroup {
+    public func addAndConstrain(_ viewController: UIViewController, with insets: UIEdgeInsets = .zero, transitionFn: @noescape (completionFn: () -> Void) -> Void) -> ConstraintGroup {
         self.addChildViewController(viewController)
-        let constraintGroup = self.view.addAndConstrainView(viewController.view, withInsets: insets)
+        let constraintGroup = self.view.addAndConstrain(viewController.view, with: insets)
         transitionFn() {
             viewController.didMove(toParentViewController: self)
         }

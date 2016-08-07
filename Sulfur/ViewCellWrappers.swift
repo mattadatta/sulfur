@@ -36,7 +36,7 @@ public final class TableViewCell<View: UIView>: UITableViewCell {
 
     private func commonInit() {
         let view = View.init()
-        self.contentView.addAndConstrainView(view)
+        self.contentView.addAndConstrain(view)
         self.nestedView = view
     }
 }
@@ -72,7 +72,7 @@ public final class TableViewHeaderFooterView<View: UIView>: UITableViewHeaderFoo
 
     private func commonInit() {
         let view = View.init()
-        self.contentView.addAndConstrainView(view)
+        self.contentView.addAndConstrain(view)
         self.nestedView = view
     }
 }
@@ -108,7 +108,7 @@ public final class CollectionViewCell<View: UIView>: UICollectionViewCell {
 
     private func commonInit() {
         let view = View.init()
-        self.contentView.addAndConstrainView(view)
+        self.contentView.addAndConstrain(view)
         self.nestedView = view
     }
 }
@@ -144,7 +144,7 @@ public final class CollectionReusableView<View: UIView>: UICollectionReusableVie
 
     private func commonInit() {
         let view = View.init()
-        self.addAndConstrainView(view)
+        self.addAndConstrain(view)
         self.nestedView = view
     }
 }
