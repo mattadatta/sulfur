@@ -324,12 +324,12 @@ public final class TabBarView: UIView {
 
         public var tag: String
         public var view: UIView
-        public var delegate: TabBarViewItemDelegate?
+        public var delegate: TabBarViewTabDelegate?
 
-        public init(tag: String, view: UIView, delegate: TabBarViewItemDelegate? = nil) {
+        public init(tag: String, view: UIView, delegate: TabBarViewTabDelegate? = nil) {
             self.tag = tag
             self.view = view
-            self.delegate = delegate ?? (view as? TabBarViewItemDelegate)
+            self.delegate = delegate ?? (view as? TabBarViewTabDelegate)
         }
 
         // MARK: Hashable conformance
@@ -445,7 +445,7 @@ public final class TabBarView: UIView {
 
         let indicateSelected = { (manager: TabManager?, selected: Bool) in
             guard let manager = manager else { return }
-            manager.tab.delegate?.tabBarView(self, tab: manager.tab, shouldIndicateSelected: selected)
+            manager.tab.delegate?.tabBarView(self, shouldIndicate: manager.tab, isSelected: selected)
         }
 
         indicateSelected(currentTabManager, false)
@@ -510,7 +510,7 @@ public protocol TabBarViewDelegate: class {
 
 // MARK: - TabBarViewItemDelegate
 
-public protocol TabBarViewItemDelegate {
+public protocol TabBarViewTabDelegate {
 
-    func tabBarView(_ tabBarView: TabBarView, tab: TabBarView.Tab, shouldIndicateSelected selected: Bool)
+    func tabBarView(_ tabBarView: TabBarView, shouldIndicate tab: TabBarView.Tab, isSelected selected: Bool)
 }
