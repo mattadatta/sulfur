@@ -6,16 +6,16 @@
 import UIKit
 import Cartography
 
-// MARK: - TabViewController
+// MARK: - TabbedViewController
 
-public final class TabViewController: UIViewController {
+public final class TabbedViewController: UIViewController {
 
     public typealias Tab = TabbedView.Tab
     public typealias TabViewBinding = TabbedView.TabViewBinding
-    public typealias TabViewControllerBinding = TabBinding<UIViewController>
+    public typealias TabbedViewControllerBinding = TabBinding<UIViewController>
 
-    private var tabMappings: [Tab: TabViewControllerBinding] = [:]
-    public var tabBindings: [TabViewControllerBinding] = [] {
+    private var tabMappings: [Tab: TabbedViewControllerBinding] = [:]
+    public var tabBindings: [TabbedViewControllerBinding] = [] {
         didSet {
             self.tabbedView.tabBindings = self.tabBindings.map { viewControllerBinding in
                 return TabViewBinding(
@@ -44,7 +44,7 @@ public final class TabViewController: UIViewController {
         }
     }
 
-    public weak var delegate: TabViewControllerDelegate?
+    public weak var delegate: TabbedViewControllerDelegate?
 
     public private(set) var activeViewController: UIViewController?
 
@@ -80,34 +80,34 @@ public final class TabViewController: UIViewController {
     }
 }
 
-// MARK: - TabViewControllerDelegate
+// MARK: - TabbedViewControllerDelegate
 
-public protocol TabViewControllerDelegate: class {
+public protocol TabbedViewControllerDelegate: class {
 
-    func tabViewController(_ tabViewController: TabViewController, isTabEnabled tab: TabBarView.Tab?) -> Bool
-    func tabViewController(_ tabViewController: TabViewController, didChangeFromTab fromTab: TabBarView.Tab?, toTab: TabBarView.Tab?)
-    func tabViewController(_ tabViewController: TabViewController, willRemove viewController: UIViewController, for tab: TabBarView.Tab)
-    func tabViewController(_ tabViewController: TabViewController, didRemove viewController: UIViewController, for tab: TabBarView.Tab)
-    func tabViewController(_ tabViewController: TabViewController, willAdd viewController: UIViewController, for tab: TabBarView.Tab)
-    func tabViewController(_ tabViewController: TabViewController, didAdd viewController: UIViewController, for tab: TabBarView.Tab)
-    func tabViewController(_ tabViewController: TabViewController, constrain view: UIView, inContainer containerView: UIView, for tab: TabBarView.Tab)
+    func tabbedViewController(_ tabbedViewController: TabbedViewController, isTabEnabled tab: TabBarView.Tab?) -> Bool
+    func tabbedViewController(_ tabbedViewController: TabbedViewController, didChangeFromTab fromTab: TabBarView.Tab?, toTab: TabBarView.Tab?)
+    func tabbedViewController(_ tabbedViewController: TabbedViewController, willRemove viewController: UIViewController, for tab: TabBarView.Tab)
+    func tabbedViewController(_ tabbedViewController: TabbedViewController, didRemove viewController: UIViewController, for tab: TabBarView.Tab)
+    func tabbedViewController(_ tabbedViewController: TabbedViewController, willAdd viewController: UIViewController, for tab: TabBarView.Tab)
+    func tabbedViewController(_ tabbedViewController: TabbedViewController, didAdd viewController: UIViewController, for tab: TabBarView.Tab)
+    func tabbedViewController(_ tabbedViewController: TabbedViewController, constrain view: UIView, inContainer containerView: UIView, for tab: TabBarView.Tab)
 }
 
-// MARK: - TabViewController: TabbedViewDelegate
+// MARK: - TabbedViewController: TabbedViewDelegate
 
-extension TabViewController: TabbedViewDelegate {
+extension TabbedViewController: TabbedViewDelegate {
 
     public func tabbedView(_ tabbedView: TabbedView, isTabEnabled tab: TabBarView.Tab?) -> Bool {
-        return self.delegate?.tabViewController(self, isTabEnabled: tab) ?? true
+        return self.delegate?.tabbedViewController(self, isTabEnabled: tab) ?? true
     }
 
     public func tabbedView(_ tabbedView: TabbedView, didChangeFromTab fromTab: TabBarView.Tab?, toTab: TabBarView.Tab?) {
-        self.delegate?.tabViewController(self, didChangeFromTab: fromTab, toTab: toTab)
+        self.delegate?.tabbedViewController(self, didChangeFromTab: fromTab, toTab: toTab)
     }
 
     public func tabbedView(_ tabbedView: TabbedView, willRemove view: UIView, for tab: TabBarView.Tab) {
         guard let viewController = self.activeViewController else { return }
-        self.delegate?.tabViewController(self, willRemove: viewController, for: tab)
+        self.delegate?.tabbedViewController(self, willRemove: viewController, for: tab)
         viewController.willMove(toParentViewController: nil)
     }
 
@@ -115,23 +115,23 @@ extension TabViewController: TabbedViewDelegate {
         guard let viewController = self.activeViewController else { return }
         viewController.removeFromParentViewController()
         self.activeViewController = nil
-        self.delegate?.tabViewController(self, didRemove: viewController, for: tab)
+        self.delegate?.tabbedViewController(self, didRemove: viewController, for: tab)
     }
 
     public func tabbedView(_ tabbedView: TabbedView, willAdd view: UIView, for tab: TabBarView.Tab) {
         guard let viewController = self.activeViewController else { return }
-        self.delegate?.tabViewController(self, willAdd: viewController, for: tab)
+        self.delegate?.tabbedViewController(self, willAdd: viewController, for: tab)
         self.addChildViewController(viewController)
     }
 
     public func tabbedView(_ tabbedView: TabbedView, didAdd view: UIView, for tab: TabBarView.Tab) {
         guard let viewController = self.activeViewController else { return }
         viewController.didMove(toParentViewController: self)
-        self.delegate?.tabViewController(self, didAdd: viewController, for: tab)
+        self.delegate?.tabbedViewController(self, didAdd: viewController, for: tab)
     }
 
     public func tabbedView(_ tabbedView: TabbedView, constrain view: UIView, inContainer containerView: UIView, for tab: TabBarView.Tab) {
-        self.delegate?.tabViewController(self, constrain: view, inContainer: containerView, for: tab)
+        self.delegate?.tabbedViewController(self, constrain: view, inContainer: containerView, for: tab)
     }
 }
 
