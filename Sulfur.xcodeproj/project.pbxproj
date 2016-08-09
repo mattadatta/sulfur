@@ -24,7 +24,7 @@
 		32389E561CDFDD1F009475F6 /* Reference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E421CDFDD1F009475F6 /* Reference.swift */; };
 		32389E571CDFDD1F009475F6 /* SequenceType+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E431CDFDD1F009475F6 /* SequenceType+Utils.swift */; };
 		32389E581CDFDD1F009475F6 /* String+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E441CDFDD1F009475F6 /* String+Utils.swift */; };
-		32389E591CDFDD1F009475F6 /* TabManagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E451CDFDD1F009475F6 /* TabManagerViewController.swift */; };
+		32389E591CDFDD1F009475F6 /* TabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E451CDFDD1F009475F6 /* TabViewController.swift */; };
 		32389E5A1CDFDD1F009475F6 /* UIColor+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E461CDFDD1F009475F6 /* UIColor+Utils.swift */; };
 		32389E5B1CDFDD1F009475F6 /* UIImage+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E471CDFDD1F009475F6 /* UIImage+Utils.swift */; };
 		32389E5C1CDFDD1F009475F6 /* UINib+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E481CDFDD1F009475F6 /* UINib+Utils.swift */; };
@@ -72,7 +72,7 @@
 		32389E421CDFDD1F009475F6 /* Reference.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reference.swift; sourceTree = "<group>"; };
 		32389E431CDFDD1F009475F6 /* SequenceType+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SequenceType+Utils.swift"; sourceTree = "<group>"; };
 		32389E441CDFDD1F009475F6 /* String+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Utils.swift"; sourceTree = "<group>"; };
-		32389E451CDFDD1F009475F6 /* TabManagerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabManagerViewController.swift; sourceTree = "<group>"; };
+		32389E451CDFDD1F009475F6 /* TabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabViewController.swift; sourceTree = "<group>"; };
 		32389E461CDFDD1F009475F6 /* UIColor+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Utils.swift"; sourceTree = "<group>"; };
 		32389E471CDFDD1F009475F6 /* UIImage+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Utils.swift"; sourceTree = "<group>"; };
 		32389E481CDFDD1F009475F6 /* UINib+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UINib+Utils.swift"; sourceTree = "<group>"; };
@@ -151,7 +151,7 @@
 				32389E421CDFDD1F009475F6 /* Reference.swift */,
 				32389E431CDFDD1F009475F6 /* SequenceType+Utils.swift */,
 				32389E441CDFDD1F009475F6 /* String+Utils.swift */,
-				32389E451CDFDD1F009475F6 /* TabManagerViewController.swift */,
+				32389E451CDFDD1F009475F6 /* TabViewController.swift */,
 				32389E461CDFDD1F009475F6 /* UIColor+Utils.swift */,
 				32389E471CDFDD1F009475F6 /* UIImage+Utils.swift */,
 				32389E481CDFDD1F009475F6 /* UINib+Utils.swift */,
@@ -421,7 +421,7 @@
 				32389E4F1CDFDD1F009475F6 /* CG+Utils.swift in Sources */,
 				32D04B101D31C0CB00EB8D5D /* GridCollectionViewLayout.swift in Sources */,
 				32389E5B1CDFDD1F009475F6 /* UIImage+Utils.swift in Sources */,
-				32389E591CDFDD1F009475F6 /* TabManagerViewController.swift in Sources */,
+				32389E591CDFDD1F009475F6 /* TabViewController.swift in Sources */,
 				32389E5C1CDFDD1F009475F6 /* UINib+Utils.swift in Sources */,
 				32BC059A1D1B3D75008573BC /* Context.swift in Sources */,
 				32389E531CDFDD1F009475F6 /* GradientView.swift in Sources */,
