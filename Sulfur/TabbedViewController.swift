@@ -162,21 +162,21 @@ public final class TabbedView: UIView {
     public private(set) var activeView: UIView?
 
     public enum TabBarAlignment {
-        case top
-        case bottom
+        case top(CGFloat)
+        case bottom(CGFloat)
     }
 
     private var tabBarConstraintGroup = ConstraintGroup()
-    public var tabBarAlignment: TabBarAlignment = .top {
+    public var tabBarAlignment: TabBarAlignment = .top(0) {
         didSet {
             self.tabBarConstraintGroup = Cartography.constrain(self, self.tabBarView, replace: self.tabBarConstraintGroup) { superview, tabBarView in
-                superview.left == tabBarView.left
-                superview.right == tabBarView.right
+                tabBarView.left == superview.left
+                tabBarView.right == superview.right
                 switch self.tabBarAlignment {
-                case .top:
-                    superview.top == tabBarView.top
-                case .bottom:
-                    superview.bottom == tabBarView.bottom
+                case .top(let inset):
+                    tabBarView.top == superview.top + inset
+                case .bottom(let inset):
+                    tabBarView.bottom == superview.bottom + inset
                 }
             }
         }
@@ -213,7 +213,7 @@ public final class TabbedView: UIView {
         self.addSubview(tabBarView)
         self.tabBarView = tabBarView
 
-        self.tabBarAlignment = .bottom
+        self.tabBarAlignment = .bottom(0)
         self.tabBarHeight = 60
     }
 }
