@@ -264,6 +264,8 @@ extension TabbedView: TabBarViewDelegate {
             self.activeView = view
             self.delegate?.tabbedView(self, didAdd: view, for: tab)
         }
+
+        self.delegate?.tabbedView(self, didChangeFromTab: fromTab, toTab: toTab)
     }
 }
 
