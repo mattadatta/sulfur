@@ -235,13 +235,10 @@ public protocol TabbedViewDelegate: class {
 
 extension TabbedView: TabBarViewDelegate {
 
-    public func tabBarView(_ tabBarView: TabBarView, shouldChangeToTab tab: TabBarView.Tab?) -> Bool {
-        let isEnabled = self.delegate?.tabbedView(self, isTabEnabled: tab) ?? true
-        guard let tab = tab, let binding = self.tabMappings[tab] else { return isEnabled }
-        return isEnabled && binding.action.isDisplayContent
-    }
+    public func tabBarView(_ tabBarView: TabBarView, shouldChangeFromTab fromTab: TabBarView.Tab?, toTab: TabBarView.Tab?) -> Bool {
+        let shouldChange = self.delegate?.tabbedView(self, isTabEnabled: toTab) ?? true
+        guard shouldChange else { return false }
 
-    public func tabBarView(_ tabBarView: TabBarView, didChangeFromTab fromTab: TabBarView.Tab?, toTab: TabBarView.Tab?) {
         // TODO: Animation injection
         if let activeView = self.activeView, let tab = fromTab {
             self.delegate?.tabbedView(self, willRemove: activeView, for: tab)
@@ -250,21 +247,27 @@ extension TabbedView: TabBarViewDelegate {
             self.delegate?.tabbedView(self, didRemove: activeView, for: tab)
         }
 
-        guard let tab = toTab else { return }
-        guard let binding = self.tabMappings[tab] else { return }
+        guard
+            let tab = toTab,
+            let binding = self.tabMappings[tab] else { return false }
+
         switch binding.action {
         case .performAction(let action):
             action(tab)
+            return false
 
         case .displayContent(let retrieveView):
-            guard let view = retrieveView(tab) else { break }
+            guard let view = retrieveView(tab) else { return false }
             self.delegate?.tabbedView(self, willAdd: view, for: tab)
             self.containerView.addSubview(view)
             self.delegate?.tabbedView(self, constrain: view, inContainer: self.containerView, for: tab)
             self.activeView = view
             self.delegate?.tabbedView(self, didAdd: view, for: tab)
+            return true
         }
+    }
 
+    public func tabBarView(_ tabBarView: TabBarView, didChangeFromTab fromTab: TabBarView.Tab?, toTab: TabBarView.Tab?) {
         self.delegate?.tabbedView(self, didChangeFromTab: fromTab, toTab: toTab)
     }
 }
@@ -435,18 +438,17 @@ public final class TabBarView: UIView {
     private func updateSelectedIndexIfNecessary() {
         guard self.dirtySelection || self.forceTabReselection else { return }
 
-        let desiredTabManager = self.tabManager(forIndex: self.desiredIndex)
-        let shouldChangeTo = self.delegate?.tabBarView(self, shouldChangeToTab: desiredTabManager?.tab) ?? true
-
-        guard shouldChangeTo else { return }
-
         let currentTabManager = self.tabManager(forIndex: self._selectedIndex)
-        self._selectedIndex = desiredTabManager?.index
+        let desiredTabManager = self.tabManager(forIndex: self.desiredIndex)
+        let shouldChange = self.delegate?.tabBarView(self, shouldChangeFromTab: currentTabManager?.tab, toTab: desiredTabManager?.tab) ?? true
+        guard shouldChange else { return }
 
         let indicateSelected = { (manager: TabManager?, selected: Bool) in
             guard let manager = manager else { return }
             manager.tab.delegate?.tabBarView(self, shouldIndicate: manager.tab, isSelected: selected)
         }
+
+        self._selectedIndex = self.desiredIndex
 
         indicateSelected(currentTabManager, false)
         indicateSelected(desiredTabManager, true)
@@ -456,9 +458,7 @@ public final class TabBarView: UIView {
     }
 
     public var selectedTab: (index: Int, item: Tab)? {
-        guard let selectedIndex = self.selectedIndex else {
-            return nil
-        }
+        guard let selectedIndex = self.selectedIndex else { return nil }
         return (selectedIndex, self.tabManagers[selectedIndex].tab)
     }
 
@@ -504,7 +504,7 @@ public final class TabBarView: UIView {
 
 public protocol TabBarViewDelegate: class {
 
-    func tabBarView(_ tabBarView: TabBarView, shouldChangeToTab tab: TabBarView.Tab?) -> Bool
+    func tabBarView(_ tabBarView: TabBarView, shouldChangeFromTab fromTab: TabBarView.Tab?, toTab: TabBarView.Tab?) -> Bool
     func tabBarView(_ tabBarView: TabBarView, didChangeFromTab fromTab: TabBarView.Tab?, toTab: TabBarView.Tab?)
 }
 
