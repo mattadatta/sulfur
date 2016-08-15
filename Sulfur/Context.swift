@@ -95,9 +95,7 @@ public final class Context {
     }
 
     private func setupContextAwareIfNecessary(_ obj: Any) {
-        guard let contextAware = obj as? ContextAware, contextAware.contextToken == nil else {
-            return
-        }
+        guard let contextAware = obj as? ContextAware, contextAware.contextToken == nil else { return }
 
         let contextToken = self.generateToken()
         contextToken.contextAware = contextAware
@@ -134,10 +132,10 @@ public final class ContextToken: Hashable {
     public var hashValue: Int {
         return ObjectIdentifier(self).hashValue
     }
-}
 
-public func == (lhs: ContextToken, rhs: ContextToken) -> Bool {
-    return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
+    public static func == (lhs: ContextToken, rhs: ContextToken) -> Bool {
+        return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
+    }
 }
 
 // MARK: - StoryboardContextWrapper
@@ -166,8 +164,20 @@ private extension UIStoryboard {
 
 public protocol ContextAware: class {
 
-    var contextToken: ContextToken? { get set }
     func contextAvailable()
+}
+
+private struct ContextAwareKeys {
+
+    static var contextTokenKey: Void = ()
+}
+
+extension ContextAware {
+
+    var contextToken: ContextToken? {
+        get { return objc_getAssociatedObject(self, &ContextAwareKeys.contextTokenKey) as? ContextToken }
+        set { objc_setAssociatedObject(self, &ContextAwareKeys.contextTokenKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+    }
 }
 
 public extension ContextAware {
@@ -199,9 +209,7 @@ public extension ContextAware where Self: UIViewController {
      - returns: The new `UIViewController` instance
      */
     public func viewControllerFromStoryboard<Controller: UIViewController>() -> Controller? {
-        guard let storyboard = self.storyboard else {
-            return nil
-        }
+        guard let storyboard = self.storyboard else { return nil }
         let controller = storyboard.instantiateViewController(withIdentifier: String(Controller.self)) as! Controller
         if !storyboard.hasContextWrapper {
             self.context.wrap(controller)

@@ -31,6 +31,8 @@ public final class ViewStateManager {
         public static let cancel = TouchEvent(rawValue: 1 << 8)
     }
 
+    public typealias StateEventCallback = (ViewStateManager, UIView, TouchEvent) -> Void
+
     public struct State: OptionSet {
 
         public let rawValue: Int
@@ -45,6 +47,11 @@ public final class ViewStateManager {
     }
 
     public final class Token: Hashable {
+
+        private enum Action {
+            case touch(TouchEvent, TouchEventCallback)
+            case state(State, StateEventCallback)
+        }
 
         private weak var stateManager: ViewStateManager?
         public let touchEvent: TouchEvent
@@ -195,6 +202,7 @@ public final class ViewStateManager {
     public var state: State = .enabled {
         didSet {
             guard self.state != oldValue else { return }
+            self.dispatchStateChange(from: oldValue, to: self.state)
         }
     }
 
@@ -210,6 +218,7 @@ public final class ViewStateManager {
     public func unsubscribe(with token: Token) {
         self.weakRegistry.remove(WeakReference(referent: token))
         self.storedRegistry.remove(token)
+        token.stateManager = nil
     }
 
     private func dispatch(_ touchEvent: TouchEvent) {
@@ -220,6 +229,28 @@ public final class ViewStateManager {
                 token.callback(self, view, touchEvent)
             }
         }
+    }
+
+    private func dispatchStateChange(from fromState: State, to toState: State) {
+    }
+}
+
+public protocol ViewStateManagerConfiguration: class {
+
+    func viewStateManager(_ viewStateManager: ViewStateManager, didDispatch touchEvent: ViewStateManager.TouchEvent)
+    func viewStateManager(_ viewStateManager: ViewStateManager, didDispatchStateChangeFrom fromState: ViewStateManager.State, to toState: ViewStateManager.State)
+}
+
+private struct ViewStateManagerConfigurationKeys {
+
+    static var stateManagerKey: Void = ()
+}
+
+public extension ViewStateManagerConfiguration {
+
+    public private(set) var viewStateManager: ViewStateManager? {
+        get { return objc_getAssociatedObject(self, &ViewStateManagerConfigurationKeys.stateManagerKey) as? ViewStateManager }
+        set { objc_setAssociatedObject(self, &ViewStateManagerConfigurationKeys.stateManagerKey, newValue, .OBJC_ASSOCIATION_COPY) }
     }
 }
 
