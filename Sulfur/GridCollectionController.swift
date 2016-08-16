@@ -416,8 +416,8 @@ extension GridCollectionController: UICollectionViewDataSource, UICollectionView
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let item = self.item(for: indexPath)
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: item.controller.computedViewIdentifier, for: indexPath) as! ItemViewCell
-        cell.nestedView = item.controller.view(forItem: item, reusingView: cell.nestedView)
-        cell.didPrepareForReuse = { [weak self, unowned cell] in
+        cell.nestedView = item.controller.view(for: item, reusingView: cell.nestedView)
+        cell.didPrepareForReuse = { [weak self] cell in
             guard let component = self?.itemComponent(for: indexPath, with: cell) else { return }
             component.detach()
         }
@@ -432,8 +432,8 @@ extension GridCollectionController: UICollectionViewDataSource, UICollectionView
         }
 
         let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: supplementary.controller.computedViewIdentifier, for: indexPath) as! ItemReusableView
-        view.nestedView = supplementary.controller.view(forSupplementary: supplementary, reusingView: view.nestedView)
-        view.didPrepareForReuse = { [weak self, unowned view] in
+        view.nestedView = supplementary.controller.view(for: supplementary, reusingView: view.nestedView)
+        view.didPrepareForReuse = { [weak self] view in
             guard let component = self?.supplementaryComponent(ofCollectionViewKind: kind, inSection: indexPath.section, with: view) else { return }
             component.detach()
         }
@@ -481,11 +481,11 @@ public final class ItemViewCell: UICollectionViewCell {
         }
     }
 
-    private var didPrepareForReuse: (() -> Void)?
+    private var didPrepareForReuse: ((ItemViewCell) -> Void)?
 
     override public func prepareForReuse() {
         super.prepareForReuse()
-        self.didPrepareForReuse?()
+        self.didPrepareForReuse?(self)
     }
 }
 
@@ -506,11 +506,11 @@ public final class ItemReusableView: UICollectionReusableView {
         }
     }
 
-    private var didPrepareForReuse: (() -> Void)?
+    private var didPrepareForReuse: ((ItemReusableView) -> Void)?
 
     override public func prepareForReuse() {
         super.prepareForReuse()
-        self.didPrepareForReuse?()
+        self.didPrepareForReuse?(self)
     }
 }
 
@@ -530,12 +530,12 @@ private extension ComponentController {
 
 public protocol ItemController: ComponentController {
 
-    func view(forItem item: GridCollectionController.Item, reusingView reuseView: UIView?) -> UIView
+    func view(for item: GridCollectionController.Item, reusingView reuseView: UIView?) -> UIView
 }
 
 public protocol SupplementaryController: ComponentController {
 
-    func view(forSupplementary supplementary: GridCollectionController.Supplementary, reusingView reuseView: UIView?) -> UIView
+    func view(for supplementary: GridCollectionController.Supplementary, reusingView reuseView: UIView?) -> UIView
 }
 
 // MARK: LinearGrid
