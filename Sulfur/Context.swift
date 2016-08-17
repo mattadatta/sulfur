@@ -186,8 +186,8 @@ private struct ContextAwareKeys {
 extension ContextAware {
 
     var contextToken: ContextToken? {
-        get { return objc_getAssociatedObject(self, &ContextAwareKeys.contextTokenKey) as? ContextToken }
-        set { objc_setAssociatedObject(self, &ContextAwareKeys.contextTokenKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+        get { return AssociatedUtils.retrieveValue(for: self, key: &ContextAwareKeys.contextTokenKey) }
+        set { AssociatedUtils.store(for: self, key: &ContextAwareKeys.contextTokenKey, storage: .strongOrNil(object: newValue)) }
     }
 }
 
@@ -293,8 +293,8 @@ private struct ContextServiceKeys {
 public extension ContextService {
 
     public var context: Context? {
-        get { return objc_getAssociatedObject(self, &ContextServiceKeys.contextKey) as? Context }
-        set { objc_setAssociatedObject(self, &ContextServiceKeys.contextKey, newValue, .OBJC_ASSOCIATION_ASSIGN) }
+        get { return AssociatedUtils.retrieveValue(for: self, key: &ContextServiceKeys.contextKey) }
+        set { AssociatedUtils.store(for: self, key: &ContextServiceKeys.contextKey, storage: .weakOrNil(object: newValue)) }
     }
 }
 
@@ -313,19 +313,18 @@ public final class AnyContextService: ContextService, Hashable {
         set { self._setContext(newValue) }
     }
 
-    public convenience init<Service: ContextService>(service: Service) {
-        self.init(optionalService: service)!
+    public convenience init?<Service: ContextService>(optionalService service: Service?) {
+        guard let service = service else { return nil }
+        self.init(service: service)
     }
 
-    public init?<Service: ContextService>(optionalService service: Service?) {
-        guard let service = service else { return nil }
-
+    public init<Service: ContextService>(service: Service) {
         self.baseService = service
         self._component = { service.component }
-        self._added = { context in service.added(to: context) }
-        self._removed = { context in service.removed(from: context) }
+        self._added = { service.added(to: $0) }
+        self._removed = { service.removed(from: $0) }
         self._getContext = { service.context }
-        self._setContext = { context in service.context = context }
+        self._setContext = { service.context = $0 }
     }
 
     public var component: Any {
@@ -384,13 +383,12 @@ public struct AnyContextServiceTag: ContextServiceTag, Hashable {
     private let _equal: (to: AnyContextServiceTag) -> Bool
     private let _hashValue: () -> Int
 
-    public init<Tag: ContextServiceTag>(tag: Tag) {
-        self.init(optionalTag: tag)!
-    }
-
     public init?<Tag: ContextServiceTag>(optionalTag tag: Tag?) {
         guard let tag = tag else { return nil }
+        self.init(tag: tag)
+    }
 
+    public init<Tag: ContextServiceTag>(tag: Tag) {
         self.tag = tag
         self._serviceID = { tag.serviceID }
         self._equal = { ($0.tag as? Tag) == tag }

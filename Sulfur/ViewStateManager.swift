@@ -249,8 +249,8 @@ private struct ViewStateManagerConfigurationKeys {
 public extension ViewStateManagerConfiguration {
 
     public private(set) var viewStateManager: ViewStateManager? {
-        get { return objc_getAssociatedObject(self, &ViewStateManagerConfigurationKeys.stateManagerKey) as? ViewStateManager }
-        set { objc_setAssociatedObject(self, &ViewStateManagerConfigurationKeys.stateManagerKey, newValue, .OBJC_ASSOCIATION_COPY) }
+        get { return AssociatedUtils.retrieveValue(for: self, key: &ViewStateManagerConfigurationKeys.stateManagerKey) }
+        set { AssociatedUtils.store(for: self, key: &ViewStateManagerConfigurationKeys.stateManagerKey, storage: .weakOrNil(object: newValue)) }
     }
 }
 
@@ -262,8 +262,8 @@ public extension UIView {
     }
 
     private var _stateManager: ViewStateManager? {
-        get { return objc_getAssociatedObject(self, &ViewStateManagerKeys.stateManagerKey) as? ViewStateManager }
-        set { objc_setAssociatedObject(self, &ViewStateManagerKeys.stateManagerKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+        get { return AssociatedUtils.retrieveValue(for: self, key: &ViewStateManagerKeys.stateManagerKey) }
+        set { AssociatedUtils.store(for: self, key: &ViewStateManagerKeys.stateManagerKey, storage: .strongOrNil(object: newValue)) }
     }
 
     public var stateManager: ViewStateManager {
