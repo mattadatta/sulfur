@@ -69,8 +69,8 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
 
         public enum Kind: Hashable {
 
-            case item(ItemProperties)
-            case supplementary(String, SupplementaryProperties)
+            case item(properties: ItemProperties)
+            case supplementary(kind: String, properties: SupplementaryProperties)
 
             // MARK: Hashable conformance
 
@@ -96,7 +96,7 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
         }
 
         public var section: Int = 0
-        public var kind: Kind = .item(ItemProperties())
+        public var kind: Kind = .item(properties: ItemProperties())
 
         override public func copy(with zone: NSZone?) -> AnyObject {
             let attrs = super.copy(with: zone) as! LayoutAttributes
@@ -195,7 +195,7 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
         }
     }
 
-    public struct UnitInformation: Hashable {
+    public struct UnitMeasurements: Hashable {
 
         public enum Dimension {
             case width
@@ -224,12 +224,12 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
                 .hashValue
         }
 
-        public static func == (lhs: UnitInformation, rhs: UnitInformation) -> Bool {
+        public static func == (lhs: UnitMeasurements, rhs: UnitMeasurements) -> Bool {
             return lhs.dimension == rhs.dimension && lhs.numUnits == rhs.numUnits && lhs.spacingSize == rhs.spacingSize
         }
     }
 
-    public struct CellSizeInformation: Hashable {
+    public struct CellSizeMeasurements: Hashable {
 
         public var cellSize: CGSize
         public var oppositeDimensionSpacingFn: (CGFloat) -> CGFloat
@@ -245,15 +245,15 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
             return self.cellSize.hashValue
         }
 
-        public static func == (lhs: CellSizeInformation, rhs: CellSizeInformation) -> Bool {
+        public static func == (lhs: CellSizeMeasurements, rhs: CellSizeMeasurements) -> Bool {
             return lhs.cellSize == rhs.cellSize
         }
     }
 
     public enum GridComputation: Hashable {
 
-        case units(UnitInformation)
-        case cellSize(CellSizeInformation)
+        case units(measurements: UnitMeasurements)
+        case cellSize(measurements: CellSizeMeasurements)
 
         // MARK: Hashable conformance
 
@@ -278,7 +278,7 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
         }
     }
 
-    public var gridComputation: GridComputation = .units(UnitInformation(dimension: .width, numUnits: 4, spacingSize: CGSize.zero)) {
+    public var gridComputation: GridComputation = .units(measurements: UnitMeasurements(dimension: .width, numUnits: 4, spacingSize: .zero)) {
         didSet {
             self.invalidateLayout()
         }
@@ -307,7 +307,7 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
     private var headerLayoutAttrs: [IndexPath: LayoutAttributes] = [:]
     private var footerLayoutAttrs: [IndexPath: LayoutAttributes] = [:]
     private var contentOffsets: [(CGFloat, CGFloat, CGFloat)] = []
-    private var contentSize: CGSize = CGSize.zero
+    private var contentSize: CGSize = .zero
 
     // MARK: UICollectionViewLayout overrides
 
@@ -402,7 +402,7 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
             }
 
             headerLayoutAttrs.section = section
-            headerLayoutAttrs.kind = .supplementary(UICollectionElementKindSectionHeader, headerProperties)
+            headerLayoutAttrs.kind = .supplementary(kind: UICollectionElementKindSectionHeader, properties: headerProperties)
             self.headerLayoutAttrs[sectionIndexPath] = headerLayoutAttrs
             self.layoutAttrs.append(headerLayoutAttrs)
 
@@ -434,7 +434,7 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
                 }
 
                 attrs.section = section
-                attrs.kind = .item(properties)
+                attrs.kind = .item(properties: properties)
                 self.itemLayoutAttrs[indexPath] = attrs
                 self.layoutAttrs.append(attrs)
             }
@@ -466,7 +466,7 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
             }
 
             footerLayoutAttrs.section = section
-            footerLayoutAttrs.kind = .supplementary(UICollectionElementKindSectionFooter, footerProperties)
+            footerLayoutAttrs.kind = .supplementary(kind: UICollectionElementKindSectionFooter, properties: footerProperties)
             self.footerLayoutAttrs[sectionIndexPath] = footerLayoutAttrs
             self.layoutAttrs.append(footerLayoutAttrs)
 

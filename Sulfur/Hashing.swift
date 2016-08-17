@@ -12,7 +12,7 @@ public struct Hasher: Hashable {
     private enum State: Hashable {
 
         case initial
-        case computed(Int)
+        case computed(result: Int)
 
         var hashValue: Int {
             switch self {
@@ -42,9 +42,9 @@ public struct Hasher: Hashable {
     private mutating func hash(value: Int) {
         switch self.state {
         case .initial:
-            self.state = .computed(value)
+            self.state = .computed(result: value)
         case .computed(let result):
-            self.state = .computed(37 &* result &+ value)
+            self.state = .computed(result: 37 &* result &+ value)
         }
     }
 

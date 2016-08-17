@@ -5,7 +5,7 @@
 
 import UIKit
 
-public enum Random {
+public struct Random {
 
     public static func float() -> CGFloat {
         return CGFloat(arc4random()) / CGFloat(UINT32_MAX)

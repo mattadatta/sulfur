@@ -5,7 +5,7 @@
 
 import UIKit
 
-public struct HierarchyPrinter < Node, Inspector: NodeInspector where Inspector.Node == Node > {
+public struct HierarchyPrinter<Node, Inspector: NodeInspector where Inspector.Node == Node> {
 
     public var root: Node
     public var inspector: Inspector

@@ -244,8 +244,8 @@ public final class GridCollectionController: NSObject {
 
     public var items: [Item] = [] {
         didSet {
-            let oldIdentifiers = Set(oldValue.map({ $0.controller.computedViewIdentifier }))
-            let newIdentifiers = Set(self.items.map({ $0.controller.computedViewIdentifier }))
+            let oldIdentifiers = Set(oldValue.map({ $0.controller.viewIdentifier }))
+            let newIdentifiers = Set(self.items.map({ $0.controller.viewIdentifier }))
             oldIdentifiers.subtracting(newIdentifiers).forEach {
                 self.collectionView.register(nil as AnyClass?, forCellWithReuseIdentifier: $0)
             }
@@ -284,13 +284,13 @@ public final class GridCollectionController: NSObject {
                 self.collectionView.register(
                     nil as AnyClass?,
                     forSupplementaryViewOfKind: supplementary.index.kind.collectionViewKind,
-                    withReuseIdentifier: supplementary.controller.computedViewIdentifier)
+                    withReuseIdentifier: supplementary.controller.viewIdentifier)
             }
             newSupplementaries.subtracting(oldSupplementaries).forEach { supplementary in
                 self.collectionView.register(
                     ItemReusableView.self,
                     forSupplementaryViewOfKind: supplementary.index.kind.collectionViewKind,
-                    withReuseIdentifier: supplementary.controller.computedViewIdentifier)
+                    withReuseIdentifier: supplementary.controller.viewIdentifier)
             }
 
             self.supplementaryIndexPaths = [:]
@@ -415,7 +415,7 @@ extension GridCollectionController: UICollectionViewDataSource, UICollectionView
 
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let item = self.item(for: indexPath)
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: item.controller.computedViewIdentifier, for: indexPath) as! ItemViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: item.controller.viewIdentifier, for: indexPath) as! ItemViewCell
         cell.nestedView = item.controller.view(for: item, reusingView: cell.nestedView)
         cell.didPrepareForReuse = { [weak self] cell in
             guard let component = self?.itemComponent(for: indexPath, with: cell) else { return }
@@ -431,7 +431,7 @@ extension GridCollectionController: UICollectionViewDataSource, UICollectionView
             return collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: ItemReusableView.cellIdentifier, for: indexPath)
         }
 
-        let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: supplementary.controller.computedViewIdentifier, for: indexPath) as! ItemReusableView
+        let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: supplementary.controller.viewIdentifier, for: indexPath) as! ItemReusableView
         view.nestedView = supplementary.controller.view(for: supplementary, reusingView: view.nestedView)
         view.didPrepareForReuse = { [weak self] view in
             guard let component = self?.supplementaryComponent(ofCollectionViewKind: kind, inSection: indexPath.section, with: view) else { return }
@@ -516,15 +516,15 @@ public final class ItemReusableView: UICollectionReusableView {
 
 public protocol ComponentController: class {
 
-    var viewIdentifier: String? { get }
+    var viewIdentifier: String { get } // Fulfilled by extension, if desired
     func attach(to component: GridCollectionController.Component)
     func detach(from component: GridCollectionController.Component)
 }
 
-private extension ComponentController {
+public extension ComponentController {
 
-    var computedViewIdentifier: String {
-        return self.viewIdentifier ?? String(Self.self)
+    public var viewIdentifier: String {
+        return String(Self.self)
     }
 }
 

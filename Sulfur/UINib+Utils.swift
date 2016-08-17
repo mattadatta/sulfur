@@ -6,12 +6,48 @@
 import UIKit
 import Cartography
 
-public protocol UINibViewInflatable: class { }
+public protocol UINibViewInflatable {
+
+    var nibName: String { get }
+    var nibBundle: Bundle? { get }
+    var instantiationOwner: AnyObject? { get }
+    var instantiationOptions: [NSObject : AnyObject]? { get }
+}
 
 public extension UINibViewInflatable {
 
+    public var nibName: String {
+        return String(Self.self)
+    }
+
+    public var instantiationOptions: [NSObject : AnyObject]? {
+        return nil
+    }
+}
+
+public extension UINibViewInflatable where Self: AnyObject {
+
+    public var nibBundle: Bundle? {
+        return Bundle(for: Self.self)
+    }
+
+    public var instantiationOwner: AnyObject? {
+        return self
+    }
+}
+
+public extension UINibViewInflatable {
+
+    public var viewNib: UINib {
+        return UINib(nibName: self.nibName, bundle: self.nibBundle)
+    }
+
+    public func inflateView(atIndex index: Int) -> UIView {
+        return self.viewNib.instantiate(withOwner: self.instantiationOwner, options: self.instantiationOptions)[index] as! UIView
+    }
+
     public func inflateView() -> UIView {
-        return UINib(nibName: String(Self.self), bundle: Bundle(for: Self.self)).instantiate(withOwner: self, options: nil).first as! UIView
+        return self.inflateView(atIndex: 0)
     }
 }
 

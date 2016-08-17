@@ -7,7 +7,7 @@ import Foundation
 
 // MARK: - WeakReference
 
-public struct WeakReference<Referent where Referent: AnyObject>: Hashable {
+public struct WeakReference<Referent: AnyObject>: Hashable {
 
     public private(set) weak var referent: Referent?
 

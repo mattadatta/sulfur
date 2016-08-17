@@ -23,10 +23,10 @@ public final class TabbedViewController: UIViewController {
                     action: {
                         switch viewControllerBinding.action {
                         case .performAction(let action):
-                            return .performAction(action)
+                            return .performAction(action: action)
 
                         case .displayContent(let retrieveViewController):
-                            return .displayContent({ [weak self] tab in
+                            return .displayContent(retrieveContent: { [weak self] tab in
                                 guard
                                     let sSelf = self,
                                     let viewController = retrieveViewController(tab) else { return nil }
@@ -278,8 +278,8 @@ public enum TabAction<ContentType> {
     public typealias PerformAction = (Tab) -> Void
     public typealias RetrieveContent = (Tab) -> ContentType?
 
-    case performAction(PerformAction)
-    case displayContent(RetrieveContent)
+    case performAction(action: PerformAction)
+    case displayContent(retrieveContent: RetrieveContent)
 
     private var isPerformAction: Bool {
         switch self {
