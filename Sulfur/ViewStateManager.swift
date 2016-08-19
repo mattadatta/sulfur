@@ -205,9 +205,9 @@ public final class ViewStateManager {
     private dynamic func handleGestureRecognizer(_ gestureRecognizer: UIGestureRecognizer) {
         if gestureRecognizer === self.touchGestureRecognizer {
             // Do nothing
-        } else if gestureRecognizer == self.tapGestureRecognizer {
+        } else if gestureRecognizer == self.tapGestureRecognizer && gestureRecognizer.state == .ended {
             self.dispatch(.tap)
-        } else if gestureRecognizer == self.longPressGestureRecognizer {
+        } else if gestureRecognizer == self.longPressGestureRecognizer && gestureRecognizer.state == .ended {
             self.dispatch(.longPress)
         }
     }
