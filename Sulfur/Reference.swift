@@ -19,7 +19,7 @@ public struct AnyReference: Reference {
 
     public let reference: Any
 
-    private var _referent: () -> Any?
+    fileprivate var _referent: () -> Any?
     public var referent: Any? {
         return self._referent()
     }
@@ -39,7 +39,7 @@ public struct AnyReference: Reference {
 
 public struct StrongReference<Referent: AnyObject>: Reference, Hashable {
 
-    private var _referent: Referent
+    fileprivate var _referent: Referent
     public var referent: Referent? {
         return self._referent
     }
@@ -66,7 +66,7 @@ public struct StrongReference<Referent: AnyObject>: Reference, Hashable {
 
 public struct WeakReference<Referent: AnyObject>: Reference, Hashable {
 
-    private weak var _referent: Referent?
+    fileprivate weak var _referent: Referent?
     public var referent: Referent? {
         return self._referent
     }
@@ -139,7 +139,7 @@ public extension ValueWrapper where Value: Hashable {
 
 public final class AssociatedReference<Referent>: NSObject, NSCopying {
 
-    private var _referent: Referent
+    fileprivate var _referent: Referent
     public var referent: Referent? {
         return self._referent
     }
@@ -153,15 +153,15 @@ public final class AssociatedReference<Referent>: NSObject, NSCopying {
         self._referent = referent
     }
 
-    public func copy(with zone: NSZone? = nil) -> AnyObject {
-        return self.dynamicType.init(referent: self._referent)
+    public func copy(with zone: NSZone? = nil) -> Any {
+        return type(of: self).init(referent: self._referent)
     }
 }
 
 public extension AssociatedReference where Referent: NSCopying {
 
-    public func copy(with zone: NSZone? = nil) -> AnyObject {
-        return self.dynamicType.init(referent: self._referent.copy(with: zone) as! Referent)
+    public func copy(with zone: NSZone? = nil) -> Any {
+        return type(of: self).init(referent: self._referent.copy(with: zone) as! Referent)
     }
 }
 
@@ -193,11 +193,11 @@ public struct AssociatedUtils {
         }
     }
 
-    public static func store(for object: AnyObject, key: UnsafePointer<Void>, value: AnyObject?, policy: Policy = .retainNonAtomic) {
+    public static func store(for object: AnyObject, key: UnsafeRawPointer, value: Any?, policy: Policy = .retainNonAtomic) {
         objc_setAssociatedObject(object, key, value, policy.objcPolicy)
     }
 
-    public static func retrieve(for object: AnyObject, key: UnsafePointer<Void>) -> AnyObject? {
+    public static func retrieve(for object: AnyObject, key: UnsafeRawPointer) -> Any? {
         return objc_getAssociatedObject(object, key)
     }
 
@@ -213,7 +213,7 @@ public struct AssociatedUtils {
         case weakOrNil(object: AnyObject?)
     }
 
-    public static func store(for object: AnyObject, key: UnsafePointer<Void>, storage: Storage?) {
+    public static func store(for object: AnyObject, key: UnsafeRawPointer, storage: Storage?) {
         guard let storage = storage else {
             self.store(for: object, key: key, value: nil, policy: .copyNonAtomic)
             return
@@ -238,7 +238,7 @@ public struct AssociatedUtils {
         self.store(for: object, key: key, value: AssociatedReference(optionalReferent: reference), policy: .copyNonAtomic)
     }
 
-    public static func retrieveValue<Value>(for object: AnyObject, key: UnsafePointer<Void>) -> Value? {
+    public static func retrieveValue<Value>(for object: AnyObject, key: UnsafeRawPointer) -> Value? {
         return (self.retrieve(for: object, key: key) as? AssociatedReference<AnyReference>)?.referent?.referent as? Value
     }
 }

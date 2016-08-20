@@ -17,17 +17,17 @@ import Darwin
 
 @discardableResult
 func shell(_ args: String ...) -> (statusCode: Int, output: String) {
-    let task = Task()
-    task.launchPath = "/usr/bin/env"
-    task.arguments = args
+    let process = Process()
+    process.launchPath = "/usr/bin/env"
+    process.arguments = args
 
     let pipe = Pipe()
-    task.standardOutput = pipe
-    task.launch()
-    task.waitUntilExit()
+    process.standardOutput = pipe
+    process.launch()
+    process.waitUntilExit()
 
     let data = pipe.fileHandleForReading.readDataToEndOfFile()
-    return (Int(task.terminationStatus), String(data: data, encoding: .utf8)!.trimmingCharacters(in: .whitespacesAndNewlines))
+    return (Int(process.terminationStatus), String(data: data, encoding: .utf8)!.trimmingCharacters(in: .whitespacesAndNewlines))
 }
 
 func setPlistProperty(_ property: String, toValue value: Any) {

@@ -17,7 +17,7 @@ public protocol UINibViewInflatable {
 public extension UINibViewInflatable {
 
     public var nibName: String {
-        return String(Self.self)
+        return String(describing: Self.self)
     }
 
     public var instantiationOptions: [NSObject : AnyObject]? {

@@ -9,7 +9,7 @@ import UIKit
 
 struct Gradient {
 
-    private enum Constants {
+    fileprivate enum Constants {
 
         static let defaultColors = [
             Stop(color: .black, percent: 0.0),

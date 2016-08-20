@@ -18,7 +18,7 @@ public func inspectPrint<Object>(functionName: String = #function, fileName: Str
     }
 }
 
-public func time<Input, Output>(fn: (Input) -> Output, onTime: (CFAbsoluteTime) -> Void) -> (Input) -> Output {
+public func time<Input, Output>(fn: @escaping (Input) -> Output, onTime: @escaping (CFAbsoluteTime) -> Void) -> (Input) -> Output {
     return { (input) -> Output in
         let startTime = CFAbsoluteTimeGetCurrent()
         let result = fn(input)

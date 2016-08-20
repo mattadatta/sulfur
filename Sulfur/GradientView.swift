@@ -45,11 +45,11 @@ public final class GradientView: UIView {
         self.commonInit()
     }
 
-    private func commonInit() {
+    fileprivate func commonInit() {
         self.updateGradient()
     }
 
-    private func updateGradient() {
+    fileprivate func updateGradient() {
         let startColor = (self.reverse ? self.endData.color : self.startData.color).cgColor
         let endColor = (self.reverse ? self.startData.color : self.endData.color).cgColor
         self.gradientLayer.colors = [startColor, endColor]
@@ -90,7 +90,7 @@ public final class TwoPointGradientLayer: CAGradientLayer {
         self.commonInit()
     }
 
-    override public init(layer: AnyObject) {
+    override public init(layer: Any) {
         super.init(layer: layer)
         guard let other = layer as? TwoPointGradientLayer else {
             return
@@ -100,11 +100,11 @@ public final class TwoPointGradientLayer: CAGradientLayer {
         self.reverse = other.reverse
     }
 
-    private func commonInit() {
+    fileprivate func commonInit() {
         self.updateGradient()
     }
 
-    private func updateGradient() {
+    fileprivate func updateGradient() {
         let startColor = (self.reverse ? self.endData.color : self.startData.color).cgColor
         let endColor = (self.reverse ? self.startData.color : self.endData.color).cgColor
         self.colors = [startColor, endColor]

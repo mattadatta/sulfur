@@ -11,7 +11,7 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
 
     // MARK: Utils
 
-    private enum GridMeasurementUtils {
+    fileprivate enum GridMeasurementUtils {
 
         static func frame(for gridRect: GridRect, cellSize: CGSize, spacingSize: CGSize) -> CGRect {
             let frameX = (cellSize.width + spacingSize.width) * gridRect.x
@@ -98,14 +98,14 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
         public var section: Int = 0
         public var kind: Kind = .item(properties: ItemProperties())
 
-        override public func copy(with zone: NSZone?) -> AnyObject {
+        override public func copy(with zone: NSZone?) -> Any {
             let attrs = super.copy(with: zone) as! LayoutAttributes
             attrs.section = self.section
             attrs.kind = self.kind
             return attrs
         }
 
-        override public func isEqual(_ object: AnyObject?) -> Bool {
+        override public func isEqual(_ object: Any?) -> Bool {
             guard let other = object as? LayoutAttributes else { return false }
             return self.section == other.section && self.kind == other.kind
         }
@@ -177,7 +177,7 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
             self.init(lengthFn: { _ in return 0 })
         }
 
-        public init(lengthFn: (CGFloat) -> CGFloat, insets: UIEdgeInsets = .zero) {
+        public init(lengthFn: @escaping (CGFloat) -> CGFloat, insets: UIEdgeInsets = .zero) {
             self.lengthFn = lengthFn
             self.insets = insets
         }
@@ -207,7 +207,7 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
         public var spacingSize: CGSize
         public var oppositeSideFn: (CGFloat) -> CGFloat
 
-        public init(dimension: Dimension, numUnits: CGFloat, spacingSize: CGSize, oppositeSideFn: (CGFloat) -> CGFloat = { $0 }) {
+        public init(dimension: Dimension, numUnits: CGFloat, spacingSize: CGSize, oppositeSideFn: @escaping (CGFloat) -> CGFloat = { $0 }) {
             self.dimension = dimension
             self.numUnits = numUnits
             self.spacingSize = spacingSize
@@ -234,7 +234,7 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
         public var cellSize: CGSize
         public var oppositeDimensionSpacingFn: (CGFloat) -> CGFloat
 
-        public init(cellSize: CGSize, oppositeDimensionSpacingFn: (CGFloat) -> CGFloat = { $0 }) {
+        public init(cellSize: CGSize, oppositeDimensionSpacingFn: @escaping (CGFloat) -> CGFloat = { $0 }) {
             self.cellSize = cellSize
             self.oppositeDimensionSpacingFn = oppositeDimensionSpacingFn
         }
@@ -298,16 +298,16 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
         }
     }
 
-    public private(set) var cellSize: CGSize = .zero
-    public private(set) var spacingSize: CGSize = .zero
-    public private(set) var numUnits: Int = 0
+    public fileprivate(set) var cellSize: CGSize = .zero
+    public fileprivate(set) var spacingSize: CGSize = .zero
+    public fileprivate(set) var numUnits: Int = 0
 
-    private var layoutAttrs: [LayoutAttributes] = []
-    private var itemLayoutAttrs: [IndexPath: LayoutAttributes] = [:]
-    private var headerLayoutAttrs: [IndexPath: LayoutAttributes] = [:]
-    private var footerLayoutAttrs: [IndexPath: LayoutAttributes] = [:]
-    private var contentOffsets: [(CGFloat, CGFloat, CGFloat)] = []
-    private var contentSize: CGSize = .zero
+    fileprivate var layoutAttrs: [LayoutAttributes] = []
+    fileprivate var itemLayoutAttrs: [IndexPath: LayoutAttributes] = [:]
+    fileprivate var headerLayoutAttrs: [IndexPath: LayoutAttributes] = [:]
+    fileprivate var footerLayoutAttrs: [IndexPath: LayoutAttributes] = [:]
+    fileprivate var contentOffsets: [(CGFloat, CGFloat, CGFloat)] = []
+    fileprivate var contentSize: CGSize = .zero
 
     // MARK: UICollectionViewLayout overrides
 

@@ -239,8 +239,8 @@ public final class GridCollectionController: NSObject {
     public let gridLayout: GridCollectionViewLayout
     public weak var delegate: GridCollectionControllerDelegate?
 
-    private var itemIndexPaths: [ItemIndex: IndexPath] = [:]
-    private var itemsBySection: [[Item]] = []
+    fileprivate var itemIndexPaths: [ItemIndex: IndexPath] = [:]
+    fileprivate var itemsBySection: [[Item]] = []
 
     public var items: [Item] = [] {
         didSet {
@@ -273,8 +273,8 @@ public final class GridCollectionController: NSObject {
         }
     }
 
-    private var supplementaryIndexPaths: [SupplementaryIndex: IndexPath] = [:]
-    private var supplementariesByIndex: [SupplementaryIndex: Supplementary] = [:]
+    fileprivate var supplementaryIndexPaths: [SupplementaryIndex: IndexPath] = [:]
+    fileprivate var supplementariesByIndex: [SupplementaryIndex: Supplementary] = [:]
 
     public var supplementaries: [Supplementary] = [] {
         didSet {
@@ -313,8 +313,8 @@ public final class GridCollectionController: NSObject {
         self.collectionView.dataSource = self
         self.collectionView.delegate = self
         self.gridLayout.delegate = self
-        self.collectionView.register(ItemReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: String(ItemReusableView.self))
-        self.collectionView.register(ItemReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionFooter, withReuseIdentifier: String(ItemReusableView.self))
+        self.collectionView.register(ItemReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: ItemReusableView.cellIdentifier)
+        self.collectionView.register(ItemReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionFooter, withReuseIdentifier: ItemReusableView.cellIdentifier)
     }
 
     // MARK: API
@@ -349,30 +349,30 @@ public final class GridCollectionController: NSObject {
 
     // MARK: Internal
 
-    private func itemComponent(for indexPath: IndexPath) -> Component? {
+    fileprivate func itemComponent(for indexPath: IndexPath) -> Component? {
         guard let cell = self.collectionView.cellForItem(at: indexPath) else { return nil }
         return self.itemComponent(for: indexPath, with: cell)
     }
 
-    private func supplementaryComponent(of kind: SupplementaryIndex.Kind, for indexPath: IndexPath) -> Component? {
+    fileprivate func supplementaryComponent(of kind: SupplementaryIndex.Kind, for indexPath: IndexPath) -> Component? {
         guard let view = self.collectionView.supplementaryView(forElementKind: kind.collectionViewKind, at: indexPath) else { return nil }
         return self.supplementaryComponent(of: kind, inSection: indexPath.section, with: view)
     }
 
-    private func itemComponent(for indexPath: IndexPath, with cell: UICollectionViewCell) -> Component {
+    fileprivate func itemComponent(for indexPath: IndexPath, with cell: UICollectionViewCell) -> Component {
         let item = self.item(for: indexPath)
         let itemCell = cell as! ItemViewCell
         return Component(item: item, itemViewCell: itemCell)
     }
 
-    private func supplementaryComponent(ofCollectionViewKind elementKind: String, inSection section: Int, with view: UICollectionReusableView) -> Component? {
+    fileprivate func supplementaryComponent(ofCollectionViewKind elementKind: String, inSection section: Int, with view: UICollectionReusableView) -> Component? {
         guard let kind = GridCollectionController.SupplementaryIndex.Kind.kind(forCollectionViewKind: elementKind) else {
             return nil
         }
         return supplementaryComponent(of: kind, inSection: section, with: view)
     }
 
-    private func supplementaryComponent(of kind: SupplementaryIndex.Kind, inSection section: Int, with view: UICollectionReusableView) -> Component? {
+    fileprivate func supplementaryComponent(of kind: SupplementaryIndex.Kind, inSection section: Int, with view: UICollectionReusableView) -> Component? {
         guard let supplementary = self.supplementary(of: kind, inSection: section) else {
             return nil
         }
@@ -380,16 +380,16 @@ public final class GridCollectionController: NSObject {
         return Component(supplementary: supplementary, itemReusableView: supplementaryView)
     }
 
-    private func item(for indexPath: IndexPath) -> Item {
+    fileprivate func item(for indexPath: IndexPath) -> Item {
         return self.itemsBySection[indexPath.section][indexPath.row]
     }
 
-    private func supplementary(ofCollectionViewKind elementKind: String, inSection section: Int) -> Supplementary? {
+    fileprivate func supplementary(ofCollectionViewKind elementKind: String, inSection section: Int) -> Supplementary? {
         guard let kind = GridCollectionController.SupplementaryIndex.Kind.kind(forCollectionViewKind: elementKind) else { return nil }
         return self.supplementary(of: kind, inSection: section)
     }
 
-    private func supplementary(of kind: SupplementaryIndex.Kind, inSection section: Int) -> Supplementary? {
+    fileprivate func supplementary(of kind: SupplementaryIndex.Kind, inSection section: Int) -> Supplementary? {
         return self.supplementariesByIndex[SupplementaryIndex(section: section, kind: kind)]
     }
 }
@@ -481,7 +481,7 @@ public final class ItemViewCell: UICollectionViewCell {
         }
     }
 
-    private var didPrepareForReuse: ((ItemViewCell) -> Void)?
+    fileprivate var didPrepareForReuse: ((ItemViewCell) -> Void)?
 
     override public func prepareForReuse() {
         super.prepareForReuse()
@@ -491,7 +491,7 @@ public final class ItemViewCell: UICollectionViewCell {
 
 public final class ItemReusableView: UICollectionReusableView {
 
-    static let cellIdentifier = String(ItemReusableView.self)
+    static let cellIdentifier = String(describing: ItemReusableView.self)
 
     public internal(set) var nestedView: UIView? {
         willSet {
@@ -506,7 +506,7 @@ public final class ItemReusableView: UICollectionReusableView {
         }
     }
 
-    private var didPrepareForReuse: ((ItemReusableView) -> Void)?
+    fileprivate var didPrepareForReuse: ((ItemReusableView) -> Void)?
 
     override public func prepareForReuse() {
         super.prepareForReuse()
@@ -524,7 +524,7 @@ public protocol ComponentController: class {
 public extension ComponentController {
 
     public var viewIdentifier: String {
-        return String(Self.self)
+        return String(describing: Self.self)
     }
 }
 

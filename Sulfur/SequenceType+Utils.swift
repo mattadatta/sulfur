@@ -7,7 +7,7 @@ import Foundation
 
 public extension Sequence {
 
-    public func cartestianProduct<S where S : Sequence>(_ seq: S) -> [(Self.Iterator.Element, S.Iterator.Element)] {
+    public func cartestianProduct<S>(_ seq: S) -> [(Self.Iterator.Element, S.Iterator.Element)] where S : Sequence {
         var product: [(Self.Iterator.Element, S.Iterator.Element)] = []
         self.forEach { (s1) in
             seq.forEach { (s2) in
@@ -17,7 +17,7 @@ public extension Sequence {
         return product
     }
 
-    public func mapPass<T, U>(_ initialData: U, transform:  @noescape (Self.Iterator.Element, U) throws -> (T, U)) rethrows -> [T] {
+    public func mapPass<T, U>(_ initialData: U, transform:  (Self.Iterator.Element, U) throws -> (T, U)) rethrows -> [T] {
         var result: [T] = []
         var data = initialData
         try self.forEach { (element) in

@@ -88,7 +88,7 @@ public extension UIViewController {
         self.removeSelf(transitionFn: { $0() })
     }
 
-    public func removeSelf(transitionFn: @noescape (completionFn: () -> Void) -> Void) {
+    public func removeSelf(transitionFn: (() -> Void) -> Void) {
         self.willMove(toParentViewController: nil)
         transitionFn() {
             self.view.removeFromSuperview()
@@ -102,7 +102,7 @@ public extension UIViewController {
     }
 
     @discardableResult
-    public func addAndConstrain(_ viewController: UIViewController, with insets: UIEdgeInsets = .zero, transitionFn: @noescape (completionFn: () -> Void) -> Void) -> ConstraintGroup {
+    public func addAndConstrain(_ viewController: UIViewController, with insets: UIEdgeInsets = .zero, transitionFn: (() -> Void) -> Void) -> ConstraintGroup {
         self.addChildViewController(viewController)
         let constraintGroup = self.view.addAndConstrain(viewController.view, with: insets)
         transitionFn() {

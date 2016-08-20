@@ -9,7 +9,7 @@ import UIKit
 
 public struct Hasher: Hashable {
 
-    private enum State: Hashable {
+    fileprivate enum State: Hashable {
 
         case initial
         case computed(result: Int)
@@ -35,11 +35,11 @@ public struct Hasher: Hashable {
         }
     }
 
-    private var state: State = .initial
+    fileprivate var state: State = .initial
 
     public init() {}
 
-    private mutating func hash(value: Int) {
+    fileprivate mutating func hash(value: Int) {
         switch self.state {
         case .initial:
             self.state = .computed(result: value)

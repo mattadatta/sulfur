@@ -10,7 +10,7 @@ import UIKit
 public final class TableViewCell<View: UIView>: UITableViewCell {
 
     public static var viewReuseIdentifier: String {
-        return String(self)
+        return String(describing: self)
     }
 
     public class func registerInTableView(_ tableView: UITableView) {
@@ -22,7 +22,7 @@ public final class TableViewCell<View: UIView>: UITableViewCell {
         return (cell, cell.nestedView)
     }
 
-    public private(set) weak var nestedView: View!
+    public fileprivate(set) weak var nestedView: View!
 
     override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -34,7 +34,7 @@ public final class TableViewCell<View: UIView>: UITableViewCell {
         self.commonInit()
     }
 
-    private func commonInit() {
+    fileprivate func commonInit() {
         let view = View.init()
         self.contentView.addAndConstrain(view)
         self.nestedView = view
@@ -46,7 +46,7 @@ public final class TableViewCell<View: UIView>: UITableViewCell {
 public final class TableViewHeaderFooterView<View: UIView>: UITableViewHeaderFooterView {
 
     public static var viewReuseIdentifier: String {
-        return String(self)
+        return String(describing: self)
     }
 
     public class func registerInTableView(_ tableView: UITableView) {
@@ -58,7 +58,7 @@ public final class TableViewHeaderFooterView<View: UIView>: UITableViewHeaderFoo
         return (view, view.nestedView)
     }
 
-    public private(set) weak var nestedView: View!
+    public fileprivate(set) weak var nestedView: View!
 
     override public init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
@@ -70,7 +70,7 @@ public final class TableViewHeaderFooterView<View: UIView>: UITableViewHeaderFoo
         self.commonInit()
     }
 
-    private func commonInit() {
+    fileprivate func commonInit() {
         let view = View.init()
         self.contentView.addAndConstrain(view)
         self.nestedView = view
@@ -82,7 +82,7 @@ public final class TableViewHeaderFooterView<View: UIView>: UITableViewHeaderFoo
 public final class CollectionViewCell<View: UIView>: UICollectionViewCell {
 
     public class var viewReuseIdentifier: String {
-        return String(self)
+        return String(describing: self)
     }
 
     public class func registerInCollectionView(_ collectionView: UICollectionView) {
@@ -94,7 +94,7 @@ public final class CollectionViewCell<View: UIView>: UICollectionViewCell {
         return (cell, cell.nestedView)
     }
 
-    public private(set) weak var nestedView: View!
+    public fileprivate(set) weak var nestedView: View!
 
     override public init(frame: CGRect) {
         super.init(frame: frame)
@@ -106,7 +106,7 @@ public final class CollectionViewCell<View: UIView>: UICollectionViewCell {
         self.commonInit()
     }
 
-    private func commonInit() {
+    fileprivate func commonInit() {
         let view = View.init()
         self.contentView.addAndConstrain(view)
         self.nestedView = view
@@ -118,7 +118,7 @@ public final class CollectionViewCell<View: UIView>: UICollectionViewCell {
 public final class CollectionReusableView<View: UIView>: UICollectionReusableView {
 
     public static var viewReuseIdentifier: String {
-        return String(self)
+        return String(describing: self)
     }
 
     public class func registerInCollectionView(_ collectionView: UICollectionView, forSupplementaryViewOfKind kind: String) {
@@ -130,7 +130,7 @@ public final class CollectionReusableView<View: UIView>: UICollectionReusableVie
         return (view, view.nestedView)
     }
 
-    public private(set) weak var nestedView: View!
+    public fileprivate(set) weak var nestedView: View!
 
     override public init(frame: CGRect) {
         super.init(frame: frame)
@@ -142,7 +142,7 @@ public final class CollectionReusableView<View: UIView>: UICollectionReusableVie
         self.commonInit()
     }
 
-    private func commonInit() {
+    fileprivate func commonInit() {
         let view = View.init()
         self.addAndConstrain(view)
         self.nestedView = view

@@ -10,7 +10,7 @@ import UIKit.UIGestureRecognizerSubclass
 
 public final class ViewStateManager {
 
-    public typealias TouchEventCallback = (manager: ViewStateManager, view: UIView, touchEvent: TouchEvent) -> Void
+    public typealias TouchEventCallback = (ViewStateManager, UIView, TouchEvent) -> Void
 
     public struct TouchEvent: OptionSet {
 
@@ -31,7 +31,7 @@ public final class ViewStateManager {
         public static let cancel = TouchEvent(rawValue: 1 << 8)
     }
 
-    public typealias StateEventCallback = (manager: ViewStateManager, view: UIView, fromState: State, toState: State) -> Void
+    public typealias StateEventCallback = (ViewStateManager, UIView, State, State) -> Void
 
     public struct State: OptionSet {
 
@@ -46,7 +46,7 @@ public final class ViewStateManager {
         public static let highlighted = State(rawValue: 1 << 2)
     }
 
-    public typealias GestureEventCallback = (manager: ViewStateManager, view: UIView, gestureEvent: GestureEvent) -> Void
+    public typealias GestureEventCallback = (ViewStateManager, UIView, GestureEvent) -> Void
 
     public enum GestureEvent {
         case tap
@@ -55,26 +55,26 @@ public final class ViewStateManager {
 
     public final class Token: Hashable {
 
-        private enum Action {
+        fileprivate enum Action {
             case touch(event: TouchEvent, callback: TouchEventCallback)
             case gesture(event: GestureEvent, callback: GestureEventCallback)
             case state(callback: StateEventCallback)
         }
 
-        private weak var stateManager: ViewStateManager?
-        private let action: Action
+        fileprivate weak var stateManager: ViewStateManager?
+        fileprivate let action: Action
 
-        private init(stateManager: ViewStateManager, touchEvent: TouchEvent, callback: TouchEventCallback) {
+        fileprivate init(stateManager: ViewStateManager, touchEvent: TouchEvent, callback: TouchEventCallback) {
             self.stateManager = stateManager
             self.action = .touch(event: touchEvent, callback: callback)
         }
 
-        private init(stateManager: ViewStateManager, gestureEvent: GestureEvent, callback: GestureEventCallback) {
+        fileprivate init(stateManager: ViewStateManager, gestureEvent: GestureEvent, callback: GestureEventCallback) {
             self.stateManager = stateManager
             self.action = .gesture(event: gestureEvent, callback: callback)
         }
 
-        private init(stateManager: ViewStateManager, callback: StateEventCallback) {
+        fileprivate init(stateManager: ViewStateManager, callback: StateEventCallback) {
             self.stateManager = stateManager
             self.action = .state(callback: callback)
         }
@@ -115,7 +115,7 @@ public final class ViewStateManager {
         }
     }
 
-    private final class TouchGestureRecognizer: UIGestureRecognizer, UIGestureRecognizerDelegate {
+    fileprivate final class TouchGestureRecognizer: UIGestureRecognizer, UIGestureRecognizerDelegate {
 
         unowned let stateManager: ViewStateManager
 
@@ -202,7 +202,7 @@ public final class ViewStateManager {
         }
     }
 
-    private dynamic func handleGestureRecognizer(_ gestureRecognizer: UIGestureRecognizer) {
+    fileprivate dynamic func handleGestureRecognizer(_ gestureRecognizer: UIGestureRecognizer) {
         if gestureRecognizer === self.touchGestureRecognizer {
             // Do nothing
         } else if gestureRecognizer == self.tapGestureRecognizer && gestureRecognizer.state == .ended {
@@ -212,10 +212,10 @@ public final class ViewStateManager {
         }
     }
 
-    public private(set) weak var view: UIView?
-    private var touchGestureRecognizer: TouchGestureRecognizer!
-    private var tapGestureRecognizer: UITapGestureRecognizer!
-    private var longPressGestureRecognizer: UILongPressGestureRecognizer!
+    public fileprivate(set) weak var view: UIView?
+    fileprivate var touchGestureRecognizer: TouchGestureRecognizer!
+    fileprivate var tapGestureRecognizer: UITapGestureRecognizer!
+    fileprivate var longPressGestureRecognizer: UILongPressGestureRecognizer!
 
     public var isTracking: Bool { return self.touchGestureRecognizer.isTracking }
 
@@ -243,8 +243,8 @@ public final class ViewStateManager {
         didSet { self.configuration?.didAssociateWithViewStateManager(self) }
     }
 
-    private var weakRegistry: Set<WeakReference<Token>> = []
-    private var storedRegistry: Set<Token> = []
+    fileprivate var weakRegistry: Set<WeakReference<Token>> = []
+    fileprivate var storedRegistry: Set<Token> = []
 
     public func subscribe(to touchEvent: TouchEvent, with callback: TouchEventCallback) -> Token {
         let token = Token(stateManager: self, touchEvent: touchEvent, callback: callback)
@@ -270,14 +270,14 @@ public final class ViewStateManager {
         token.stateManager = nil
     }
 
-    private func dispatch(_ touchEvent: TouchEvent) {
+    fileprivate func dispatch(_ touchEvent: TouchEvent) {
         guard let view = self.view else { return }
         self.weakRegistry.forEach { weakToken in
             guard let token = weakToken.referent else { return }
             switch token.action {
             case .touch(let event, let callback):
                 if !event.intersection(touchEvent).isEmpty {
-                    callback(manager: self, view: view, touchEvent: touchEvent)
+                    callback(self, view, touchEvent)
                 }
 
             default:
@@ -287,14 +287,14 @@ public final class ViewStateManager {
         self.configuration?.viewStateManager(self, didDispatch: touchEvent)
     }
 
-    private func dispatch(_ gestureEvent: GestureEvent) {
+    fileprivate func dispatch(_ gestureEvent: GestureEvent) {
         guard let view = self.view else { return }
         self.weakRegistry.forEach { weakToken in
             guard let token = weakToken.referent else { return }
             switch token.action {
             case .gesture(let event, let callback):
                 if event == gestureEvent {
-                    callback(manager: self, view: view, gestureEvent: event)
+                    callback(self, view, event)
                 }
 
             default:
@@ -304,13 +304,13 @@ public final class ViewStateManager {
         self.configuration?.viewStateManager(self, didDispatch: gestureEvent)
     }
 
-    private func dispatchStateChange(from fromState: State, to toState: State) {
+    fileprivate func dispatchStateChange(from fromState: State, to toState: State) {
         guard let view = self.view else { return }
         self.weakRegistry.forEach { weakToken in
             guard let token = weakToken.referent else { return }
             switch token.action {
             case .state(let callback):
-                callback(manager: self, view: view, fromState: fromState, toState: toState)
+                callback(self, view, fromState, toState)
 
             default:
                 break
@@ -322,7 +322,7 @@ public final class ViewStateManager {
 
 public extension ViewStateManager {
 
-    private func includeState(_ newState: State, include: Bool) {
+    fileprivate func includeState(_ newState: State, include: Bool) {
         if include {
             self.state.insert(newState)
         } else {
@@ -360,14 +360,14 @@ public protocol ViewStateManagerConfiguration: class {
     func viewStateManager(_ viewStateManager: ViewStateManager, didDispatchStateChangeFrom fromState: ViewStateManager.State, to toState: ViewStateManager.State)
 }
 
-private struct ViewStateManagerConfigurationKeys {
+fileprivate struct ViewStateManagerConfigurationKeys {
 
     static var stateManagerKey: Void = ()
 }
 
 public extension ViewStateManagerConfiguration {
 
-    public private(set) var viewStateManager: ViewStateManager? {
+    public fileprivate(set) var viewStateManager: ViewStateManager? {
         get { return AssociatedUtils.retrieveValue(for: self, key: &ViewStateManagerConfigurationKeys.stateManagerKey) }
         set { AssociatedUtils.store(for: self, key: &ViewStateManagerConfigurationKeys.stateManagerKey, storage: .weakOrNil(object: newValue)) }
     }
@@ -375,12 +375,12 @@ public extension ViewStateManagerConfiguration {
 
 public extension UIView {
 
-    private struct ViewStateManagerKeys {
+    fileprivate struct ViewStateManagerKeys {
 
         static var stateManagerKey: Void = ()
     }
 
-    private var _stateManager: ViewStateManager? {
+    fileprivate var _stateManager: ViewStateManager? {
         get { return AssociatedUtils.retrieveValue(for: self, key: &ViewStateManagerKeys.stateManagerKey) }
         set { AssociatedUtils.store(for: self, key: &ViewStateManagerKeys.stateManagerKey, storage: .strongOrNil(object: newValue)) }
     }

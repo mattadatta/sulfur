@@ -16,10 +16,10 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   Cartography:
-    :commit: 56e6059235ccfa0c9bdd59269c9bc3c1b76664e4
+    :commit: f3ca629d18974cbb35456c7b1a96ad30d3badc4e
     :git: https://github.com/mattadatta/Cartography.git
   XCGLogger:
-    :commit: 15b41b3542ecaedb2d54d9a41313a66f20979814
+    :commit: c2370a83b0c07671a6b9fd1228698944324bb5be
     :git: https://github.com/mattadatta/XCGLogger.git
 
 SPEC CHECKSUMS:

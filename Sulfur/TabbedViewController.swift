@@ -14,7 +14,7 @@ public final class TabbedViewController: UIViewController {
     public typealias TabViewBinding = TabbedView.TabViewBinding
     public typealias TabbedViewControllerBinding = TabBinding<UIViewController>
 
-    private var tabMappings: [Tab: TabbedViewControllerBinding] = [:]
+    fileprivate var tabMappings: [Tab: TabbedViewControllerBinding] = [:]
     public var tabBindings: [TabbedViewControllerBinding] = [] {
         didSet {
             self.tabbedView.tabBindings = self.tabBindings.map { viewControllerBinding in
@@ -46,9 +46,9 @@ public final class TabbedViewController: UIViewController {
 
     public weak var delegate: TabbedViewControllerDelegate?
 
-    public private(set) var activeViewController: UIViewController?
+    public fileprivate(set) var activeViewController: UIViewController?
 
-    public private(set) weak var tabbedView: TabbedView!
+    public fileprivate(set) weak var tabbedView: TabbedView!
     public var tabBarView: TabBarView {
         return self.tabbedView.tabBarView
     }
@@ -63,7 +63,7 @@ public final class TabbedViewController: UIViewController {
         self.commonInit()
     }
 
-    private func commonInit() {
+    fileprivate func commonInit() {
         self.loadViewIfNeeded()
     }
 
@@ -142,10 +142,10 @@ public final class TabbedView: UIView {
     public typealias Tab = TabBarView.Tab
     public typealias TabViewBinding = TabBinding<UIView>
 
-    private weak var containerView: UIView!
-    public private(set) weak var tabBarView: TabBarView!
+    fileprivate weak var containerView: UIView!
+    public fileprivate(set) weak var tabBarView: TabBarView!
 
-    private var tabMappings: [Tab: TabViewBinding] = [:]
+    fileprivate var tabMappings: [Tab: TabViewBinding] = [:]
     public var tabBindings: [TabViewBinding] = [] {
         didSet {
             self.tabBarView.tabs = self.tabBindings.map({ $0.tab })
@@ -159,14 +159,14 @@ public final class TabbedView: UIView {
 
     public weak var delegate: TabbedViewDelegate?
 
-    public private(set) var activeView: UIView?
+    public fileprivate(set) var activeView: UIView?
 
     public enum TabBarAlignment {
         case top(CGFloat)
         case bottom(CGFloat)
     }
 
-    private var tabBarConstraintGroup = ConstraintGroup()
+    fileprivate var tabBarConstraintGroup = ConstraintGroup()
     public var tabBarAlignment: TabBarAlignment = .top(0) {
         didSet {
             self.tabBarConstraintGroup = Cartography.constrain(self, self.tabBarView, replace: self.tabBarConstraintGroup) { superview, tabBarView in
@@ -182,7 +182,7 @@ public final class TabbedView: UIView {
         }
     }
 
-    private var tabBarHeightConstraintGroup = ConstraintGroup()
+    fileprivate var tabBarHeightConstraintGroup = ConstraintGroup()
     public var tabBarHeight: CGFloat = -1 {
         didSet {
             guard self.tabBarHeight != oldValue else { return }
@@ -202,7 +202,7 @@ public final class TabbedView: UIView {
         self.commonInit()
     }
 
-    private func commonInit() {
+    fileprivate func commonInit() {
         let containerView = UIView()
         self.addAndConstrain(containerView)
         self.containerView = containerView
@@ -281,14 +281,14 @@ public enum TabAction<ContentType> {
     case performAction(action: PerformAction)
     case displayContent(retrieveContent: RetrieveContent)
 
-    private var isPerformAction: Bool {
+    fileprivate var isPerformAction: Bool {
         switch self {
         case .performAction(_): return true
         default: return false
         }
     }
 
-    private var isDisplayContent: Bool {
+    fileprivate var isDisplayContent: Bool {
         switch self {
         case .displayContent(_): return true
         default: return false
@@ -346,7 +346,7 @@ public final class TabBarView: UIView {
         }
     }
 
-    private final class TabManager {
+    fileprivate final class TabManager {
 
         unowned let tabBarView: TabBarView
         let tab: Tab
@@ -391,7 +391,7 @@ public final class TabBarView: UIView {
         }
     }
 
-    private var tabManagers: [TabManager] = [] {
+    fileprivate var tabManagers: [TabManager] = [] {
         willSet {
             self.tabManagers.forEach { tabManager in
                 tabManager.uninstall()
@@ -404,15 +404,15 @@ public final class TabBarView: UIView {
         }
     }
 
-    private weak var stackView: UIStackView!
+    fileprivate weak var stackView: UIStackView!
 
     public weak var delegate: TabBarViewDelegate?
 
-    private var forceTabReselection = false
-    private var dirtySelection = false
-    private var desiredIndex: Int?
+    fileprivate var forceTabReselection = false
+    fileprivate var dirtySelection = false
+    fileprivate var desiredIndex: Int?
 
-    private var _selectedIndex: Int?
+    fileprivate var _selectedIndex: Int?
     public var selectedIndex: Int? {
         get {
             if self.dirtySelection { return self.desiredIndex }
@@ -421,8 +421,8 @@ public final class TabBarView: UIView {
         set { self.setDesiredIndex(newValue) }
     }
 
-    private func setDesiredIndex(_ index: Int?, needsLayout: Bool = true) {
-        if index < 0 || index >= self.tabManagers.count {
+    fileprivate func setDesiredIndex(_ index: Int?, needsLayout: Bool = true) {
+        if let index = index, index < 0 || index >= self.tabManagers.count {
             self.desiredIndex = nil
         } else {
             self.desiredIndex = index
@@ -435,7 +435,7 @@ public final class TabBarView: UIView {
         }
     }
 
-    private func updateSelectedIndexIfNecessary() {
+    fileprivate func updateSelectedIndexIfNecessary() {
         guard self.dirtySelection || self.forceTabReselection else { return }
 
         let currentTabManager = self.tabManager(forIndex: self._selectedIndex)
@@ -462,7 +462,7 @@ public final class TabBarView: UIView {
         return (selectedIndex, self.tabManagers[selectedIndex].tab)
     }
 
-    private func tabManager(forIndex index: Int?) -> TabManager? {
+    fileprivate func tabManager(forIndex index: Int?) -> TabManager? {
         if let index = index {
             return self.tabManagers[index]
         } else {
@@ -480,7 +480,7 @@ public final class TabBarView: UIView {
         self.commonInit()
     }
 
-    private func commonInit() {
+    fileprivate func commonInit() {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
@@ -494,7 +494,7 @@ public final class TabBarView: UIView {
         self.updateSelectedIndexIfNecessary()
     }
 
-    private func didTapView(for tabManager: TabManager) {
+    fileprivate func didTapView(for tabManager: TabManager) {
         self.setDesiredIndex(tabManager.index, needsLayout: false)
         self.updateSelectedIndexIfNecessary()
     }

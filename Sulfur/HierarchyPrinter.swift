@@ -5,7 +5,7 @@
 
 import UIKit
 
-public struct HierarchyPrinter<Node, Inspector: NodeInspector where Inspector.Node == Node> {
+public struct HierarchyPrinter<Node, Inspector: NodeInspector> where Inspector.Node == Node {
 
     public var root: Node
     public var inspector: Inspector
@@ -61,7 +61,7 @@ public struct ViewNodeInspector: NodeInspector {
     }
 
     public func describe(_ node: UIView, depth: Int, prefix: String, last: Bool) -> String {
-        return "[\(node.dynamicType): Frame = \(node.frame)]"
+        return "[\(type(of: node)): Frame = \(node.frame)]"
     }
 }
 
