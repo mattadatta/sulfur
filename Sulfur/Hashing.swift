@@ -58,6 +58,22 @@ public struct Hasher: Hashable {
         return hasher
     }
 
+    public mutating func add<C: Collection>(parts: C?) where C.Iterator.Element: HashablePart {
+        if let parts = parts {
+            parts.forEach { part in
+                self.add(part: part)
+            }
+        } else {
+            self.hash(value: 0)
+        }
+    }
+
+    public func adding<C: Collection>(parts: C?) -> Hasher where C.Iterator.Element: HashablePart {
+        var hasher = self
+        hasher.add(parts: parts)
+        return hasher
+    }
+
     public mutating func add<H: Hashable>(hashable: H?) {
         self.hash(value: hashable?.hashValue ?? 0)
     }
@@ -65,6 +81,38 @@ public struct Hasher: Hashable {
     public func adding<H: Hashable>(hashable: H?) -> Hasher {
         var hasher = self
         hasher.add(hashable: hashable)
+        return hasher
+    }
+
+    public mutating func add<H: Hashable, C: Collection>(hashables: C?) where C.Iterator.Element == H {
+        if let hashables = hashables {
+            hashables.forEach { hashable in
+                self.add(hashable: hashable)
+            }
+        } else {
+            self.hash(value: 0)
+        }
+    }
+
+    public func adding<H: Hashable, C: Collection>(hashables: C?) -> Hasher where C.Iterator.Element == H {
+        var hasher = self
+        hasher.add(hashables: hashables)
+        return hasher
+    }
+
+    public mutating func add<C: Collection>(anyHashables: C?) where C.Iterator.Element == AnyHashable {
+        if let hashables = anyHashables {
+            hashables.forEach { hashable in
+                self.add(hashable: hashable)
+            }
+        } else {
+            self.hash(value: 0)
+        }
+    }
+
+    public func adding<C: Collection>(anyHashables: C?) -> Hasher where C.Iterator.Element == AnyHashable {
+        var hasher = self
+        hasher.add(anyHashables: anyHashables)
         return hasher
     }
 
@@ -79,6 +127,22 @@ public struct Hasher: Hashable {
     public func adding(object: AnyObject?) -> Hasher {
         var hasher = self
         hasher.add(object: object)
+        return hasher
+    }
+
+    public mutating func add<C: Collection>(objects: C?) where C.Iterator.Element: AnyObject {
+        if let objects = objects {
+            objects.forEach { object in
+                self.add(object: object)
+            }
+        } else {
+            self.hash(value: 0)
+        }
+    }
+
+    public func adding<C: Collection>(objects: C?) -> Hasher where C.Iterator.Element == AnyObject {
+        var hasher = self
+        hasher.add(objects: objects)
         return hasher
     }
 
