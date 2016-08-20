@@ -13,12 +13,3 @@ abstract_target 'SulfurProject' do
   target 'SulfurTests' do
   end
 end
-
-# Xcode 8 beta 4
-post_install do |installer|
-  installer.pods_project.targets.each do |target|
-    target.build_configurations.each do |config|
-      config.build_settings['SWIFT_VERSION'] = '3.0'
-    end
-  end
-end
