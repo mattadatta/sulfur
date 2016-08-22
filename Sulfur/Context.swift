@@ -15,20 +15,20 @@ public final class Context {
 
     // MARK: ContextToken
 
-    fileprivate var contextTokens: Set<WeakReference<ContextToken>> = []
+    fileprivate var weakTokens: Set<WeakReference<ContextToken>> = []
 
-    fileprivate var unwrappedTokens: Set<ContextToken> {
-        return Set(self.contextTokens.flatMap({ $0.referent }))
+    fileprivate var tokens: Set<ContextToken> {
+        return Set(self.weakTokens.flatMap({ $0.referent }))
     }
 
     fileprivate func generateToken() -> ContextToken {
         let token = ContextToken(context: self)
-        self.contextTokens.insert(WeakReference(referent: token))
+        self.weakTokens.insert(WeakReference(referent: token))
         return token
     }
 
     fileprivate func remove(_ token: ContextToken) {
-        self.contextTokens = Set(self.contextTokens.filter({ $0.referent != token }))
+        self.weakTokens = Set(self.weakTokens.filter({ $0.referent != token }))
     }
 
     // MARK: Services
@@ -41,26 +41,48 @@ public final class Context {
     fileprivate var services: [AnyContextServiceTag: AnyContextService] = [:]
 
     public func store<Tag: ContextServiceTag, Service>(service: Service?, for tag: Tag) where Service == Tag.Service {
-        let tag = AnyContextServiceTag(tag: tag)
-        if let existingService = self.services[tag] {
-            let service = AnyContextService(service: existingService)
-            service.removed(from: self)
-            service.context = nil
-            self.dispatch(.removed(tag: tag, service: service))
+        let anyTag = tag as? AnyContextServiceTag ?? AnyContextServiceTag(tag: tag)
+        if let service = self.services[anyTag] {
+            self.remove(service: service.baseService)
+            self.dispatch(.removed(tag: anyTag, service: service))
         }
 
         let service = AnyContextService(optionalService: service)
-        self.services[tag] = service
+        self.services[anyTag] = service
 
         if let service = service {
-            service.context = self
-            service.added(to: self)
-            self.dispatch(.added(tag: tag, service: service))
+            self.add(service: service.baseService)
+            self.dispatch(.added(tag: anyTag, service: service))
+        }
+    }
+
+    private func add(service: Any) {
+        if let contextNodeContainer = service as? ContextNodeContainer {
+            for child in contextNodeContainer.childContextObjects {
+                self.add(service: child)
+            }
+        }
+        if let contextServiceNode = service as? ContextServiceNode, contextServiceNode.context == nil {
+            contextServiceNode.context = self
+            contextServiceNode.added(to: self)
+        }
+    }
+
+    private func remove(service: Any) {
+        if let contextServiceNode = service as? ContextServiceNode, contextServiceNode.context != nil {
+            contextServiceNode.removed(from: self)
+            contextServiceNode.context = nil
+        }
+        if let contextNodeContainer = service as? ContextNodeContainer {
+            for child in contextNodeContainer.childContextObjects {
+                self.remove(service: child)
+            }
         }
     }
 
     public func service<Tag: ContextServiceTag, Service>(for tag: Tag) -> Service? where Service == Tag.Service {
-        return self.services[AnyContextServiceTag(tag: tag)]?.baseService as? Service
+        let anyTag = tag as? AnyContextServiceTag ?? AnyContextServiceTag(tag: tag)
+        return self.services[anyTag]?.baseService as? Service
     }
 
     public func serviceComponent<Tag: ContextServiceTag, Service> (for tag: Tag) -> Service.Component? where Service == Tag.Service {
@@ -68,10 +90,7 @@ public final class Context {
     }
 
     fileprivate func dispatch(_ serviceEvent: ServiceEvent) {
-        self.unwrappedTokens.forEach { token in
-            guard let contextServiceAware = token.contextAware as? ContextServiceAware else { return }
-            contextServiceAware.contextDispatched(serviceEvent)
-        }
+        // TODO:
     }
 
     // MARK: Wrapping
@@ -81,25 +100,25 @@ public final class Context {
         if let contextPreloadable = obj as? ContextPreloadable {
             contextPreloadable.contextPreload()
         }
-        if let contextAwareContainer = obj as? ContextAwareContainer {
-            for child in contextAwareContainer.childObjects {
+        if let contextNodeContainer = obj as? ContextNodeContainer {
+            for child in contextNodeContainer.childContextObjects {
                 self.wrap(child)
             }
         }
         if let viewController = obj as? UIViewController {
             self.wrap(viewController.view)
         }
-        self.setupContextAwareIfNecessary(obj)
+        self.setupContextNodeIfNecessary(obj)
         return obj
     }
 
-    fileprivate func setupContextAwareIfNecessary(_ obj: Any) {
-        guard let contextAware = obj as? ContextAware, contextAware.contextToken == nil else { return }
+    fileprivate func setupContextNodeIfNecessary(_ obj: Any) {
+        guard let contextNode = obj as? ContextNode, contextNode.contextToken == nil else { return }
 
         let contextToken = self.generateToken()
-        contextToken.contextAware = contextAware
-        contextAware.contextToken = contextToken
-        contextAware.contextAvailable()
+        contextToken.contextNode = contextNode
+        contextNode.contextToken = contextToken
+        contextNode.contextAvailable()
     }
 }
 
@@ -119,7 +138,7 @@ public extension Context {
 public final class ContextToken: Hashable {
 
     public let context: Context
-    fileprivate weak var contextAware: ContextAware?
+    fileprivate weak var contextNode: ContextNode?
 
     fileprivate init(context: Context) {
         self.context = context
@@ -162,27 +181,27 @@ fileprivate extension UIStoryboard {
     }
 }
 
-// MARK: - ContextAware
+// MARK: - ContextNode
 
-public protocol ContextAware: class {
+public protocol ContextNode: class {
 
     func contextAvailable()
 }
 
-fileprivate struct ContextAwareKeys {
+fileprivate struct ContextNodeKeys {
 
     static var contextTokenKey: Void = ()
 }
 
-extension ContextAware {
+extension ContextNode {
 
     var contextToken: ContextToken? {
-        get { return AssociatedUtils.retrieveValue(for: self, key: &ContextAwareKeys.contextTokenKey) }
-        set { AssociatedUtils.store(for: self, key: &ContextAwareKeys.contextTokenKey, storage: .strongOrNil(object: newValue)) }
+        get { return AssociatedUtils.retrieveValue(for: self, key: &ContextNodeKeys.contextTokenKey) }
+        set { AssociatedUtils.store(for: self, key: &ContextNodeKeys.contextTokenKey, storage: .strongOrNil(object: newValue)) }
     }
 }
 
-public extension ContextAware {
+public extension ContextNode {
 
     public var context: Context {
         return self.contextToken!.context
@@ -201,7 +220,7 @@ public extension ContextAware {
     }
 }
 
-public extension ContextAware where Self: UIViewController {
+public extension ContextNode where Self: UIViewController {
 
     /**
      Instantiate a view controller from the view controller's storyboard. The `UIViewController` subclass you're
@@ -220,23 +239,23 @@ public extension ContextAware where Self: UIViewController {
     }
 }
 
-// MARK: - ContextAwareContainer
+// MARK: - ContextNodeContainer
 
-public protocol ContextAwareContainer {
+public protocol ContextNodeContainer {
 
-    var childObjects: [Any] { get }
+    var childContextObjects: [Any] { get }
 }
 
-extension UIViewController: ContextAwareContainer {
+extension UIViewController: ContextNodeContainer {
 
-    public var childObjects: [Any] {
+    public var childContextObjects: [Any] {
         return self.childViewControllers.map({ $0 })
     }
 }
 
-extension UIView: ContextAwareContainer {
+extension UIView: ContextNodeContainer {
 
-    public var childObjects: [Any] {
+    public var childContextObjects: [Any] {
         return self.subviews.map({ $0 })
     }
 }
@@ -249,7 +268,7 @@ public protocol ContextPreloadable {
 extension UIViewController: ContextPreloadable {
 
     public func contextPreload() {
-        guard let contextAware = self as? ContextAware, contextAware.contextToken == nil else { return }
+        guard let contextNode = self as? ContextNode, contextNode.contextToken == nil else { return }
         self.loadViewIfNeeded()
     }
 }
@@ -257,7 +276,7 @@ extension UIViewController: ContextPreloadable {
 extension UIView: ContextPreloadable {
 
     public func contextPreload() {
-        guard let contextAware = self as? ContextAware, contextAware.contextToken == nil else { return }
+        guard let contextNode = self as? ContextNode, contextNode.contextToken == nil else { return }
         guard let inflatable = self as? UINibViewInflatable else { return }
         let view = inflatable.inflateView()
         self.addAndConstrain(view)
@@ -266,26 +285,36 @@ extension UIView: ContextPreloadable {
 
 // MARK: - ContextService
 
-public protocol ContextService: class {
-    associatedtype Component
+public protocol ContextServiceNode: class {
 
     var context: Context? { get set } // Fulfilled by extension
-    var component: Component { get }
 
     func added(to context: Context)
     func removed(from context: Context)
 }
 
-fileprivate struct ContextServiceKeys {
+public protocol ContextService: ContextServiceNode {
+    associatedtype Component
+
+    var component: Component { get }
+}
+
+fileprivate struct ContextServiceNodeKeys {
 
     static var contextKey: Void = ()
 }
 
-public extension ContextService {
+public extension ContextServiceNode {
 
     public var context: Context? {
-        get { return AssociatedUtils.retrieveValue(for: self, key: &ContextServiceKeys.contextKey) }
-        set { AssociatedUtils.store(for: self, key: &ContextServiceKeys.contextKey, storage: .weakOrNil(object: newValue)) }
+        get { return AssociatedUtils.retrieveValue(for: self, key: &ContextServiceNodeKeys.contextKey) }
+        set { AssociatedUtils.store(for: self, key: &ContextServiceNodeKeys.contextKey, storage: .weakOrNil(object: newValue)) }
+    }
+
+    public func added(to context: Context) {
+    }
+
+    public func removed(from context: Context) {
     }
 }
 
@@ -385,21 +414,16 @@ public struct AnyContextServiceTag: ContextServiceTag, Hashable {
         self._equalTo = { ($0.tag as? Tag) == tag }
         self._hashValue = { tag.hashValue }
     }
-
+    
     public var serviceID: String {
         return self._serviceID()
     }
-
+    
     public var hashValue: Int {
         return self._hashValue()
     }
-
+    
     public static func == (lhs: AnyContextServiceTag, rhs: AnyContextServiceTag) -> Bool {
         return lhs._equalTo(rhs)
     }
-}
-
-public protocol ContextServiceAware: class {
-
-    func contextDispatched(_ serviceEvent: Context.ServiceEvent)
 }
