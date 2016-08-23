@@ -195,7 +195,7 @@ fileprivate struct ContextNodeKeys {
 
 extension ContextNode {
 
-    var contextToken: ContextToken? {
+    public fileprivate(set) var contextToken: ContextToken? {
         get { return AssociatedUtils.retrieveValue(for: self, key: &ContextNodeKeys.contextTokenKey) }
         set { AssociatedUtils.store(for: self, key: &ContextNodeKeys.contextTokenKey, storage: .strongOrNil(object: newValue)) }
     }

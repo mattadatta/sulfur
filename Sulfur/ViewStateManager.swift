@@ -207,7 +207,7 @@ public final class ViewStateManager {
             // Do nothing
         } else if gestureRecognizer == self.tapGestureRecognizer && gestureRecognizer.state == .ended {
             self.dispatch(.tap)
-        } else if gestureRecognizer == self.longPressGestureRecognizer && gestureRecognizer.state == .ended {
+        } else if gestureRecognizer == self.longPressGestureRecognizer && gestureRecognizer.state == .began {
             self.dispatch(.longPress)
         }
     }
