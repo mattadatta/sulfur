@@ -39,6 +39,7 @@ public final class Context {
     }
 
     fileprivate var services: [AnyContextServiceTag: AnyContextService] = [:]
+    fileprivate var serviceCallbacks: [AnyContextServiceTag: [ServiceDispatchCallback]] = [:]
 
     public func store<Tag: ContextServiceTag, Service>(service: Service?, for tag: Tag) where Service == Tag.Service {
         let anyTag = tag as? AnyContextServiceTag ?? AnyContextServiceTag(tag: tag)
@@ -53,6 +54,7 @@ public final class Context {
         if let service = service {
             self.add(service: service.baseService)
             self.dispatch(.added(tag: anyTag, service: service))
+            self.prepareServiceDispatch(for: anyTag)
         }
     }
 
@@ -89,6 +91,31 @@ public final class Context {
         return self.service(for: tag)?.component
     }
 
+    public func whenAvailable<Tag: ContextServiceTag, Service>(serviceForTag tag: Tag, callback: @escaping (Service, Service.Component) -> Void) where Service == Tag.Service {
+        let anyTag = tag as? AnyContextServiceTag ?? AnyContextServiceTag(tag: tag)
+        let dispatchCallback = ServiceDispatchCallback(callback: callback)
+        var callbacks = self.serviceCallbacks[anyTag] ?? []
+        callbacks.append(dispatchCallback)
+        self.serviceCallbacks[anyTag] = callbacks
+        self.prepareServiceDispatch(for: anyTag)
+    }
+
+    private func prepareServiceDispatch(for tag: AnyContextServiceTag) {
+        DispatchQueue.main.async { [weak self] in
+            self?.dispatchServiceCallbacks(for: tag)
+        }
+    }
+
+    private func dispatchServiceCallbacks(for tag: AnyContextServiceTag) {
+        guard
+            let callbacks = self.serviceCallbacks[tag],
+            let service = self.services[tag] else { return }
+        callbacks.forEach { callback in
+            callback.invoke(with: service)
+        }
+        self.serviceCallbacks[tag] = nil
+    }
+
     fileprivate func dispatch(_ serviceEvent: ServiceEvent) {
         // TODO:
     }
@@ -119,6 +146,22 @@ public final class Context {
         contextToken.contextNode = contextNode
         contextNode.contextToken = contextToken
         contextNode.contextAvailable()
+    }
+}
+
+private struct ServiceDispatchCallback {
+
+    private let _callback: (AnyContextService) -> Void
+
+    init<Service: ContextService>(callback: @escaping (Service, Service.Component) -> Void) {
+        self._callback = { anyService in
+            guard let service = anyService.baseService as? Service else { return }
+            callback(service, service.component)
+        }
+    }
+
+    func invoke(with service: AnyContextService) {
+        self._callback(service)
     }
 }
 
@@ -190,7 +233,7 @@ public protocol ContextNode: class {
 
 fileprivate struct ContextNodeKeys {
 
-    static var contextTokenKey: Void = ()
+    static var contextTokenKey: UInt8 = 0
 }
 
 extension ContextNode {
@@ -299,9 +342,9 @@ public protocol ContextService: ContextServiceNode {
     var component: Component { get }
 }
 
-fileprivate struct ContextServiceNodeKeys {
+private struct ContextServiceNodeKeys {
 
-    static var contextKey: Void = ()
+    static var contextKey: UInt8 = 0
 }
 
 public extension ContextServiceNode {

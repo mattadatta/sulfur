@@ -362,7 +362,7 @@ public protocol ViewStateManagerConfiguration: class {
 
 fileprivate struct ViewStateManagerConfigurationKeys {
 
-    static var stateManagerKey: Void = ()
+    static var stateManagerKey: UInt8 = 0
 }
 
 public extension ViewStateManagerConfiguration {
@@ -377,7 +377,7 @@ public extension UIView {
 
     fileprivate struct ViewStateManagerKeys {
 
-        static var stateManagerKey: Void = ()
+        static var stateManagerKey: UInt8 = 0
     }
 
     fileprivate var _stateManager: ViewStateManager? {
