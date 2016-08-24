@@ -215,7 +215,7 @@ public struct AssociatedUtils {
 
     public static func store(for object: AnyObject, key: UnsafeRawPointer, storage: Storage?) {
         guard let storage = storage else {
-            self.store(for: object, key: key, value: nil, policy: .copyNonAtomic)
+            self.store(for: object, key: key, value: nil, policy: .retainNonAtomic)
             return
         }
 
@@ -235,7 +235,7 @@ public struct AssociatedUtils {
             reference = AnyReference(optionalReference: WeakReference(optionalReferent: object))
         }
 
-        self.store(for: object, key: key, value: AssociatedReference(optionalReferent: reference), policy: .copyNonAtomic)
+        self.store(for: object, key: key, value: AssociatedReference(optionalReferent: reference), policy: .retainNonAtomic)
     }
 
     public static func retrieveValue<Value>(for object: AnyObject, key: UnsafeRawPointer) -> Value? {
