@@ -391,3 +391,16 @@ public extension ContextNode where Self: UIView {
         return stateManager
     }
 }
+
+public extension ContextNode {
+
+    public func stateManager(for view: UIView) -> ViewStateManager {
+        let key = "contextNode_viewStateManagerKey/\(view.hashValue)"
+        guard let stateManager: ViewStateManager = self.retrieveValue(forKey: key) else {
+            let stateManager = ViewStateManager(view: view)
+            self.store(key: key, storage: .strongOrNil(object: stateManager))
+            return stateManager
+        }
+        return stateManager
+    }
+}
