@@ -239,8 +239,8 @@ public final class ViewStateManager {
     }
 
     public var configuration: ViewStateManagerConfiguration? {
-        willSet { self.configuration?.didDisassociateWithViewStateManager(self) }
-        didSet { self.configuration?.didAssociateWithViewStateManager(self) }
+        willSet { self.configuration?.didDisassociate(with: self) }
+        didSet { self.configuration?.didAssociate(with: self) }
     }
 
     fileprivate var weakRegistry: Set<WeakReference<Token>> = []
@@ -352,8 +352,9 @@ public extension ViewStateManager {
 
 public protocol ViewStateManagerConfiguration: class {
 
-    func didAssociateWithViewStateManager(_ viewStateManager: ViewStateManager)
-    func didDisassociateWithViewStateManager(_ viewStateManager: ViewStateManager)
+    var viewStateManagerFn: (() -> ViewStateManager?)? { get set }
+    func didAssociate(with viewStateManager: ViewStateManager)
+    func didDisassociate(with viewStateManager: ViewStateManager)
 
     func viewStateManager(_ viewStateManager: ViewStateManager, didDispatch touchEvent: ViewStateManager.TouchEvent)
     func viewStateManager(_ viewStateManager: ViewStateManager, didDispatch gestureEvent: ViewStateManager.GestureEvent)
@@ -367,22 +368,18 @@ fileprivate struct ViewStateManagerConfigurationKeys {
 
 public extension ViewStateManagerConfiguration {
 
-    public fileprivate(set) var viewStateManager: ViewStateManager? {
-        get { return AssociatedUtils.retrieveValue(for: self, key: &ViewStateManagerConfigurationKeys.stateManagerKey) }
-        set { AssociatedUtils.store(for: self, key: &ViewStateManagerConfigurationKeys.stateManagerKey, storage: .weakOrNil(object: newValue)) }
+    public var viewStateManager: ViewStateManager? {
+        return self.viewStateManagerFn?()
     }
 }
 
-public extension UIView {
+private let contextNode_viewStateManagerKey = "Sulfur.ViewStateManager"
 
-    fileprivate struct ViewStateManagerKeys {
-
-        static var stateManagerKey: UInt8 = 0
-    }
+public extension ContextNode where Self: UIView {
 
     fileprivate var _stateManager: ViewStateManager? {
-        get { return AssociatedUtils.retrieveValue(for: self, key: &ViewStateManagerKeys.stateManagerKey) }
-        set { AssociatedUtils.store(for: self, key: &ViewStateManagerKeys.stateManagerKey, storage: .strongOrNil(object: newValue)) }
+        get { return self.retrieveValue(forKey: contextNode_viewStateManagerKey) }
+        set { self.store(key: contextNode_viewStateManagerKey, storage: .strongOrNil(object: newValue)) }
     }
     
     public var stateManager: ViewStateManager {

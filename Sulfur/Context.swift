@@ -65,7 +65,7 @@ public final class Context {
             }
         }
         if let contextServiceNode = service as? ContextServiceNode, contextServiceNode.context == nil {
-            contextServiceNode.context = self
+            contextServiceNode.contextFn = { [weak self] in return self }
             contextServiceNode.added(to: self)
         }
     }
@@ -73,7 +73,7 @@ public final class Context {
     private func remove(service: Any) {
         if let contextServiceNode = service as? ContextServiceNode, contextServiceNode.context != nil {
             contextServiceNode.removed(from: self)
-            contextServiceNode.context = nil
+            contextServiceNode.contextFn = nil
         }
         if let contextNodeContainer = service as? ContextNodeContainer {
             for child in contextNodeContainer.childContextObjects {
@@ -191,6 +191,50 @@ public final class ContextToken: Hashable {
         self.context.remove(self)
     }
 
+    // MARK: Stored References
+
+    public enum Storage {
+
+        case value(value: Any)
+        case strong(object: AnyObject)
+        case weak(object: AnyObject)
+
+        case valueOrNil(value: Any?)
+        case strongOrNil(object: AnyObject?)
+        case weakOrNil(object: AnyObject?)
+    }
+
+    private var storedReferences: [String: AnyReference] = [:]
+
+    public func store(key: String, storage: Storage?) {
+        guard let storage = storage else {
+            self.storedReferences[key] = nil
+            return
+        }
+
+        let reference: AnyReference?
+        switch storage {
+        case .value(let value):
+            reference = AnyReference(reference: ValueWrapper(value: value))
+        case .strong(let object):
+            reference = AnyReference(reference: StrongReference(referent: object))
+        case .weak(let object):
+            reference = AnyReference(reference: WeakReference(referent: object))
+        case .valueOrNil(let value):
+            reference = AnyReference(optionalReference: ValueWrapper(optionalValue: value))
+        case .strongOrNil(let object):
+            reference = AnyReference(optionalReference: StrongReference(optionalReferent: object))
+        case .weakOrNil(let object):
+            reference = AnyReference(optionalReference: WeakReference(optionalReferent: object))
+        }
+
+        self.storedReferences[key] = reference
+    }
+
+    public func retrieveValue<Value>(forKey key: String) -> Value? {
+        return self.storedReferences[key]?.referent as? Value
+    }
+
     // MARK: Hashable conformance
 
     public var hashValue: Int {
@@ -228,20 +272,8 @@ fileprivate extension UIStoryboard {
 
 public protocol ContextNode: class {
 
+    var contextToken: ContextToken? { get set }
     func contextAvailable()
-}
-
-fileprivate struct ContextNodeKeys {
-
-    static var contextTokenKey: UInt8 = 0
-}
-
-extension ContextNode {
-
-    public fileprivate(set) var contextToken: ContextToken? {
-        get { return AssociatedUtils.retrieveValue(for: self, key: &ContextNodeKeys.contextTokenKey) }
-        set { AssociatedUtils.store(for: self, key: &ContextNodeKeys.contextTokenKey, storage: .strongOrNil(object: newValue)) }
-    }
 }
 
 public extension ContextNode {
@@ -252,6 +284,14 @@ public extension ContextNode {
 
     public func contextWrap<Object>(_ obj: Object) -> Object {
         return self.context.wrap(obj)
+    }
+
+    public func store(key: String, storage: ContextToken.Storage?) {
+        self.contextToken?.store(key: key, storage: storage)
+    }
+
+    public func retrieveValue<Value>(forKey key: String) -> Value? {
+        return self.contextToken?.retrieveValue(forKey: key)
     }
 
     public func newViewController<ViewController: UIViewController>() -> ViewController {
@@ -330,7 +370,7 @@ extension UIView: ContextPreloadable {
 
 public protocol ContextServiceNode: class {
 
-    var context: Context? { get set } // Fulfilled by extension
+    var contextFn: (() -> Context?)? { get set }
 
     func added(to context: Context)
     func removed(from context: Context)
@@ -342,16 +382,10 @@ public protocol ContextService: ContextServiceNode {
     var component: Component { get }
 }
 
-private struct ContextServiceNodeKeys {
-
-    static var contextKey: UInt8 = 0
-}
-
 public extension ContextServiceNode {
 
     public var context: Context? {
-        get { return AssociatedUtils.retrieveValue(for: self, key: &ContextServiceNodeKeys.contextKey) }
-        set { AssociatedUtils.store(for: self, key: &ContextServiceNodeKeys.contextKey, storage: .weakOrNil(object: newValue)) }
+        return self.contextFn?()
     }
 
     public func added(to context: Context) {
@@ -368,12 +402,12 @@ public final class AnyContextService: ContextService, Hashable {
     fileprivate let _addedTo: (Context) -> Void
     fileprivate let _removedFrom: (Context) -> Void
 
-    fileprivate let _setContext: (Context?) -> Void
-    fileprivate let _getContext: () -> Context?
+    fileprivate let _setContextFn: ((() -> Context?)?) -> Void
+    fileprivate let _getContextFn: () -> (() -> Context?)?
 
-    public var context: Context? {
-        get { return self._getContext() }
-        set { self._setContext(newValue) }
+    public var contextFn: (() -> Context?)? {
+        get { return self._getContextFn() }
+        set { self._setContextFn(newValue) }
     }
 
     public convenience init?<Service: ContextService>(optionalService service: Service?) {
@@ -386,8 +420,8 @@ public final class AnyContextService: ContextService, Hashable {
         self._component = { service.component }
         self._addedTo = { service.added(to: $0) }
         self._removedFrom = { service.removed(from: $0) }
-        self._getContext = { service.context }
-        self._setContext = { service.context = $0 }
+        self._getContextFn = { service.contextFn }
+        self._setContextFn = { service.contextFn = $0 }
     }
 
     public var component: Any {
