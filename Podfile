@@ -9,7 +9,8 @@ abstract_target 'SulfurProject' do
   pod 'XCGLogger', :git => 'https://github.com/mattadatta/XCGLogger.git', :branch => 'feature/swift-3'
 
   target 'Sulfur' do
-  end
-  target 'SulfurTests' do
+    target 'SulfurTests' do
+      inherit! :search_paths
+    end
   end
 end
