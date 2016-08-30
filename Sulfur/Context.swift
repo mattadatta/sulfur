@@ -4,6 +4,7 @@
  */
 
 import UIKit
+import RxSwift
 
 // MARK: - Context
 
@@ -54,7 +55,11 @@ public final class Context {
         if let service = service {
             self.add(service: service.baseService)
             self.dispatch(.added(tag: anyTag, service: service))
-            self.prepareServiceDispatch(for: anyTag)
+            if let serviceObserver = self.serviceObservers[anyTag]?.observer as? AnyObserver<Service> {
+                serviceObserver.onNext(service.baseService as! Service)
+                serviceObserver.onCompleted()
+                self.serviceObservers[anyTag] = nil
+            }
         }
     }
 
@@ -91,19 +96,33 @@ public final class Context {
         return self.service(for: tag)?.component
     }
 
-    public func whenAvailable<Tag: ContextServiceTag, Service>(serviceForTag tag: Tag, callback: @escaping (Service, Service.Component) -> Void) where Service == Tag.Service {
+    private var serviceObservers: [AnyContextServiceTag: ServiceObserverWrapper] = [:]
+    private var serviceObservables: [AnyContextServiceTag: ServiceObservableWrapper] = [:]
+
+    public func observable<Tag: ContextServiceTag, Service>(for tag: Tag) -> Observable<Service> where Service == Tag.Service {
         let anyTag = tag as? AnyContextServiceTag ?? AnyContextServiceTag(tag: tag)
-        let dispatchCallback = ServiceDispatchCallback(callback: callback)
-        var callbacks = self.serviceCallbacks[anyTag] ?? []
-        callbacks.append(dispatchCallback)
-        self.serviceCallbacks[anyTag] = callbacks
-        self.prepareServiceDispatch(for: anyTag)
+        guard let observable = self.serviceObservables[anyTag]?.observable as? Observable<Service> else {
+            let observable = self.createObservable(for: tag)
+            self.serviceObservables[anyTag] = ServiceObservableWrapper(observable: observable)
+            return observable
+        }
+        return observable
     }
 
-    private func prepareServiceDispatch(for tag: AnyContextServiceTag) {
-        DispatchQueue.main.async { [weak self] in
-            self?.dispatchServiceCallbacks(for: tag)
-        }
+    private func createObservable<Tag: ContextServiceTag, Service>(for tag: Tag) -> Observable<Service> where Service == Tag.Service {
+        let anyTag = tag as? AnyContextServiceTag ?? AnyContextServiceTag(tag: tag)
+        return Observable<Service>.create { observer in
+            if let service = self.services[anyTag]?.baseService as? Service {
+                observer.onNext(service)
+                observer.onCompleted()
+            } else {
+                self.serviceObservers[anyTag] = ServiceObserverWrapper(observer: observer)
+            }
+            return Disposables.create {
+                self.serviceObservables[anyTag] = nil
+                self.serviceObservers[anyTag] = nil
+            }
+        }.single().shareReplay(1)
     }
 
     private func dispatchServiceCallbacks(for tag: AnyContextServiceTag) {
@@ -146,6 +165,24 @@ public final class Context {
         contextToken.contextNode = contextNode
         contextNode.contextToken = contextToken
         contextNode.contextAvailable()
+    }
+}
+
+private struct ServiceObserverWrapper {
+
+    let observer: Any
+
+    public init<Service: ContextService>(observer: AnyObserver<Service>) {
+        self.observer = observer
+    }
+}
+
+private struct ServiceObservableWrapper {
+
+    let observable: Any
+
+    public init<Service: ContextService>(observable: Observable<Service>) {
+        self.observable = observable
     }
 }
 

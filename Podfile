@@ -7,6 +7,7 @@ workspace 'Sulfur'
 abstract_target 'SulfurProject' do
   pod 'Cartography', :git => 'https://github.com/mattadatta/Cartography.git', :branch => 'feature/swift-3'
   pod 'XCGLogger', :git => 'https://github.com/mattadatta/XCGLogger.git', :branch => 'feature/swift-3'
+  pod 'RxSwift', :git => 'https://github.com/ReactiveX/RxSwift.git', :branch => 'master'
 
   target 'Sulfur' do
     target 'SulfurTests' do

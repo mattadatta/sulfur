@@ -15,4 +15,5 @@ Pod::Spec.new do |s|
 
   s.dependency 'Cartography'
   s.dependency 'XCGLogger'
+  s.dependency 'RxSwift'
 end
