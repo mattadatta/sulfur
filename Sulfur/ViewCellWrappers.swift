@@ -40,11 +40,18 @@ public final class TableViewCell<View: UIView>: UITableViewCell {
         self.nestedView = view
     }
 
-    public var didPrepareForReuse: ((TableViewCell<View>, View) -> Void)?
+    public var didPrepareForReuse: ((_ cell: TableViewCell<View>, _ view: View) -> Void)?
 
     override public func prepareForReuse() {
         super.prepareForReuse()
         self.didPrepareForReuse?(self, self.nestedView)
+    }
+
+    public var didSetSelected: ((_ cell: TableViewCell<View>, _ view: View, _ selected: Bool, _ animated: Bool) -> Void)?
+
+    override public func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+        self.didSetSelected?(self, self.nestedView, selected, animated)
     }
 }
 
@@ -83,7 +90,7 @@ public final class TableViewHeaderFooterView<View: UIView>: UITableViewHeaderFoo
         self.nestedView = view
     }
 
-    public var didPrepareForReuse: ((TableViewHeaderFooterView<View>, View) -> Void)?
+    public var didPrepareForReuse: ((_ headerFooterView: TableViewHeaderFooterView<View>, _ view: View) -> Void)?
 
     override public func prepareForReuse() {
         super.prepareForReuse()
@@ -126,11 +133,19 @@ public final class CollectionViewCell<View: UIView>: UICollectionViewCell {
         self.nestedView = view
     }
 
-    public var didPrepareForReuse: ((CollectionViewCell<View>, View) -> Void)?
+    public var didPrepareForReuse: ((_ cell: CollectionViewCell<View>, _ view: View) -> Void)?
 
     override public func prepareForReuse() {
         super.prepareForReuse()
         self.didPrepareForReuse?(self, self.nestedView)
+    }
+
+    public var didSetSelected: ((_ cell: CollectionViewCell<View>, _ view: View, _ selected: Bool, _ animated: Bool) -> Void)?
+
+    override public var isSelected: Bool {
+        didSet {
+            self.didSetSelected?(self, self.nestedView, self.isSelected, false)
+        }
     }
 }
 
