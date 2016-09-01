@@ -39,6 +39,13 @@ public final class TableViewCell<View: UIView>: UITableViewCell {
         self.contentView.addAndConstrain(view)
         self.nestedView = view
     }
+
+    public var didPrepareForReuse: ((TableViewCell<View>, View) -> Void)?
+
+    override public func prepareForReuse() {
+        super.prepareForReuse()
+        self.didPrepareForReuse?(self, self.nestedView)
+    }
 }
 
 // MARK: - TableViewHeaderFooterView
@@ -74,6 +81,13 @@ public final class TableViewHeaderFooterView<View: UIView>: UITableViewHeaderFoo
         let view = View.init()
         self.contentView.addAndConstrain(view)
         self.nestedView = view
+    }
+
+    public var didPrepareForReuse: ((TableViewHeaderFooterView<View>, View) -> Void)?
+
+    override public func prepareForReuse() {
+        super.prepareForReuse()
+        self.didPrepareForReuse?(self, self.nestedView)
     }
 }
 
@@ -111,6 +125,13 @@ public final class CollectionViewCell<View: UIView>: UICollectionViewCell {
         self.contentView.addAndConstrain(view)
         self.nestedView = view
     }
+
+    public var didPrepareForReuse: ((CollectionViewCell<View>, View) -> Void)?
+
+    override public func prepareForReuse() {
+        super.prepareForReuse()
+        self.didPrepareForReuse?(self, self.nestedView)
+    }
 }
 
 // MARK: - CollectionReusableView
@@ -146,5 +167,12 @@ public final class CollectionReusableView<View: UIView>: UICollectionReusableVie
         let view = View.init()
         self.addAndConstrain(view)
         self.nestedView = view
+    }
+
+    public var didPrepareForReuse: ((CollectionReusableView<View>, View) -> Void)?
+
+    override public func prepareForReuse() {
+        super.prepareForReuse()
+        self.didPrepareForReuse?(self, self.nestedView)
     }
 }
