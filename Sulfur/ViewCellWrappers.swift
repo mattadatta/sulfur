@@ -40,6 +40,14 @@ public final class TableViewCell<View: UIView>: UITableViewCell {
         self.nestedView = view
     }
 
+    public private(set) var isSetup = false
+
+    public func setup(_ block: (_ cell: TableViewCell<View>, _ view: View) -> Void) {
+        guard !self.isSetup else { return }
+        self.isSetup = true
+        block(self, self.nestedView)
+    }
+
     public var didPrepareForReuse: ((_ cell: TableViewCell<View>, _ view: View) -> Void)?
 
     override public func prepareForReuse() {
@@ -90,6 +98,14 @@ public final class TableViewHeaderFooterView<View: UIView>: UITableViewHeaderFoo
         self.nestedView = view
     }
 
+    public private(set) var isSetup = false
+
+    public func setup(_ block: (_ cell: TableViewHeaderFooterView<View>, _ view: View) -> Void) {
+        guard !self.isSetup else { return }
+        self.isSetup = true
+        block(self, self.nestedView)
+    }
+
     public var didPrepareForReuse: ((_ headerFooterView: TableViewHeaderFooterView<View>, _ view: View) -> Void)?
 
     override public func prepareForReuse() {
@@ -131,6 +147,14 @@ public final class CollectionViewCell<View: UIView>: UICollectionViewCell {
         let view = View.init()
         self.contentView.addAndConstrain(view)
         self.nestedView = view
+    }
+
+    public private(set) var isSetup = false
+
+    public func setup(_ block: (_ cell: CollectionViewCell<View>, _ view: View) -> Void) {
+        guard !self.isSetup else { return }
+        self.isSetup = true
+        block(self, self.nestedView)
     }
 
     public var didPrepareForReuse: ((_ cell: CollectionViewCell<View>, _ view: View) -> Void)?
@@ -182,6 +206,14 @@ public final class CollectionReusableView<View: UIView>: UICollectionReusableVie
         let view = View.init()
         self.addAndConstrain(view)
         self.nestedView = view
+    }
+
+    public private(set) var isSetup = false
+
+    public func setup(_ block: (_ cell: CollectionReusableView<View>, _ view: View) -> Void) {
+        guard !self.isSetup else { return }
+        self.isSetup = true
+        block(self, self.nestedView)
     }
 
     public var didPrepareForReuse: ((CollectionReusableView<View>, View) -> Void)?
