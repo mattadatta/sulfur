@@ -49,16 +49,45 @@ public final class ViewStateManager {
     public typealias GestureEventCallback = (ViewStateManager, UIView, GestureEvent) -> Void
 
     public enum GestureEvent {
+
         case tap
         case longPress
+
+        var isTap: Bool {
+            switch self {
+            case .tap:
+                return true
+            default:
+                return false
+            }
+        }
+
+        var isLongPress: Bool {
+            switch self {
+            case .longPress:
+                return true
+            default:
+                return false
+            }
+        }
     }
 
     public final class Token: Hashable {
 
         fileprivate enum Action {
+
             case touch(event: TouchEvent, callback: TouchEventCallback)
             case gesture(event: GestureEvent, callback: GestureEventCallback)
             case state(callback: StateEventCallback)
+
+            var gestureEvent: GestureEvent? {
+                switch self {
+                case .gesture(let event, _):
+                    return event
+                default:
+                    return nil
+                }
+            }
         }
 
         fileprivate weak var stateManager: ViewStateManager?
@@ -225,10 +254,7 @@ public final class ViewStateManager {
         view.addGestureRecognizer(self.touchGestureRecognizer)
 
         self.tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleGestureRecognizer(_:)))
-        view.addGestureRecognizer(self.tapGestureRecognizer)
-
         self.longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleGestureRecognizer(_:)))
-        view.addGestureRecognizer(self.longPressGestureRecognizer)
     }
 
     public var state: State = .enabled {
@@ -243,7 +269,20 @@ public final class ViewStateManager {
         didSet { self.configuration?.didAssociate(with: self) }
     }
 
-    fileprivate var weakRegistry: Set<WeakReference<Token>> = []
+    fileprivate var weakRegistry: Set<WeakReference<Token>> = [] {
+        didSet {
+            guard let view = self.view else { return }
+            view.removeGestureRecognizer(self.tapGestureRecognizer)
+            view.removeGestureRecognizer(self.longPressGestureRecognizer)
+            let gestureEvents = self.weakRegistry.flatMap({ $0.referent?.action.gestureEvent })
+            if !gestureEvents.filter({ $0.isTap }).isEmpty {
+                view.addGestureRecognizer(self.tapGestureRecognizer)
+            }
+            if !gestureEvents.filter({ $0.isLongPress }).isEmpty {
+                view.addGestureRecognizer(self.longPressGestureRecognizer)
+            }
+        }
+    }
     fileprivate var storedRegistry: Set<Token> = []
 
     public func subscribe(to touchEvent: TouchEvent, with callback: TouchEventCallback) -> Token {
