@@ -117,7 +117,7 @@ public final class ViewStateManager {
 
     fileprivate final class TouchGestureRecognizer: UIGestureRecognizer, UIGestureRecognizerDelegate {
 
-        unowned let stateManager: ViewStateManager
+        weak var stateManager: ViewStateManager?
 
         init(stateManager: ViewStateManager) {
             self.stateManager = stateManager
@@ -142,18 +142,18 @@ public final class ViewStateManager {
 
         override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
             super.touchesBegan(touches, with: event)
-            guard self.stateManager.view != nil else { return }
+            guard let stateManager = self.stateManager, stateManager.view != nil else { return }
 
             self.isTouchInside = true
             self.isTracking = true
             let touchEvent: TouchEvent = touches.count > 1 ? [.down, .downRepeat] : .down
-            self.stateManager.dispatch(touchEvent)
-            self.stateManager.state.insert(.highlighted)
+            stateManager.dispatch(touchEvent)
+            stateManager.state.insert(.highlighted)
         }
 
         override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
             super.touchesMoved(touches, with: event)
-            guard let view = self.stateManager.view else { return }
+            guard let stateManager = self.stateManager, let view = stateManager.view else { return }
             guard let touch = touches.first else { return }
 
             let wasTouchInside = self.isTouchInside
@@ -167,18 +167,18 @@ public final class ViewStateManager {
                 return touchEvent
             }()
 
-            self.stateManager.dispatch(touchEvent)
+            stateManager.dispatch(touchEvent)
 
             if self.isTouchInside {
-                self.stateManager.state.insert(.highlighted)
+                stateManager.state.insert(.highlighted)
             } else {
-                self.stateManager.state.remove(.highlighted)
+                stateManager.state.remove(.highlighted)
             }
         }
 
         override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
             super.touchesEnded(touches, with: event)
-            guard let view = self.stateManager.view else { return }
+            guard let stateManager = self.stateManager, let view = stateManager.view else { return }
             guard let touch = touches.first else { return }
 
             self.isTouchInside = view.point(inside: touch.location(in: view), with: event)
@@ -186,19 +186,19 @@ public final class ViewStateManager {
             self.isTracking = false
             self.isTouchInside = false
 
-            self.stateManager.dispatch(touchEvent)
-            self.stateManager.state.remove(.highlighted)
+            stateManager.dispatch(touchEvent)
+            stateManager.state.remove(.highlighted)
         }
 
         override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
             super.touchesCancelled(touches, with: event)
-            guard self.stateManager.view != nil else { return }
+            guard let stateManager = self.stateManager, stateManager.view != nil else { return }
 
             self.isTracking = false
             self.isTouchInside = false
             let touchEvent: TouchEvent = .cancel
-            self.stateManager.dispatch(touchEvent)
-            self.stateManager.state.remove(.highlighted)
+            stateManager.dispatch(touchEvent)
+            stateManager.state.remove(.highlighted)
         }
     }
 
