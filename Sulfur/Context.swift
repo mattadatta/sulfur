@@ -40,13 +40,14 @@ public final class Context {
     }
 
     fileprivate var services: [AnyContextServiceTag: AnyContextService] = [:]
-    fileprivate var serviceCallbacks: [AnyContextServiceTag: [ServiceDispatchCallback]] = [:]
+    fileprivate var serviceVariableWrappers: [AnyContextServiceTag: ServiceVariableWrapper] = [:]
 
     public func store<Tag: ContextServiceTag, Service>(service: Service?, for tag: Tag) where Service == Tag.Service {
         let anyTag = tag as? AnyContextServiceTag ?? AnyContextServiceTag(tag: tag)
         if let service = self.services[anyTag] {
             self.remove(service: service.baseService)
             self.dispatch(.removed(tag: anyTag, service: service))
+            self.variable(for: anyTag)?.value = nil
         }
 
         let service = AnyContextService(optionalService: service)
@@ -55,11 +56,7 @@ public final class Context {
         if let service = service {
             self.add(service: service.baseService)
             self.dispatch(.added(tag: anyTag, service: service))
-            if let serviceObserver = self.serviceObservers[anyTag]?.observer as? AnyObserver<Service> {
-                serviceObserver.onNext(service.baseService as! Service)
-                serviceObserver.onCompleted()
-                self.serviceObservers[anyTag] = nil
-            }
+            self.variable(for: anyTag)?.value = service
         }
     }
 
@@ -96,44 +93,37 @@ public final class Context {
         return self.service(for: tag)?.component
     }
 
-    private var serviceObservers: [AnyContextServiceTag: ServiceObserverWrapper] = [:]
-    private var serviceObservables: [AnyContextServiceTag: ServiceObservableWrapper] = [:]
-
-    public func observable<Tag: ContextServiceTag, Service>(for tag: Tag) -> Observable<Service> where Service == Tag.Service {
+    private func variableAndObservable<Tag: ContextServiceTag, Service>(for tag: Tag) -> (Variable<Service?>, Observable<Service?>) where Service == Tag.Service {
         let anyTag = tag as? AnyContextServiceTag ?? AnyContextServiceTag(tag: tag)
-        guard let observable = self.serviceObservables[anyTag]?.observable as? Observable<Service> else {
-            let observable = self.createObservable(for: tag)
-            self.serviceObservables[anyTag] = ServiceObservableWrapper(observable: observable)
-            return observable
+        let variable: Variable<Service?>
+        let observable: Observable<Service?>
+        if let wrapper = self.serviceVariableWrappers[anyTag] {
+            variable = wrapper.variable as! Variable<Service?>
+            observable = wrapper.observable as! Observable<Service?>
+        } else {
+            variable = Variable<Service?>(nil)
+            observable = variable.asObservable().do(onDispose: { [weak self] in
+                self?.serviceVariableWrappers[anyTag] = nil
+            })
+            let wrapper = ServiceVariableWrapper(variable: variable, observable: observable)
+            self.serviceVariableWrappers[anyTag] = wrapper
         }
-        return observable
+        return (variable, observable)
     }
 
-    private func createObservable<Tag: ContextServiceTag, Service>(for tag: Tag) -> Observable<Service> where Service == Tag.Service {
+    private func variable<Tag: ContextServiceTag, Service>(for tag: Tag) -> Variable<Service?>? where Service == Tag.Service {
         let anyTag = tag as? AnyContextServiceTag ?? AnyContextServiceTag(tag: tag)
-        return Observable<Service>.create { observer in
-            if let service = self.services[anyTag]?.baseService as? Service {
-                observer.onNext(service)
-                observer.onCompleted()
-            } else {
-                self.serviceObservers[anyTag] = ServiceObserverWrapper(observer: observer)
-            }
-            return Disposables.create {
-                self.serviceObservables[anyTag] = nil
-                self.serviceObservers[anyTag] = nil
-            }
-        }.single().shareReplay(1)
+        return self.serviceVariableWrappers[anyTag]?.variable as? Variable<Service?>
     }
 
-    private func dispatchServiceCallbacks(for tag: AnyContextServiceTag) {
-        guard
-            let callbacks = self.serviceCallbacks[tag],
-            let service = self.services[tag] else { return }
-        callbacks.forEach { callback in
-            callback.invoke(with: service)
-        }
-        self.serviceCallbacks[tag] = nil
+    public func observable<Tag: ContextServiceTag, Service>(for tag: Tag) -> Observable<Service?> where Service == Tag.Service {
+        return self.variableAndObservable(for: tag).1
     }
+
+    public func whenAvailable<Tag: ContextServiceTag, Service>(for tag: Tag) -> Observable<Service> where Service == Tag.Service {
+        return self.observable(for: tag).unwrap()
+    }
+
 
     fileprivate func dispatch(_ serviceEvent: ServiceEvent) {
         // TODO:
@@ -168,37 +158,14 @@ public final class Context {
     }
 }
 
-private struct ServiceObserverWrapper {
+private struct ServiceVariableWrapper {
 
-    let observer: Any
+    let variable: Any
+    weak var observable: AnyObject?
 
-    public init<Service: ContextService>(observer: AnyObserver<Service>) {
-        self.observer = observer
-    }
-}
-
-private struct ServiceObservableWrapper {
-
-    let observable: Any
-
-    public init<Service: ContextService>(observable: Observable<Service>) {
+    public init<Service: ContextService>(variable: Variable<Service?>, observable: Observable<Service?>) {
+        self.variable = variable
         self.observable = observable
-    }
-}
-
-private struct ServiceDispatchCallback {
-
-    private let _callback: (AnyContextService) -> Void
-
-    init<Service: ContextService>(callback: @escaping (Service, Service.Component) -> Void) {
-        self._callback = { anyService in
-            guard let service = anyService.baseService as? Service else { return }
-            callback(service, service.component)
-        }
-    }
-
-    func invoke(with service: AnyContextService) {
-        self._callback(service)
     }
 }
 
