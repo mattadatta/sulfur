@@ -31,6 +31,7 @@
 		32389E5C1CDFDD1F009475F6 /* UINib+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E481CDFDD1F009475F6 /* UINib+Utils.swift */; };
 		32389E5E1CDFDD1F009475F6 /* UIView+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E4A1CDFDD1F009475F6 /* UIView+Utils.swift */; };
 		324150331D3C2483008A26CD /* Hashing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324150321D3C2483008A26CD /* Hashing.swift */; };
+		32A5A1F11D7F17580026AD9C /* Rx+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A5A1F01D7F17580026AD9C /* Rx+Utils.swift */; };
 		32BC05961D1B3BE1008573BC /* ContextTransitioning+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05951D1B3BE1008573BC /* ContextTransitioning+Utils.swift */; };
 		32BC05981D1B3C39008573BC /* DebugFns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05971D1B3C39008573BC /* DebugFns.swift */; };
 		32BC059A1D1B3D75008573BC /* Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05991D1B3D75008573BC /* Context.swift */; };
@@ -79,6 +80,7 @@
 		32389E4A1CDFDD1F009475F6 /* UIView+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Utils.swift"; sourceTree = "<group>"; };
 		324150321D3C2483008A26CD /* Hashing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hashing.swift; sourceTree = "<group>"; };
 		329594F461F7F4F63EA42B4D /* Pods-SulfurTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SulfurTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SulfurTests/Pods-SulfurTests.release.xcconfig"; sourceTree = "<group>"; };
+		32A5A1F01D7F17580026AD9C /* Rx+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Rx+Utils.swift"; sourceTree = "<group>"; };
 		32BC05951D1B3BE1008573BC /* ContextTransitioning+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ContextTransitioning+Utils.swift"; sourceTree = "<group>"; };
 		32BC05971D1B3C39008573BC /* DebugFns.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugFns.swift; sourceTree = "<group>"; };
 		32BC05991D1B3D75008573BC /* Context.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Context.swift; sourceTree = "<group>"; };
@@ -160,6 +162,7 @@
 				32389E4A1CDFDD1F009475F6 /* UIView+Utils.swift */,
 				3203E9EB1CEFBA9000D14253 /* ViewCellWrappers.swift */,
 				32271E8F1D5AB36700F6FD08 /* ViewStateManager.swift */,
+				32A5A1F01D7F17580026AD9C /* Rx+Utils.swift */,
 				322D66101D57C2F100CBCA4F /* Sulfur.swift */,
 				32389E201CDFDCD1009475F6 /* Sulfur.h */,
 				32389E221CDFDCD1009475F6 /* Info.plist */,
@@ -406,6 +409,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				32389E5A1CDFDD1F009475F6 /* UIColor+Utils.swift in Sources */,
+				32A5A1F11D7F17580026AD9C /* Rx+Utils.swift in Sources */,
 				324150331D3C2483008A26CD /* Hashing.swift in Sources */,
 				32389E4E1CDFDD1F009475F6 /* CancelableScrollView.swift in Sources */,
 				32D04B121D31C16200EB8D5D /* GridCollectionController.swift in Sources */,
