@@ -37,3 +37,19 @@ extension Observable where Element: ObservableOptional {
         return self.filter({ $0.observable_isNotNil }).map({ $0.observable_unwrapped })
     }
 }
+
+extension Variable where Element: ObservableOptional {
+
+    public func asUnwrappedObservable() -> Observable<Element.Wrapped> {
+        return self.asObservable().unwrap()
+    }
+}
+
+extension Variable where Element: Equatable {
+
+    public func setIfDifferent(value: Element) {
+        if self.value != value {
+            self.value = value
+        }
+    }
+}
