@@ -44,19 +44,3 @@ extension Variable where Element: ObservableOptional {
         return self.asObservable().unwrap()
     }
 }
-
-extension Variable where Element: Equatable {
-
-    public func setIfDifferent(value: Element) {
-        if self.value != value {
-            self.value = value
-        }
-    }
-}
-
-extension Variable where Element: ObservableOptional, Element.Wrapped: Equatable {
-
-    public func setIfDifferent(value: Element) {
-        self.setIfDifferent(value: value)
-    }
-}
