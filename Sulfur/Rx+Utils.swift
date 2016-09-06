@@ -53,3 +53,10 @@ extension Variable where Element: Equatable {
         }
     }
 }
+
+extension Variable where Element: ObservableOptional, Element.Wrapped: Equatable {
+
+    public func setIfDifferent(value: Element) {
+        self.setIfDifferent(value: value)
+    }
+}
