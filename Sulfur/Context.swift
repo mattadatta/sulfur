@@ -101,7 +101,7 @@ public final class Context {
             variable = wrapper.variable as! Variable<Service?>
             observable = wrapper.observable as! Observable<Service?>
         } else {
-            variable = Variable<Service?>(nil)
+            variable = Variable<Service?>(self.services[anyTag]?.baseService as? Service)
             observable = variable.asObservable().do(onDispose: { [weak self] in
                 self?.serviceVariableWrappers[anyTag] = nil
             })
