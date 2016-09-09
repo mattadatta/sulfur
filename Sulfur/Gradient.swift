@@ -11,7 +11,7 @@ public struct Gradient {
 
     fileprivate struct Constants {
 
-        static let defaultColors = [
+        static let defaultStops = [
             Stop(color: .black, percent: 0.0),
             Stop(color: .white, percent: 1.0),
             ]
@@ -42,7 +42,7 @@ public struct Gradient {
     public var stops: [Stop] {
         didSet {
             if self.stops.count < 2 {
-                self.stops = Constants.defaultColors
+                self.stops = Constants.defaultStops
             }
             self.stops.sort(by: { $0.percent <= $1.percent })
         }
@@ -52,28 +52,27 @@ public struct Gradient {
         get { return self.stops.map({ $0.color }) }
         set {
             guard newValue.count > 1 else {
-                self.stops = Constants.defaultColors
+                self.stops = Constants.defaultStops
                 return
             }
 
             let increment = 1.0 / Double(newValue.count - 1)
-            self.stops = newValue.mapPass(0.0) { (color, percentage) in
+            self.stops = newValue.mapPass(0.0) { color, percentage in
                 return (Stop(color: color, percent: percentage), percentage + increment)
             }
         }
     }
 
     public init() {
-        self.init(stops: Constants.defaultColors)
+        self.init(stops: Constants.defaultStops)
     }
 
     public init(stops: [Stop]) {
-        self.stops = []
-        self.stops = stops // Triggers didSet too
+        self.stops = (stops.count > 2) ? stops : Constants.defaultStops
     }
 
     public init(colors: [UIColor]) {
-        self.stops = Constants.defaultColors
+        self.stops = Constants.defaultStops
         self.colors = colors
     }
 
@@ -100,5 +99,48 @@ public struct Gradient {
         let resultAlpha = color1.alpha + (interpolatedPercent * (color2.alpha - color1.alpha))
 
         return UIColor(red: resultRed, green: resultGreen, blue: resultBlue, alpha: resultAlpha)
+    }
+}
+
+// MARK: - GradientView
+
+public final class GradientView: UIView {
+
+    override public class var layerClass: AnyClass {
+        return CAGradientLayer.self
+    }
+
+    public var gradientLayer: CAGradientLayer {
+        return self.layer as! CAGradientLayer
+    }
+
+    public var gradient: Gradient = Gradient() {
+        didSet {
+            self.gradientLayer.colors = self.gradient.colors.map({ $0.cgColor })
+        }
+    }
+
+    public var startPoint: CGPoint {
+        get { return self.gradientLayer.startPoint }
+        set { self.gradientLayer.startPoint = newValue }
+    }
+
+    public var endPoint: CGPoint {
+        get { return self.gradientLayer.endPoint }
+        set { self.gradientLayer.endPoint = newValue }
+    }
+
+    override public init(frame: CGRect) {
+        super.init(frame: frame)
+        self.commonInit()
+    }
+
+    required public init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        self.commonInit()
+    }
+
+    fileprivate func commonInit() {
+        self.gradient = Gradient() // Trigger didSet
     }
 }
