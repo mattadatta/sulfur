@@ -9,7 +9,7 @@ public final class GradientView: UIView {
 
     public typealias GradientData = (x: Double, y: Double, color: UIColor)
 
-    override public class func layerClass() -> AnyClass {
+    override public class var layerClass: AnyClass {
         return CAGradientLayer.self
     }
 
@@ -17,13 +17,13 @@ public final class GradientView: UIView {
         return self.layer as! CAGradientLayer
     }
 
-    public var startData: GradientData = (0.5, 0.0, UIColor.whiteColor()) {
+    public var startData: GradientData = (0.5, 0.0, .white) {
         didSet {
             self.updateGradient()
         }
     }
 
-    public var endData: GradientData = (0.5, 1.0, UIColor.blackColor()) {
+    public var endData: GradientData = (0.5, 1.0, .black) {
         didSet {
             self.updateGradient()
         }
@@ -45,13 +45,13 @@ public final class GradientView: UIView {
         self.commonInit()
     }
 
-    private func commonInit() {
+    fileprivate func commonInit() {
         self.updateGradient()
     }
 
-    private func updateGradient() {
-        let startColor = (self.reverse ? self.endData.color : self.startData.color).CGColor
-        let endColor = (self.reverse ? self.startData.color : self.endData.color).CGColor
+    fileprivate func updateGradient() {
+        let startColor = (self.reverse ? self.endData.color : self.startData.color).cgColor
+        let endColor = (self.reverse ? self.startData.color : self.endData.color).cgColor
         self.gradientLayer.colors = [startColor, endColor]
         self.gradientLayer.startPoint = CGPoint(x: self.startData.x, y: self.startData.y)
         self.gradientLayer.endPoint = CGPoint(x: self.endData.x, y: self.endData.y)
@@ -62,13 +62,13 @@ public final class TwoPointGradientLayer: CAGradientLayer {
 
     public typealias GradientData = (x: Double, y: Double, color: UIColor)
 
-    public var startData: GradientData = (0.5, 0.0, UIColor.whiteColor()) {
+    public var startData: GradientData = (0.5, 0.0, .white) {
         didSet {
             self.updateGradient()
         }
     }
 
-    public var endData: GradientData = (0.5, 1.0, UIColor.blackColor()) {
+    public var endData: GradientData = (0.5, 1.0, .black) {
         didSet {
             self.updateGradient()
         }
@@ -90,7 +90,7 @@ public final class TwoPointGradientLayer: CAGradientLayer {
         self.commonInit()
     }
 
-    override public init(layer: AnyObject) {
+    override public init(layer: Any) {
         super.init(layer: layer)
         guard let other = layer as? TwoPointGradientLayer else {
             return
@@ -100,13 +100,13 @@ public final class TwoPointGradientLayer: CAGradientLayer {
         self.reverse = other.reverse
     }
 
-    private func commonInit() {
+    fileprivate func commonInit() {
         self.updateGradient()
     }
 
-    private func updateGradient() {
-        let startColor = (self.reverse ? self.endData.color : self.startData.color).CGColor
-        let endColor = (self.reverse ? self.startData.color : self.endData.color).CGColor
+    fileprivate func updateGradient() {
+        let startColor = (self.reverse ? self.endData.color : self.startData.color).cgColor
+        let endColor = (self.reverse ? self.startData.color : self.endData.color).cgColor
         self.colors = [startColor, endColor]
         self.startPoint = CGPoint(x: self.startData.x, y: self.startData.y)
         self.endPoint = CGPoint(x: self.endData.x, y: self.endData.y)

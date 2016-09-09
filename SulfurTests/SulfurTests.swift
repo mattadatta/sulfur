@@ -22,16 +22,16 @@ final class SulfurTests: XCTestCase {
     func testHashing() {
         self.log(rect: GridRect(x: 0.0, y: 0.0, width: 0.0, height: 0.0))
         let rects = (0..<100).map({ LinearGrid(numUnits: 10).rect(forIndex: $0) })
-        for (i, rect1) in rects.enumerate() {
+        for (i, rect1) in rects.enumerated() {
             self.log(rect: rect1)
-            for (j, rect2) in rects.enumerate() {
+            for (j, rect2) in rects.enumerated() {
                 guard i != j else { break }
                 XCTAssertNotEqual(rect1.hashValue, rect2.hashValue)
             }
         }
     }
 
-    private func log(rect rect: GridRect) {
+    private func log(rect: GridRect) {
         print("rect = \(rect), hash = \(rect.hashValue)")
     }
 }

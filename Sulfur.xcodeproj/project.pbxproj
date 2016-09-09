@@ -7,32 +7,32 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		01EE85079F4B3F78C93FEEA0 /* Pods_SulfurProject_SulfurTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A5CD92B27DEB986C3F943E7 /* Pods_SulfurProject_SulfurTests.framework */; };
+		2535992BB285DB293078798F /* Pods_SulfurTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7825E9A15B88B6B7BB69EA11 /* Pods_SulfurTests.framework */; };
 		3203E9EC1CEFBA9000D14253 /* ViewCellWrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3203E9EB1CEFBA9000D14253 /* ViewCellWrappers.swift */; };
+		32271E901D5AB36700F6FD08 /* ViewStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32271E8F1D5AB36700F6FD08 /* ViewStateManager.swift */; };
+		322D66111D57C2F100CBCA4F /* Sulfur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322D66101D57C2F100CBCA4F /* Sulfur.swift */; };
 		32389E211CDFDCD1009475F6 /* Sulfur.h in Headers */ = {isa = PBXBuildFile; fileRef = 32389E201CDFDCD1009475F6 /* Sulfur.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		32389E281CDFDCD1009475F6 /* Sulfur.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32389E1D1CDFDCD1009475F6 /* Sulfur.framework */; };
 		32389E2D1CDFDCD1009475F6 /* SulfurTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E2C1CDFDCD1009475F6 /* SulfurTests.swift */; };
 		32389E4B1CDFDD1F009475F6 /* Array+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E371CDFDD1F009475F6 /* Array+Utils.swift */; };
-		32389E4C1CDFDD1F009475F6 /* Async.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E381CDFDD1F009475F6 /* Async.swift */; };
-		32389E4D1CDFDD1F009475F6 /* CAAnimation+Callbacks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E391CDFDD1F009475F6 /* CAAnimation+Callbacks.swift */; };
-		32389E4E1CDFDD1F009475F6 /* CancelableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E3A1CDFDD1F009475F6 /* CancelableScrollView.swift */; };
+		32389E4E1CDFDD1F009475F6 /* UIScrollView+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E3A1CDFDD1F009475F6 /* UIScrollView+Utils.swift */; };
 		32389E4F1CDFDD1F009475F6 /* CG+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E3B1CDFDD1F009475F6 /* CG+Utils.swift */; };
 		32389E501CDFDD1F009475F6 /* ConfigurableStoryboard.h in Headers */ = {isa = PBXBuildFile; fileRef = 32389E3C1CDFDD1F009475F6 /* ConfigurableStoryboard.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		32389E511CDFDD1F009475F6 /* ConfigurableStoryboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 32389E3D1CDFDD1F009475F6 /* ConfigurableStoryboard.m */; };
 		32389E521CDFDD1F009475F6 /* Gradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E3E1CDFDD1F009475F6 /* Gradient.swift */; };
 		32389E531CDFDD1F009475F6 /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E3F1CDFDD1F009475F6 /* GradientView.swift */; };
-		32389E541CDFDD1F009475F6 /* Optional+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E401CDFDD1F009475F6 /* Optional+Utils.swift */; };
 		32389E551CDFDD1F009475F6 /* Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E411CDFDD1F009475F6 /* Random.swift */; };
 		32389E561CDFDD1F009475F6 /* Reference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E421CDFDD1F009475F6 /* Reference.swift */; };
 		32389E571CDFDD1F009475F6 /* SequenceType+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E431CDFDD1F009475F6 /* SequenceType+Utils.swift */; };
 		32389E581CDFDD1F009475F6 /* String+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E441CDFDD1F009475F6 /* String+Utils.swift */; };
-		32389E591CDFDD1F009475F6 /* TabManagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E451CDFDD1F009475F6 /* TabManagerViewController.swift */; };
+		32389E591CDFDD1F009475F6 /* TabbedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E451CDFDD1F009475F6 /* TabbedViewController.swift */; };
 		32389E5A1CDFDD1F009475F6 /* UIColor+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E461CDFDD1F009475F6 /* UIColor+Utils.swift */; };
 		32389E5B1CDFDD1F009475F6 /* UIImage+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E471CDFDD1F009475F6 /* UIImage+Utils.swift */; };
 		32389E5C1CDFDD1F009475F6 /* UINib+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E481CDFDD1F009475F6 /* UINib+Utils.swift */; };
 		32389E5E1CDFDD1F009475F6 /* UIView+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E4A1CDFDD1F009475F6 /* UIView+Utils.swift */; };
 		324150331D3C2483008A26CD /* Hashing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324150321D3C2483008A26CD /* Hashing.swift */; };
-		3269DC511CDFF6A900716F0A /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3269DC501CDFF6A900716F0A /* Environment.swift */; };
+		32588C481D83035C00060027 /* Data+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32588C471D83035C00060027 /* Data+Utils.swift */; };
+		32A5A1F11D7F17580026AD9C /* Rx+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A5A1F01D7F17580026AD9C /* Rx+Utils.swift */; };
 		32BC05961D1B3BE1008573BC /* ContextTransitioning+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05951D1B3BE1008573BC /* ContextTransitioning+Utils.swift */; };
 		32BC05981D1B3C39008573BC /* DebugFns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05971D1B3C39008573BC /* DebugFns.swift */; };
 		32BC059A1D1B3D75008573BC /* Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05991D1B3D75008573BC /* Context.swift */; };
@@ -53,10 +53,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		06DB6704FEF6260CDC66CEB3 /* Pods-SulfurProject-SulfurTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SulfurProject-SulfurTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SulfurProject-SulfurTests/Pods-SulfurProject-SulfurTests.debug.xcconfig"; sourceTree = "<group>"; };
-		0A5CD92B27DEB986C3F943E7 /* Pods_SulfurProject_SulfurTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SulfurProject_SulfurTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1318E88367628EEE396B8F5F /* Pods_SulfurProject_Sulfur.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SulfurProject_Sulfur.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3203E9EB1CEFBA9000D14253 /* ViewCellWrappers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewCellWrappers.swift; sourceTree = "<group>"; };
+		32271E8F1D5AB36700F6FD08 /* ViewStateManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewStateManager.swift; sourceTree = "<group>"; };
+		322D66101D57C2F100CBCA4F /* Sulfur.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sulfur.swift; sourceTree = "<group>"; };
 		32389E1D1CDFDCD1009475F6 /* Sulfur.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Sulfur.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		32389E201CDFDCD1009475F6 /* Sulfur.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sulfur.h; sourceTree = "<group>"; };
 		32389E221CDFDCD1009475F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -64,26 +64,25 @@
 		32389E2C1CDFDCD1009475F6 /* SulfurTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SulfurTests.swift; sourceTree = "<group>"; };
 		32389E2E1CDFDCD1009475F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		32389E371CDFDD1F009475F6 /* Array+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "Array+Utils.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		32389E381CDFDD1F009475F6 /* Async.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Async.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		32389E391CDFDD1F009475F6 /* CAAnimation+Callbacks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "CAAnimation+Callbacks.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		32389E3A1CDFDD1F009475F6 /* CancelableScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CancelableScrollView.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		32389E3A1CDFDD1F009475F6 /* UIScrollView+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "UIScrollView+Utils.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		32389E3B1CDFDD1F009475F6 /* CG+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "CG+Utils.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		32389E3C1CDFDD1F009475F6 /* ConfigurableStoryboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = ConfigurableStoryboard.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		32389E3D1CDFDD1F009475F6 /* ConfigurableStoryboard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ConfigurableStoryboard.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		32389E3E1CDFDD1F009475F6 /* Gradient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Gradient.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		32389E3F1CDFDD1F009475F6 /* GradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = GradientView.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		32389E401CDFDD1F009475F6 /* Optional+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Optional+Utils.swift"; sourceTree = "<group>"; };
 		32389E411CDFDD1F009475F6 /* Random.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Random.swift; sourceTree = "<group>"; };
 		32389E421CDFDD1F009475F6 /* Reference.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reference.swift; sourceTree = "<group>"; };
 		32389E431CDFDD1F009475F6 /* SequenceType+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SequenceType+Utils.swift"; sourceTree = "<group>"; };
 		32389E441CDFDD1F009475F6 /* String+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Utils.swift"; sourceTree = "<group>"; };
-		32389E451CDFDD1F009475F6 /* TabManagerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabManagerViewController.swift; sourceTree = "<group>"; };
+		32389E451CDFDD1F009475F6 /* TabbedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabbedViewController.swift; sourceTree = "<group>"; };
 		32389E461CDFDD1F009475F6 /* UIColor+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Utils.swift"; sourceTree = "<group>"; };
 		32389E471CDFDD1F009475F6 /* UIImage+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Utils.swift"; sourceTree = "<group>"; };
 		32389E481CDFDD1F009475F6 /* UINib+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UINib+Utils.swift"; sourceTree = "<group>"; };
 		32389E4A1CDFDD1F009475F6 /* UIView+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Utils.swift"; sourceTree = "<group>"; };
 		324150321D3C2483008A26CD /* Hashing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hashing.swift; sourceTree = "<group>"; };
-		3269DC501CDFF6A900716F0A /* Environment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Environment.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		32588C471D83035C00060027 /* Data+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+Utils.swift"; sourceTree = "<group>"; };
+		329594F461F7F4F63EA42B4D /* Pods-SulfurTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SulfurTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SulfurTests/Pods-SulfurTests.release.xcconfig"; sourceTree = "<group>"; };
+		32A5A1F01D7F17580026AD9C /* Rx+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Rx+Utils.swift"; sourceTree = "<group>"; };
 		32BC05951D1B3BE1008573BC /* ContextTransitioning+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ContextTransitioning+Utils.swift"; sourceTree = "<group>"; };
 		32BC05971D1B3C39008573BC /* DebugFns.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugFns.swift; sourceTree = "<group>"; };
 		32BC05991D1B3D75008573BC /* Context.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Context.swift; sourceTree = "<group>"; };
@@ -91,7 +90,8 @@
 		32D04B111D31C16200EB8D5D /* GridCollectionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GridCollectionController.swift; sourceTree = "<group>"; };
 		32D450451D2A125B00637DE9 /* HierarchyPrinter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HierarchyPrinter.swift; sourceTree = "<group>"; };
 		3BAB9CE4573403EFD4167EC1 /* Pods-SulfurProject-Sulfur.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SulfurProject-Sulfur.release.xcconfig"; path = "Pods/Target Support Files/Pods-SulfurProject-Sulfur/Pods-SulfurProject-Sulfur.release.xcconfig"; sourceTree = "<group>"; };
-		852F5F0279CABA8982B8C9DE /* Pods-SulfurProject-SulfurTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SulfurProject-SulfurTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SulfurProject-SulfurTests/Pods-SulfurProject-SulfurTests.release.xcconfig"; sourceTree = "<group>"; };
+		7825E9A15B88B6B7BB69EA11 /* Pods_SulfurTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SulfurTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A2DAE250DCCC4A6E305DA5AB /* Pods-SulfurTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SulfurTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SulfurTests/Pods-SulfurTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F35715E6B42CEA062D79B1A9 /* Pods-SulfurProject-Sulfur.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SulfurProject-Sulfur.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SulfurProject-Sulfur/Pods-SulfurProject-Sulfur.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -109,7 +109,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				32389E281CDFDCD1009475F6 /* Sulfur.framework in Frameworks */,
-				01EE85079F4B3F78C93FEEA0 /* Pods_SulfurProject_SulfurTests.framework in Frameworks */,
+				2535992BB285DB293078798F /* Pods_SulfurTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -140,33 +140,33 @@
 			isa = PBXGroup;
 			children = (
 				32389E371CDFDD1F009475F6 /* Array+Utils.swift */,
-				32389E381CDFDD1F009475F6 /* Async.swift */,
-				32389E391CDFDD1F009475F6 /* CAAnimation+Callbacks.swift */,
-				32389E3A1CDFDD1F009475F6 /* CancelableScrollView.swift */,
 				32389E3B1CDFDD1F009475F6 /* CG+Utils.swift */,
 				32389E3C1CDFDD1F009475F6 /* ConfigurableStoryboard.h */,
 				32389E3D1CDFDD1F009475F6 /* ConfigurableStoryboard.m */,
 				32BC05991D1B3D75008573BC /* Context.swift */,
 				32BC05951D1B3BE1008573BC /* ContextTransitioning+Utils.swift */,
+				32588C471D83035C00060027 /* Data+Utils.swift */,
 				32BC05971D1B3C39008573BC /* DebugFns.swift */,
-				3269DC501CDFF6A900716F0A /* Environment.swift */,
 				32389E3E1CDFDD1F009475F6 /* Gradient.swift */,
 				32389E3F1CDFDD1F009475F6 /* GradientView.swift */,
 				32D04B111D31C16200EB8D5D /* GridCollectionController.swift */,
 				32D04B0F1D31C0CB00EB8D5D /* GridCollectionViewLayout.swift */,
 				324150321D3C2483008A26CD /* Hashing.swift */,
 				32D450451D2A125B00637DE9 /* HierarchyPrinter.swift */,
-				32389E401CDFDD1F009475F6 /* Optional+Utils.swift */,
 				32389E411CDFDD1F009475F6 /* Random.swift */,
 				32389E421CDFDD1F009475F6 /* Reference.swift */,
 				32389E431CDFDD1F009475F6 /* SequenceType+Utils.swift */,
 				32389E441CDFDD1F009475F6 /* String+Utils.swift */,
-				32389E451CDFDD1F009475F6 /* TabManagerViewController.swift */,
+				32389E451CDFDD1F009475F6 /* TabbedViewController.swift */,
 				32389E461CDFDD1F009475F6 /* UIColor+Utils.swift */,
 				32389E471CDFDD1F009475F6 /* UIImage+Utils.swift */,
 				32389E481CDFDD1F009475F6 /* UINib+Utils.swift */,
+				32389E3A1CDFDD1F009475F6 /* UIScrollView+Utils.swift */,
 				32389E4A1CDFDD1F009475F6 /* UIView+Utils.swift */,
 				3203E9EB1CEFBA9000D14253 /* ViewCellWrappers.swift */,
+				32271E8F1D5AB36700F6FD08 /* ViewStateManager.swift */,
+				32A5A1F01D7F17580026AD9C /* Rx+Utils.swift */,
+				322D66101D57C2F100CBCA4F /* Sulfur.swift */,
 				32389E201CDFDCD1009475F6 /* Sulfur.h */,
 				32389E221CDFDCD1009475F6 /* Info.plist */,
 			);
@@ -187,8 +187,8 @@
 			children = (
 				F35715E6B42CEA062D79B1A9 /* Pods-SulfurProject-Sulfur.debug.xcconfig */,
 				3BAB9CE4573403EFD4167EC1 /* Pods-SulfurProject-Sulfur.release.xcconfig */,
-				06DB6704FEF6260CDC66CEB3 /* Pods-SulfurProject-SulfurTests.debug.xcconfig */,
-				852F5F0279CABA8982B8C9DE /* Pods-SulfurProject-SulfurTests.release.xcconfig */,
+				A2DAE250DCCC4A6E305DA5AB /* Pods-SulfurTests.debug.xcconfig */,
+				329594F461F7F4F63EA42B4D /* Pods-SulfurTests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -197,7 +197,7 @@
 			isa = PBXGroup;
 			children = (
 				1318E88367628EEE396B8F5F /* Pods_SulfurProject_Sulfur.framework */,
-				0A5CD92B27DEB986C3F943E7 /* Pods_SulfurProject_SulfurTests.framework */,
+				7825E9A15B88B6B7BB69EA11 /* Pods_SulfurTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -266,14 +266,16 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = Mattadatta;
 				TargetAttributes = {
 					32389E1C1CDFDCD1009475F6 = {
 						CreatedOnToolsVersion = 7.3;
+						LastSwiftMigration = 0800;
 					};
 					32389E261CDFDCD1009475F6 = {
 						CreatedOnToolsVersion = 7.3;
+						LastSwiftMigration = 0800;
 					};
 				};
 			};
@@ -339,7 +341,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SulfurProject-SulfurTests/Pods-SulfurProject-SulfurTests-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SulfurTests/Pods-SulfurTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		73AE175C368CA23092D98555 /* [CP] Embed Pods Frameworks */ = {
@@ -354,7 +356,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SulfurProject-SulfurTests/Pods-SulfurProject-SulfurTests-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SulfurTests/Pods-SulfurTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A364AFE82D028623836A14FD /* [CP] Check Pods Manifest.lock */ = {
@@ -369,7 +371,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		EF050235D6689D15AA5CEBFC /* [CP] Copy Pods Resources */ = {
@@ -399,7 +401,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -409,18 +411,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				32389E4C1CDFDD1F009475F6 /* Async.swift in Sources */,
 				32389E5A1CDFDD1F009475F6 /* UIColor+Utils.swift in Sources */,
+				32A5A1F11D7F17580026AD9C /* Rx+Utils.swift in Sources */,
 				324150331D3C2483008A26CD /* Hashing.swift in Sources */,
-				32389E4E1CDFDD1F009475F6 /* CancelableScrollView.swift in Sources */,
+				32389E4E1CDFDD1F009475F6 /* UIScrollView+Utils.swift in Sources */,
 				32D04B121D31C16200EB8D5D /* GridCollectionController.swift in Sources */,
 				32BC05981D1B3C39008573BC /* DebugFns.swift in Sources */,
+				322D66111D57C2F100CBCA4F /* Sulfur.swift in Sources */,
 				32389E571CDFDD1F009475F6 /* SequenceType+Utils.swift in Sources */,
 				3203E9EC1CEFBA9000D14253 /* ViewCellWrappers.swift in Sources */,
 				32389E581CDFDD1F009475F6 /* String+Utils.swift in Sources */,
 				32389E551CDFDD1F009475F6 /* Random.swift in Sources */,
 				32389E4B1CDFDD1F009475F6 /* Array+Utils.swift in Sources */,
-				32389E541CDFDD1F009475F6 /* Optional+Utils.swift in Sources */,
 				32389E521CDFDD1F009475F6 /* Gradient.swift in Sources */,
 				32BC05961D1B3BE1008573BC /* ContextTransitioning+Utils.swift in Sources */,
 				32D450461D2A125B00637DE9 /* HierarchyPrinter.swift in Sources */,
@@ -429,11 +431,11 @@
 				32389E4F1CDFDD1F009475F6 /* CG+Utils.swift in Sources */,
 				32D04B101D31C0CB00EB8D5D /* GridCollectionViewLayout.swift in Sources */,
 				32389E5B1CDFDD1F009475F6 /* UIImage+Utils.swift in Sources */,
-				32389E591CDFDD1F009475F6 /* TabManagerViewController.swift in Sources */,
+				32389E591CDFDD1F009475F6 /* TabbedViewController.swift in Sources */,
 				32389E5C1CDFDD1F009475F6 /* UINib+Utils.swift in Sources */,
-				3269DC511CDFF6A900716F0A /* Environment.swift in Sources */,
+				32588C481D83035C00060027 /* Data+Utils.swift in Sources */,
+				32271E901D5AB36700F6FD08 /* ViewStateManager.swift in Sources */,
 				32BC059A1D1B3D75008573BC /* Context.swift in Sources */,
-				32389E4D1CDFDD1F009475F6 /* CAAnimation+Callbacks.swift in Sources */,
 				32389E531CDFDD1F009475F6 /* GradientView.swift in Sources */,
 				32389E511CDFDD1F009475F6 /* ConfigurableStoryboard.m in Sources */,
 			);
@@ -472,8 +474,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -501,6 +505,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -521,8 +526,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -542,6 +549,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -554,6 +562,7 @@
 			baseConfigurationReference = F35715E6B42CEA062D79B1A9 /* Pods-SulfurProject-Sulfur.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -566,6 +575,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -574,6 +584,7 @@
 			baseConfigurationReference = 3BAB9CE4573403EFD4167EC1 /* Pods-SulfurProject-Sulfur.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -585,28 +596,33 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.mattadatta.Sulfur;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
 		32389E351CDFDCD1009475F6 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 06DB6704FEF6260CDC66CEB3 /* Pods-SulfurProject-SulfurTests.debug.xcconfig */;
+			baseConfigurationReference = A2DAE250DCCC4A6E305DA5AB /* Pods-SulfurTests.debug.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = SulfurTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mattadatta.SulfurTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
 		32389E361CDFDCD1009475F6 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 852F5F0279CABA8982B8C9DE /* Pods-SulfurProject-SulfurTests.release.xcconfig */;
+			baseConfigurationReference = 329594F461F7F4F63EA42B4D /* Pods-SulfurTests.release.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = SulfurTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mattadatta.SulfurTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

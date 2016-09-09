@@ -4,6 +4,7 @@
  */
 
 import UIKit
+import RxSwift
 
 // MARK: - Context
 
@@ -15,94 +16,126 @@ public final class Context {
 
     // MARK: ContextToken
 
-    private var contextTokens: Set<WeakReference<ContextToken>> = [] {
-        didSet {
-            self.contextTokens = Set(self.contextTokens.filter({ $0.isNotNil }))
-        }
+    fileprivate var weakTokens: Set<WeakReference<ContextToken>> = []
+
+    fileprivate var tokens: Set<ContextToken> {
+        return Set(self.weakTokens.flatMap({ $0.referent }))
     }
 
-    private var unwrappedTokens: Set<ContextToken> {
-        return Set(self.contextTokens.flatMap({ $0.referent }))
-    }
-
-    private func generateToken() -> ContextToken {
+    fileprivate func generateToken() -> ContextToken {
         let token = ContextToken(context: self)
-        self.contextTokens.insert(WeakReference(referent: token))
+        self.weakTokens.insert(WeakReference(referent: token))
         return token
     }
 
-    private func removeToken(token: ContextToken) {
-        self.contextTokens = Set(self.contextTokens.filter({ $0.referent != token }))
+    fileprivate func remove(_ token: ContextToken) {
+        self.weakTokens = Set(self.weakTokens.filter({ $0.referent != token }))
     }
 
     // MARK: Services
 
-    public enum ServiceChange {
-        case Removed
-        case Added(Any)
+    public enum ServiceEvent {
+        case removed(tag: AnyContextServiceTag, service: AnyContextService)
+        case added(tag: AnyContextServiceTag, service: AnyContextService)
     }
 
-    private var services: [String: AnyObject] = [:]
+    fileprivate var services: [AnyContextServiceTag: AnyContextService] = [:]
+    fileprivate var serviceVariableWrappers: [AnyContextServiceTag: ServiceVariableWrapper] = [:]
 
-    public func store < Tag: ContextServiceTag, Service where Service == Tag.Service >
-    (service service: Service?, forTag tag: Tag)
-    {
-        if let existingService = self.services[tag.computedServiceId] as? Service {
-            existingService.removedFrom(context: self)
-            existingService.contextFn = nil
-            self.dispatch(serviceChange: .Removed, forServiceId: tag.computedServiceId)
+    public func store<Tag: ContextServiceTag, Service>(service: Service?, for tag: Tag) where Service == Tag.Service {
+        let anyTag = tag as? AnyContextServiceTag ?? AnyContextServiceTag(tag: tag)
+        if let service = self.services[anyTag] {
+            self.remove(service: service.baseService)
+            self.dispatch(.removed(tag: anyTag, service: service))
         }
-        self.services[tag.computedServiceId] = service
+
+        let service = AnyContextService(optionalService: service)
+        self.services[anyTag] = service
+
         if let service = service {
-            service.contextFn = { [weak self] in return self }
-            service.addedTo(context: self)
-            self.dispatch(serviceChange: .Added(service), forServiceId: tag.computedServiceId)
+            self.add(service: service.baseService)
+            self.dispatch(.added(tag: anyTag, service: service))
         }
     }
 
-    func rawService < Tag: ContextServiceTag, Service where Service == Tag.Service > (forTag tag: Tag) -> Service? {
-        return self.services[tag.computedServiceId] as? Service
-    }
-
-    public func service < Tag: ContextServiceTag, Service where Service == Tag.Service > (forTag tag: Tag) -> Service.Component? {
-        return self.rawService(forTag: tag)?.component
-    }
-
-    private func dispatch(serviceChange serviceChange: ServiceChange, forServiceId serviceId: String) {
-        self.unwrappedTokens.forEach { token in
-            guard let contextServiceAware = token.contextAware as? ContextServiceAware else { return }
-            contextServiceAware.contextDispatched(serviceChange: serviceChange, forServiceId: serviceId)
+    private func add(service: Any) {
+        if let contextNodeContainer = service as? ContextNodeContainer {
+            for child in contextNodeContainer.childContextObjects {
+                self.add(service: child)
+            }
         }
+        if let contextServiceNode = service as? ContextServiceNode, contextServiceNode.context == nil {
+            contextServiceNode.contextFn = { [weak self] in return self }
+            contextServiceNode.added(to: self)
+        }
+    }
+
+    private func remove(service: Any) {
+        if let contextServiceNode = service as? ContextServiceNode, contextServiceNode.context != nil {
+            contextServiceNode.removed(from: self)
+            contextServiceNode.contextFn = nil
+        }
+        if let contextNodeContainer = service as? ContextNodeContainer {
+            for child in contextNodeContainer.childContextObjects {
+                self.remove(service: child)
+            }
+        }
+    }
+
+    public func service<Tag: ContextServiceTag, Service>(for tag: Tag) -> Service? where Service == Tag.Service {
+        let anyTag = tag as? AnyContextServiceTag ?? AnyContextServiceTag(tag: tag)
+        return self.services[anyTag]?.baseService as? Service
+    }
+
+    public func serviceComponent<Tag: ContextServiceTag, Service> (for tag: Tag) -> Service.Component? where Service == Tag.Service {
+        return self.service(for: tag)?.component
+    }
+
+    fileprivate func dispatch(_ serviceEvent: ServiceEvent) {
+        // TODO:
     }
 
     // MARK: Wrapping
 
-    public func wrap<Object>(obj: Object) -> Object {
+    @discardableResult
+    public func wrap<Object>(_ obj: Object) -> Object {
         if let contextPreloadable = obj as? ContextPreloadable {
             contextPreloadable.contextPreload()
         }
-        if let contextAwareContainer = obj as? ContextAwareContainer {
-            for child in contextAwareContainer.childObjects {
+        if let contextNodeContainer = obj as? ContextNodeContainer {
+            for child in contextNodeContainer.childContextObjects {
                 self.wrap(child)
             }
         }
         if let viewController = obj as? UIViewController {
             self.wrap(viewController.view)
         }
-        self.setupContextAwareIfNecessary(obj)
+        self.setupContextNodeIfNecessary(obj)
         return obj
     }
 
-    private func setupContextAwareIfNecessary(obj: Any) {
-        guard let contextAware = obj as? ContextAware where contextAware.contextToken == nil else {
-            return
-        }
+    fileprivate func setupContextNodeIfNecessary(_ obj: Any) {
+        guard let contextNode = obj as? ContextNode, contextNode.contextToken == nil else { return }
 
         let contextToken = self.generateToken()
-        contextToken.contextAware = contextAware
-        contextAware.contextToken = contextToken
-        contextAware.contextAvailable()
+        contextToken.contextNode = contextNode
+        contextNode.contextToken = contextToken
+        contextNode.contextAvailable()
     }
+}
+
+private struct ServiceVariableWrapper {
+
+    let variable: Any
+    weak var observable: AnyObject?
+
+    public init<Service: ContextService>(variable: Variable<Service?>, observable: Observable<Service?>) {
+        self.variable = variable
+        self.observable = observable
+    }
+}
+
+public extension Context {
 
     public func newViewController<ViewController: UIViewController>() -> ViewController {
         return self.wrap(ViewController())
@@ -118,14 +151,58 @@ public final class Context {
 public final class ContextToken: Hashable {
 
     public let context: Context
-    private weak var contextAware: ContextAware?
+    fileprivate weak var contextNode: ContextNode?
 
-    private init(context: Context) {
+    fileprivate init(context: Context) {
         self.context = context
     }
 
     deinit {
-        self.context.removeToken(self)
+        self.context.remove(self)
+    }
+
+    // MARK: Stored References
+
+    public enum Storage {
+
+        case value(value: Any)
+        case strong(object: AnyObject)
+        case weak(object: AnyObject)
+
+        case valueOrNil(value: Any?)
+        case strongOrNil(object: AnyObject?)
+        case weakOrNil(object: AnyObject?)
+    }
+
+    private var storedReferences: [String: AnyReference] = [:]
+
+    public func store(key: String, storage: Storage?) {
+        guard let storage = storage else {
+            self.storedReferences[key] = nil
+            return
+        }
+
+        let reference: AnyReference?
+        switch storage {
+        case .value(let value):
+            reference = AnyReference(reference: ValueWrapper(value: value))
+        case .strong(let object):
+            reference = AnyReference(reference: StrongReference(referent: object))
+        case .weak(let object):
+            reference = AnyReference(reference: WeakReference(referent: object))
+        case .valueOrNil(let value):
+            reference = AnyReference(optionalReference: ValueWrapper(optionalValue: value))
+        case .strongOrNil(let object):
+            reference = AnyReference(optionalReference: StrongReference(optionalReferent: object))
+        case .weakOrNil(let object):
+            reference = AnyReference(optionalReference: WeakReference(optionalReferent: object))
+        }
+
+        self.storedReferences[key] = reference
+    }
+
+    public func retrieveValue<Value>(forKey key: String) -> Value? {
+        return self.storedReferences[key]?.referent as? Value
     }
 
     // MARK: Hashable conformance
@@ -133,10 +210,10 @@ public final class ContextToken: Hashable {
     public var hashValue: Int {
         return ObjectIdentifier(self).hashValue
     }
-}
 
-public func == (lhs: ContextToken, rhs: ContextToken) -> Bool {
-    return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
+    public static func == (lhs: ContextToken, rhs: ContextToken) -> Bool {
+        return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
+    }
 }
 
 // MARK: - StoryboardContextWrapper
@@ -149,34 +226,42 @@ public final class StoryboardContextWrapper: NSObject, ConfigurableStoryboardDel
         self.context = context
     }
 
-    public func configureViewController(viewController: UIViewController) {
+    public func configureViewController(_ viewController: UIViewController) {
         self.context.wrap(viewController)
     }
 }
 
-private extension UIStoryboard {
+fileprivate extension UIStoryboard {
 
     var hasContextWrapper: Bool {
         return (self as? ConfigurableStoryboard)?.delegate is StoryboardContextWrapper
     }
 }
 
-// MARK: - ContextAware
+// MARK: - ContextNode
 
-public protocol ContextAware: class {
+public protocol ContextNode: class {
 
     var contextToken: ContextToken? { get set }
     func contextAvailable()
 }
 
-public extension ContextAware {
+public extension ContextNode {
 
     public var context: Context {
         return self.contextToken!.context
     }
 
-    public func contextWrap<Object>(obj: Object) -> Object {
+    public func contextWrap<Object>(_ obj: Object) -> Object {
         return self.context.wrap(obj)
+    }
+
+    public func store(key: String, storage: ContextToken.Storage?) {
+        self.contextToken?.store(key: key, storage: storage)
+    }
+
+    public func retrieveValue<Value>(forKey key: String) -> Value? {
+        return self.contextToken?.retrieveValue(forKey: key)
     }
 
     public func newViewController<ViewController: UIViewController>() -> ViewController {
@@ -188,7 +273,7 @@ public extension ContextAware {
     }
 }
 
-public extension ContextAware where Self: UIViewController {
+public extension ContextNode where Self: UIViewController {
 
     /**
      Instantiate a view controller from the view controller's storyboard. The `UIViewController` subclass you're
@@ -198,10 +283,8 @@ public extension ContextAware where Self: UIViewController {
      - returns: The new `UIViewController` instance
      */
     public func viewControllerFromStoryboard<Controller: UIViewController>() -> Controller? {
-        guard let storyboard = self.storyboard else {
-            return nil
-        }
-        let controller = storyboard.instantiateViewControllerWithIdentifier(String(Controller)) as! Controller
+        guard let storyboard = self.storyboard else { return nil }
+        let controller = storyboard.instantiateViewController(withIdentifier: String(describing: Controller.self)) as! Controller
         if !storyboard.hasContextWrapper {
             self.context.wrap(controller)
         }
@@ -209,23 +292,23 @@ public extension ContextAware where Self: UIViewController {
     }
 }
 
-// MARK: - ContextAwareContainer
+// MARK: - ContextNodeContainer
 
-public protocol ContextAwareContainer {
+public protocol ContextNodeContainer {
 
-    var childObjects: [Any] { get }
+    var childContextObjects: [Any] { get }
 }
 
-extension UIViewController: ContextAwareContainer {
+extension UIViewController: ContextNodeContainer {
 
-    public var childObjects: [Any] {
+    public var childContextObjects: [Any] {
         return self.childViewControllers.map({ $0 })
     }
 }
 
-extension UIView: ContextAwareContainer {
+extension UIView: ContextNodeContainer {
 
-    public var childObjects: [Any] {
+    public var childContextObjects: [Any] {
         return self.subviews.map({ $0 })
     }
 }
@@ -238,7 +321,7 @@ public protocol ContextPreloadable {
 extension UIViewController: ContextPreloadable {
 
     public func contextPreload() {
-        guard let contextAware = self as? ContextAware where contextAware.contextToken == nil else { return }
+        guard let contextNode = self as? ContextNode, contextNode.contextToken == nil else { return }
         self.loadViewIfNeeded()
     }
 }
@@ -246,45 +329,148 @@ extension UIViewController: ContextPreloadable {
 extension UIView: ContextPreloadable {
 
     public func contextPreload() {
-        guard let contextAware = self as? ContextAware where contextAware.contextToken == nil else { return }
+        guard let contextNode = self as? ContextNode, contextNode.contextToken == nil else { return }
         guard let inflatable = self as? UINibViewInflatable else { return }
         let view = inflatable.inflateView()
-        self.addAndConstrainView(view)
+        self.addAndConstrain(view)
     }
 }
 
 // MARK: - ContextService
 
-public protocol ContextServiceTag {
+public protocol ContextServiceNode: class {
+
+    var contextFn: (() -> Context?)? { get set }
+
+    func added(to context: Context)
+    func removed(from context: Context)
+}
+
+public protocol ContextService: ContextServiceNode {
+    associatedtype Component
+
+    var component: Component { get }
+}
+
+public extension ContextServiceNode {
+
+    public var context: Context? {
+        return self.contextFn?()
+    }
+
+    public func added(to context: Context) {
+    }
+
+    public func removed(from context: Context) {
+    }
+}
+
+public final class AnyContextService: ContextService, Hashable {
+
+    public let baseService: AnyObject
+    fileprivate let _component: () -> Any
+    fileprivate let _addedTo: (Context) -> Void
+    fileprivate let _removedFrom: (Context) -> Void
+
+    fileprivate let _setContextFn: ((() -> Context?)?) -> Void
+    fileprivate let _getContextFn: () -> (() -> Context?)?
+
+    public var contextFn: (() -> Context?)? {
+        get { return self._getContextFn() }
+        set { self._setContextFn(newValue) }
+    }
+
+    public convenience init?<Service: ContextService>(optionalService service: Service?) {
+        guard let service = service else { return nil }
+        self.init(service: service)
+    }
+
+    public init<Service: ContextService>(service: Service) {
+        self.baseService = service
+        self._component = { service.component }
+        self._addedTo = { service.added(to: $0) }
+        self._removedFrom = { service.removed(from: $0) }
+        self._getContextFn = { service.contextFn }
+        self._setContextFn = { service.contextFn = $0 }
+    }
+
+    public var component: Any {
+        return self._component()
+    }
+
+    public func added(to context: Context) {
+        self._addedTo(context)
+    }
+
+    public func removed(from context: Context) {
+        self._removedFrom(context)
+    }
+
+    public var hashValue: Int {
+        return ObjectIdentifier(self.baseService).hashValue
+    }
+
+    public static func == (lhs: AnyContextService, rhs: AnyContextService) -> Bool {
+        return ObjectIdentifier(lhs.baseService) == ObjectIdentifier(rhs.baseService)
+    }
+}
+
+// MARK: - ContextServiceTag
+
+public protocol ContextServiceTag: Hashable {
     associatedtype Service: ContextService
-    var serviceId: String? { get }
+
+    var serviceID: String { get } // Fulfilled by extension, if desired
 }
 
 public extension ContextServiceTag {
 
-    public var computedServiceId: String {
-        return self.serviceId ?? String(Self)
+    public var serviceID: String {
+        return String(describing: Self.self)
     }
 }
 
-public protocol ContextService: class {
-    associatedtype Component
+extension ContextServiceTag where Self: Hashable {
 
-    var contextFn: (() -> Context?)? { get set }
-    var component: Component { get }
+    public var hashValue: Int {
+        return self.serviceID.hashValue
+    }
 
-    func addedTo(context context: Context)
-    func removedFrom(context context: Context)
-}
-
-public extension ContextService {
-
-    var context: Context? {
-        return self.contextFn?()
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        return lhs.serviceID == rhs.serviceID
     }
 }
 
-public protocol ContextServiceAware: class {
+public struct AnyContextServiceTag: ContextServiceTag, Hashable {
 
-    func contextDispatched(serviceChange serviceChange: Context.ServiceChange, forServiceId serviceId: String)
+    public typealias Service = AnyContextService
+
+    public let tag: Any
+    fileprivate let _serviceID: () -> String
+    fileprivate let _equalTo: (AnyContextServiceTag) -> Bool
+    fileprivate let _hashValue: () -> Int
+
+    public init?<Tag: ContextServiceTag>(optionalTag tag: Tag?) {
+        guard let tag = tag else { return nil }
+        self.init(tag: tag)
+    }
+
+    public init<Tag: ContextServiceTag>(tag: Tag) {
+        self.tag = tag
+        self._serviceID = { tag.serviceID }
+        self._equalTo = { ($0.tag as? Tag) == tag }
+        self._hashValue = { tag.hashValue }
+    }
+    
+    public var serviceID: String {
+        return self._serviceID()
+    }
+    
+    public var hashValue: Int {
+        return self._hashValue()
+    }
+    
+    public static func == (lhs: AnyContextServiceTag, rhs: AnyContextServiceTag) -> Bool {
+        return lhs._equalTo(rhs)
+    }
 }
