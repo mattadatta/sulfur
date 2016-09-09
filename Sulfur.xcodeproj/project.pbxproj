@@ -15,7 +15,7 @@
 		32389E281CDFDCD1009475F6 /* Sulfur.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32389E1D1CDFDCD1009475F6 /* Sulfur.framework */; };
 		32389E2D1CDFDCD1009475F6 /* SulfurTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E2C1CDFDCD1009475F6 /* SulfurTests.swift */; };
 		32389E4B1CDFDD1F009475F6 /* Array+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E371CDFDD1F009475F6 /* Array+Utils.swift */; };
-		32389E4E1CDFDD1F009475F6 /* CancelableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E3A1CDFDD1F009475F6 /* CancelableScrollView.swift */; };
+		32389E4E1CDFDD1F009475F6 /* UIScrollView+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E3A1CDFDD1F009475F6 /* UIScrollView+Utils.swift */; };
 		32389E4F1CDFDD1F009475F6 /* CG+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E3B1CDFDD1F009475F6 /* CG+Utils.swift */; };
 		32389E501CDFDD1F009475F6 /* ConfigurableStoryboard.h in Headers */ = {isa = PBXBuildFile; fileRef = 32389E3C1CDFDD1F009475F6 /* ConfigurableStoryboard.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		32389E511CDFDD1F009475F6 /* ConfigurableStoryboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 32389E3D1CDFDD1F009475F6 /* ConfigurableStoryboard.m */; };
@@ -31,6 +31,7 @@
 		32389E5C1CDFDD1F009475F6 /* UINib+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E481CDFDD1F009475F6 /* UINib+Utils.swift */; };
 		32389E5E1CDFDD1F009475F6 /* UIView+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E4A1CDFDD1F009475F6 /* UIView+Utils.swift */; };
 		324150331D3C2483008A26CD /* Hashing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324150321D3C2483008A26CD /* Hashing.swift */; };
+		32588C481D83035C00060027 /* Data+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32588C471D83035C00060027 /* Data+Utils.swift */; };
 		32A5A1F11D7F17580026AD9C /* Rx+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A5A1F01D7F17580026AD9C /* Rx+Utils.swift */; };
 		32BC05961D1B3BE1008573BC /* ContextTransitioning+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05951D1B3BE1008573BC /* ContextTransitioning+Utils.swift */; };
 		32BC05981D1B3C39008573BC /* DebugFns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05971D1B3C39008573BC /* DebugFns.swift */; };
@@ -63,7 +64,7 @@
 		32389E2C1CDFDCD1009475F6 /* SulfurTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SulfurTests.swift; sourceTree = "<group>"; };
 		32389E2E1CDFDCD1009475F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		32389E371CDFDD1F009475F6 /* Array+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "Array+Utils.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		32389E3A1CDFDD1F009475F6 /* CancelableScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CancelableScrollView.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		32389E3A1CDFDD1F009475F6 /* UIScrollView+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "UIScrollView+Utils.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		32389E3B1CDFDD1F009475F6 /* CG+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "CG+Utils.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		32389E3C1CDFDD1F009475F6 /* ConfigurableStoryboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = ConfigurableStoryboard.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		32389E3D1CDFDD1F009475F6 /* ConfigurableStoryboard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ConfigurableStoryboard.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -79,6 +80,7 @@
 		32389E481CDFDD1F009475F6 /* UINib+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UINib+Utils.swift"; sourceTree = "<group>"; };
 		32389E4A1CDFDD1F009475F6 /* UIView+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Utils.swift"; sourceTree = "<group>"; };
 		324150321D3C2483008A26CD /* Hashing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hashing.swift; sourceTree = "<group>"; };
+		32588C471D83035C00060027 /* Data+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+Utils.swift"; sourceTree = "<group>"; };
 		329594F461F7F4F63EA42B4D /* Pods-SulfurTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SulfurTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SulfurTests/Pods-SulfurTests.release.xcconfig"; sourceTree = "<group>"; };
 		32A5A1F01D7F17580026AD9C /* Rx+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Rx+Utils.swift"; sourceTree = "<group>"; };
 		32BC05951D1B3BE1008573BC /* ContextTransitioning+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ContextTransitioning+Utils.swift"; sourceTree = "<group>"; };
@@ -138,12 +140,12 @@
 			isa = PBXGroup;
 			children = (
 				32389E371CDFDD1F009475F6 /* Array+Utils.swift */,
-				32389E3A1CDFDD1F009475F6 /* CancelableScrollView.swift */,
 				32389E3B1CDFDD1F009475F6 /* CG+Utils.swift */,
 				32389E3C1CDFDD1F009475F6 /* ConfigurableStoryboard.h */,
 				32389E3D1CDFDD1F009475F6 /* ConfigurableStoryboard.m */,
 				32BC05991D1B3D75008573BC /* Context.swift */,
 				32BC05951D1B3BE1008573BC /* ContextTransitioning+Utils.swift */,
+				32588C471D83035C00060027 /* Data+Utils.swift */,
 				32BC05971D1B3C39008573BC /* DebugFns.swift */,
 				32389E3E1CDFDD1F009475F6 /* Gradient.swift */,
 				32389E3F1CDFDD1F009475F6 /* GradientView.swift */,
@@ -159,6 +161,7 @@
 				32389E461CDFDD1F009475F6 /* UIColor+Utils.swift */,
 				32389E471CDFDD1F009475F6 /* UIImage+Utils.swift */,
 				32389E481CDFDD1F009475F6 /* UINib+Utils.swift */,
+				32389E3A1CDFDD1F009475F6 /* UIScrollView+Utils.swift */,
 				32389E4A1CDFDD1F009475F6 /* UIView+Utils.swift */,
 				3203E9EB1CEFBA9000D14253 /* ViewCellWrappers.swift */,
 				32271E8F1D5AB36700F6FD08 /* ViewStateManager.swift */,
@@ -411,7 +414,7 @@
 				32389E5A1CDFDD1F009475F6 /* UIColor+Utils.swift in Sources */,
 				32A5A1F11D7F17580026AD9C /* Rx+Utils.swift in Sources */,
 				324150331D3C2483008A26CD /* Hashing.swift in Sources */,
-				32389E4E1CDFDD1F009475F6 /* CancelableScrollView.swift in Sources */,
+				32389E4E1CDFDD1F009475F6 /* UIScrollView+Utils.swift in Sources */,
 				32D04B121D31C16200EB8D5D /* GridCollectionController.swift in Sources */,
 				32BC05981D1B3C39008573BC /* DebugFns.swift in Sources */,
 				322D66111D57C2F100CBCA4F /* Sulfur.swift in Sources */,
@@ -430,6 +433,7 @@
 				32389E5B1CDFDD1F009475F6 /* UIImage+Utils.swift in Sources */,
 				32389E591CDFDD1F009475F6 /* TabbedViewController.swift in Sources */,
 				32389E5C1CDFDD1F009475F6 /* UINib+Utils.swift in Sources */,
+				32588C481D83035C00060027 /* Data+Utils.swift in Sources */,
 				32271E901D5AB36700F6FD08 /* ViewStateManager.swift in Sources */,
 				32BC059A1D1B3D75008573BC /* Context.swift in Sources */,
 				32389E531CDFDD1F009475F6 /* GradientView.swift in Sources */,
@@ -557,7 +561,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F35715E6B42CEA062D79B1A9 /* Pods-SulfurProject-Sulfur.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
@@ -580,7 +583,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3BAB9CE4573403EFD4167EC1 /* Pods-SulfurProject-Sulfur.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
@@ -603,7 +605,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A2DAE250DCCC4A6E305DA5AB /* Pods-SulfurTests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				INFOPLIST_FILE = SulfurTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mattadatta.SulfurTests;
@@ -616,7 +617,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 329594F461F7F4F63EA42B4D /* Pods-SulfurTests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				INFOPLIST_FILE = SulfurTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mattadatta.SulfurTests;

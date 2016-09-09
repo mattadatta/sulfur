@@ -93,6 +93,38 @@ public extension CGVector {
     }
 }
 
+public func + (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
+    return CGPoint(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
+}
+
+public func += (lhs: inout CGPoint, rhs: CGPoint) {
+    lhs = lhs + rhs
+}
+
+public func - (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
+    return CGPoint(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
+}
+
+public func -= (lhs: inout CGPoint, rhs: CGPoint) {
+    lhs = lhs - rhs
+}
+
+public func * (point: CGPoint, scale: CGFloat) -> CGPoint {
+    return CGPoint(x: point.x * scale, y: point.y * scale)
+}
+
+public func *= (point: inout CGPoint, scale: CGFloat) {
+    point = point * scale
+}
+
+public func / (point: CGPoint, scale: CGFloat) -> CGPoint {
+    return CGPoint(x: point.x / scale, y: point.y / scale)
+}
+
+public func /= (point: inout CGPoint, scale: CGFloat) {
+    point = point / scale
+}
+
 public extension CGPoint {
 
     public func vector(to point: CGPoint) -> CGVector {
@@ -178,6 +210,10 @@ public extension CGRect {
         return CGPoint(
             x: (anchorPoint.x * self.width) + self.origin.x,
             y: (anchorPoint.y * self.height) + self.origin.y)
+    }
+
+    public var aspectRatio: CGFloat {
+        return self.width / self.height
     }
 }
 

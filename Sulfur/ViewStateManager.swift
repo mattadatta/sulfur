@@ -93,17 +93,17 @@ public final class ViewStateManager {
         fileprivate weak var stateManager: ViewStateManager?
         fileprivate let action: Action
 
-        fileprivate init(stateManager: ViewStateManager, touchEvent: TouchEvent, callback: TouchEventCallback) {
+        fileprivate init(stateManager: ViewStateManager, touchEvent: TouchEvent, callback: @escaping TouchEventCallback) {
             self.stateManager = stateManager
             self.action = .touch(event: touchEvent, callback: callback)
         }
 
-        fileprivate init(stateManager: ViewStateManager, gestureEvent: GestureEvent, callback: GestureEventCallback) {
+        fileprivate init(stateManager: ViewStateManager, gestureEvent: GestureEvent, callback: @escaping GestureEventCallback) {
             self.stateManager = stateManager
             self.action = .gesture(event: gestureEvent, callback: callback)
         }
 
-        fileprivate init(stateManager: ViewStateManager, callback: StateEventCallback) {
+        fileprivate init(stateManager: ViewStateManager, callback: @escaping StateEventCallback) {
             self.stateManager = stateManager
             self.action = .state(callback: callback)
         }
@@ -285,19 +285,19 @@ public final class ViewStateManager {
     }
     fileprivate var storedRegistry: Set<Token> = []
 
-    public func subscribe(to touchEvent: TouchEvent, with callback: TouchEventCallback) -> Token {
+    public func subscribe(to touchEvent: TouchEvent, callback: @escaping TouchEventCallback) -> Token {
         let token = Token(stateManager: self, touchEvent: touchEvent, callback: callback)
         self.weakRegistry.insert(WeakReference(referent: token))
         return token
     }
 
-    public func subscribe(to gestureEvent: GestureEvent, with callback: GestureEventCallback) -> Token {
+    public func subscribe(to gestureEvent: GestureEvent, callback: @escaping GestureEventCallback) -> Token {
         let token = Token(stateManager: self, gestureEvent: gestureEvent, callback: callback)
         self.weakRegistry.insert(WeakReference(referent: token))
         return token
     }
 
-    public func subscribeToStateEvent(with callback: StateEventCallback) -> Token {
+    public func subscribeToStateEvent(callback: @escaping StateEventCallback) -> Token {
         let token = Token(stateManager: self, callback: callback)
         self.weakRegistry.insert(WeakReference(referent: token))
         return token

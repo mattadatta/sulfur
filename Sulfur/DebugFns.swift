@@ -29,7 +29,7 @@ public func time<Input, Output>(fn: @escaping (Input) -> Output, onTime: @escapi
     }
 }
 
-public func timePrint<Input, Output>(functionName: String = #function, fileName: String = #file, lineNumber: Int = #line, fn: ((Input) -> Output)) -> ((Input) -> Output) {
+public func timePrint<Input, Output>(functionName: String = #function, fileName: String = #file, lineNumber: Int = #line, fn: @escaping ((Input) -> Output)) -> ((Input) -> Output) {
     return time(fn: fn) { (time) in
         print("[\((fileName as NSString).lastPathComponent):\(lineNumber) - \(functionName)] - Elapsed time: \(time) ms")
     }

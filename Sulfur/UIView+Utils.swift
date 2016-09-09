@@ -84,30 +84,21 @@ public extension UIView {
 
 public extension UIViewController {
 
-    public func removeSelf() {
-        self.removeSelf(transitionFn: { $0() })
-    }
-
-    public func removeSelf(transitionFn: (() -> Void) -> Void) {
-        self.willMove(toParentViewController: nil)
-        transitionFn() {
-            self.view.removeFromSuperview()
-            self.removeFromParentViewController()
-        }
-    }
-
     @discardableResult
-    public func addAndConstrain(_ viewController: UIViewController, with insets: UIEdgeInsets = .zero) -> ConstraintGroup {
-        return self.addAndConstrain(viewController, with: insets, transitionFn: { $0() })
-    }
-
-    @discardableResult
-    public func addAndConstrain(_ viewController: UIViewController, with insets: UIEdgeInsets = .zero, transitionFn: (() -> Void) -> Void) -> ConstraintGroup {
+    public func addAndConstrain(_ viewController: UIViewController, parentView: UIView? = nil, insets: UIEdgeInsets = .zero, performTransition: (_ complete: () -> Void) -> Void = { $0() }) -> ConstraintGroup {
         self.addChildViewController(viewController)
-        let constraintGroup = self.view.addAndConstrain(viewController.view, with: insets)
-        transitionFn() {
+        let constraintGroup = (parentView ?? self.view).addAndConstrain(viewController.view, with: insets)
+        performTransition() {
             viewController.didMove(toParentViewController: self)
         }
         return constraintGroup
+    }
+
+    public func fullyRemove(performTransition: (_ complete: () -> Void) -> Void =  { $0() }) {
+        self.willMove(toParentViewController: nil)
+        performTransition() {
+            self.view.removeFromSuperview()
+            self.removeFromParentViewController()
+        }
     }
 }
