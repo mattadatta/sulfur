@@ -31,6 +31,10 @@ public extension CGSize {
     public var toPoint: CGPoint {
         return CGPoint(x: self.width, y: self.height)
     }
+
+    public var aspectRatio: CGFloat {
+        return self.width / self.height
+    }
 }
 
 public func + (lhs: CGVector, rhs: CGVector) -> CGVector {
@@ -213,7 +217,7 @@ public extension CGRect {
     }
 
     public var aspectRatio: CGFloat {
-        return self.width / self.height
+        return self.size.aspectRatio
     }
 }
 
