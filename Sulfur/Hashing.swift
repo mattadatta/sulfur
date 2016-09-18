@@ -193,6 +193,27 @@ extension Int: HashablePart {
     }
 }
 
+extension UInt: HashablePart {
+
+    public var hashComponent: Int {
+        return Int(bitPattern: self).hashComponent
+    }
+}
+
+extension Int64: HashablePart {
+
+    public var hashComponent: Int {
+        return Int(self ^ (self >> 32))
+    }
+}
+
+extension UInt64: HashablePart {
+
+    public var hashComponent: Int {
+        return Int64(bitPattern: self).hashComponent
+    }
+}
+
 extension Bool: HashablePart {
 
     public var hashComponent: Int {

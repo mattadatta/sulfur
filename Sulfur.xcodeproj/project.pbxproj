@@ -31,6 +31,7 @@
 		32389E5E1CDFDD1F009475F6 /* UIView+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E4A1CDFDD1F009475F6 /* UIView+Utils.swift */; };
 		324150331D3C2483008A26CD /* Hashing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324150321D3C2483008A26CD /* Hashing.swift */; };
 		32588C481D83035C00060027 /* Data+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32588C471D83035C00060027 /* Data+Utils.swift */; };
+		32A0D0D61D8F1D2C002F49CC /* FontUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A0D0D51D8F1D2C002F49CC /* FontUtils.swift */; };
 		32A5A1F11D7F17580026AD9C /* Rx+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A5A1F01D7F17580026AD9C /* Rx+Utils.swift */; };
 		32BC05961D1B3BE1008573BC /* ContextTransitioning+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05951D1B3BE1008573BC /* ContextTransitioning+Utils.swift */; };
 		32BC05981D1B3C39008573BC /* DebugFns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05971D1B3C39008573BC /* DebugFns.swift */; };
@@ -80,6 +81,7 @@
 		324150321D3C2483008A26CD /* Hashing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hashing.swift; sourceTree = "<group>"; };
 		32588C471D83035C00060027 /* Data+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+Utils.swift"; sourceTree = "<group>"; };
 		329594F461F7F4F63EA42B4D /* Pods-SulfurTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SulfurTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SulfurTests/Pods-SulfurTests.release.xcconfig"; sourceTree = "<group>"; };
+		32A0D0D51D8F1D2C002F49CC /* FontUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FontUtils.swift; sourceTree = "<group>"; };
 		32A5A1F01D7F17580026AD9C /* Rx+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Rx+Utils.swift"; sourceTree = "<group>"; };
 		32BC05951D1B3BE1008573BC /* ContextTransitioning+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ContextTransitioning+Utils.swift"; sourceTree = "<group>"; };
 		32BC05971D1B3C39008573BC /* DebugFns.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugFns.swift; sourceTree = "<group>"; };
@@ -145,6 +147,7 @@
 				32BC05951D1B3BE1008573BC /* ContextTransitioning+Utils.swift */,
 				32588C471D83035C00060027 /* Data+Utils.swift */,
 				32BC05971D1B3C39008573BC /* DebugFns.swift */,
+				32A0D0D51D8F1D2C002F49CC /* FontUtils.swift */,
 				32389E3E1CDFDD1F009475F6 /* Gradient.swift */,
 				32D04B111D31C16200EB8D5D /* GridCollectionController.swift */,
 				32D04B0F1D31C0CB00EB8D5D /* GridCollectionViewLayout.swift */,
@@ -416,6 +419,7 @@
 				32BC05981D1B3C39008573BC /* DebugFns.swift in Sources */,
 				322D66111D57C2F100CBCA4F /* Sulfur.swift in Sources */,
 				32389E571CDFDD1F009475F6 /* SequenceType+Utils.swift in Sources */,
+				32A0D0D61D8F1D2C002F49CC /* FontUtils.swift in Sources */,
 				3203E9EC1CEFBA9000D14253 /* ViewCellWrappers.swift in Sources */,
 				32389E581CDFDD1F009475F6 /* String+Utils.swift in Sources */,
 				32389E551CDFDD1F009475F6 /* Random.swift in Sources */,
@@ -601,6 +605,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A2DAE250DCCC4A6E305DA5AB /* Pods-SulfurTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				INFOPLIST_FILE = SulfurTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mattadatta.SulfurTests;
@@ -613,6 +618,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 329594F461F7F4F63EA42B4D /* Pods-SulfurTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				INFOPLIST_FILE = SulfurTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mattadatta.SulfurTests;
