@@ -301,14 +301,14 @@ public protocol ContextNodeContainer {
 
 extension UIViewController: ContextNodeContainer {
 
-    public var childContextObjects: [Any] {
+    open var childContextObjects: [Any] {
         return self.childViewControllers.map({ $0 })
     }
 }
 
 extension UIView: ContextNodeContainer {
 
-    public var childContextObjects: [Any] {
+    open var childContextObjects: [Any] {
         return self.subviews.map({ $0 })
     }
 }
@@ -320,7 +320,7 @@ public protocol ContextPreloadable {
 
 extension UIViewController: ContextPreloadable {
 
-    public func contextPreload() {
+    open func contextPreload() {
         guard let contextNode = self as? ContextNode, contextNode.contextToken == nil else { return }
         self.loadViewIfNeeded()
     }
@@ -328,7 +328,7 @@ extension UIViewController: ContextPreloadable {
 
 extension UIView: ContextPreloadable {
 
-    public func contextPreload() {
+    open func contextPreload() {
         guard let contextNode = self as? ContextNode, contextNode.contextToken == nil else { return }
         guard let inflatable = self as? UINibViewInflatable else { return }
         let view = inflatable.inflateView()
