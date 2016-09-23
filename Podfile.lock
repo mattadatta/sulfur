@@ -1,40 +1,30 @@
 PODS:
-  - Cartography (0.5.0)
-  - RxSwift (3.0.0.alpha.1)
-  - XCGLogger (4.0.0-beta.4)
+  - Cartography (0.7.0)
+  - RxSwift (3.0.0-beta.1)
+  - XCGLogger (4.0.0):
+    - XCGLogger/Core (= 4.0.0)
+  - XCGLogger/Core (4.0.0)
 
 DEPENDENCIES:
-  - Cartography (from `https://github.com/mattadatta/Cartography.git`, branch `feature/swift-3`)
-  - RxSwift (from `https://github.com/ReactiveX/RxSwift.git`, branch `develop`)
-  - XCGLogger (from `https://github.com/DaveWoodCom/XCGLogger.git`, branch `swift_3.0`)
+  - Cartography (from `https://github.com/robb/Cartography.git`, branch `swift3_ci`)
+  - RxSwift (~> 3.0.0-beta.1)
+  - XCGLogger (~> 4.0)
 
 EXTERNAL SOURCES:
   Cartography:
-    :branch: feature/swift-3
-    :git: https://github.com/mattadatta/Cartography.git
-  RxSwift:
-    :branch: develop
-    :git: https://github.com/ReactiveX/RxSwift.git
-  XCGLogger:
-    :branch: swift_3.0
-    :git: https://github.com/DaveWoodCom/XCGLogger.git
+    :branch: swift3_ci
+    :git: https://github.com/robb/Cartography.git
 
 CHECKOUT OPTIONS:
   Cartography:
-    :commit: f3ca629d18974cbb35456c7b1a96ad30d3badc4e
-    :git: https://github.com/mattadatta/Cartography.git
-  RxSwift:
-    :commit: 769dabbc06ecdb92971856e9fa2883cafab02a78
-    :git: https://github.com/ReactiveX/RxSwift.git
-  XCGLogger:
-    :commit: b4b8f52d1bbde86eab66380acfb40b72819fc12a
-    :git: https://github.com/DaveWoodCom/XCGLogger.git
+    :commit: 974961cbace94194eaa9ac1291fd807822755a20
+    :git: https://github.com/robb/Cartography.git
 
 SPEC CHECKSUMS:
-  Cartography: de3e85d2fc2d7288a2e7c89e1ac6cad08599d75e
-  RxSwift: 0bccfee1e979c1b72a5d1dffdf96119303b5d111
-  XCGLogger: dca27c8c2a218a9c176917680d891c8fdf9d4484
+  Cartography: dd6044b6fe352252f68b648df5bff47841e591cc
+  RxSwift: 0823e8d7969c23bfa9ddfb2afa4881e424a1a710
+  XCGLogger: 38063ea89b4c8b23232d18efd2e12eb0005f3ea4
 
-PODFILE CHECKSUM: 28580f61173cd160188f6e14b13c1acf30e96369
+PODFILE CHECKSUM: d741c6f3ef51d74d6ddcfd644ea139369b5fc2ca
 
 COCOAPODS: 1.1.0.rc.2
