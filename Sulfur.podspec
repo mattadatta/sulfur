@@ -14,6 +14,6 @@ Pod::Spec.new do |s|
   s.module_name           = s.name
 
   s.dependency 'XCGLogger', '~> 4.0'
-  s.dependency 'Cartography' '~> 1.0'
+  s.dependency 'Cartography', '~> 1.0'
   s.dependency 'RxSwift', '~> 3.0.0-beta.1'
 end
