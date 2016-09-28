@@ -22,7 +22,15 @@ public final class TableViewCell<View: UIView>: UITableViewCell {
         return (cell, cell.nestedView)
     }
 
-    public fileprivate(set) weak var nestedView: View!
+    public weak var nestedView: View! {
+        willSet {
+            guard let view = self.nestedView else { return }
+            view.removeFromSuperview()
+        }
+        didSet {
+            self.contentView.addAndConstrain(self.nestedView)
+        }
+    }
 
     override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -35,9 +43,7 @@ public final class TableViewCell<View: UIView>: UITableViewCell {
     }
 
     fileprivate func commonInit() {
-        let view = View.init()
-        self.contentView.addAndConstrain(view)
-        self.nestedView = view
+        self.nestedView = View()
     }
 
     public private(set) var isSetup = false
@@ -80,7 +86,15 @@ public final class TableViewHeaderFooterView<View: UIView>: UITableViewHeaderFoo
         return (view, view.nestedView)
     }
 
-    public fileprivate(set) weak var nestedView: View!
+    public weak var nestedView: View! {
+        willSet {
+            guard let view = self.nestedView else { return }
+            view.removeFromSuperview()
+        }
+        didSet {
+            self.contentView.addAndConstrain(self.nestedView)
+        }
+    }
 
     override public init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
@@ -93,9 +107,7 @@ public final class TableViewHeaderFooterView<View: UIView>: UITableViewHeaderFoo
     }
 
     fileprivate func commonInit() {
-        let view = View.init()
-        self.contentView.addAndConstrain(view)
-        self.nestedView = view
+        self.nestedView = View()
     }
 
     public private(set) var isSetup = false
@@ -131,7 +143,15 @@ public final class CollectionViewCell<View: UIView>: UICollectionViewCell {
         return (cell, cell.nestedView)
     }
 
-    public fileprivate(set) weak var nestedView: View!
+    public weak var nestedView: View! {
+        willSet {
+            guard let view = self.nestedView else { return }
+            view.removeFromSuperview()
+        }
+        didSet {
+            self.contentView.addAndConstrain(self.nestedView)
+        }
+    }
 
     override public init(frame: CGRect) {
         super.init(frame: frame)
@@ -144,9 +164,7 @@ public final class CollectionViewCell<View: UIView>: UICollectionViewCell {
     }
 
     fileprivate func commonInit() {
-        let view = View.init()
-        self.contentView.addAndConstrain(view)
-        self.nestedView = view
+        self.nestedView = View()
     }
 
     public private(set) var isSetup = false
@@ -190,7 +208,15 @@ public final class CollectionReusableView<View: UIView>: UICollectionReusableVie
         return (view, view.nestedView)
     }
 
-    public fileprivate(set) weak var nestedView: View!
+    public weak var nestedView: View! {
+        willSet {
+            guard let view = self.nestedView else { return }
+            view.removeFromSuperview()
+        }
+        didSet {
+            self.addAndConstrain(self.nestedView)
+        }
+    }
 
     override public init(frame: CGRect) {
         super.init(frame: frame)
@@ -203,9 +229,7 @@ public final class CollectionReusableView<View: UIView>: UICollectionReusableVie
     }
 
     fileprivate func commonInit() {
-        let view = View.init()
-        self.addAndConstrain(view)
-        self.nestedView = view
+        self.nestedView = View()
     }
 
     public private(set) var isSetup = false
