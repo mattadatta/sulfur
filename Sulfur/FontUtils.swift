@@ -14,24 +14,20 @@ public struct FontUtils {
     }
 
     public static func loadFont(at url: URL) throws -> String {
-        do {
-            let fontData = try Data(contentsOf: url)
-            guard let dataProvider = CGDataProvider(data: fontData as CFData) else {
-                throw Error.dataProviderConstructionFailed
-            }
-            let font = CGFont(dataProvider)
-            var unmanagedError: Unmanaged<CFError>?
-            CTFontManagerRegisterGraphicsFont(font, &unmanagedError)
-            if let unmanagedError = unmanagedError {
-                throw unmanagedError.takeRetainedValue()
-            }
-            guard let fontName = (font.postScriptName ?? nil) as? String else {
-                throw Error.postScriptNameUnavailable
-            }
-            return fontName
-        } catch let error {
-            throw error
+        let fontData = try Data(contentsOf: url)
+        guard let dataProvider = CGDataProvider(data: fontData as CFData) else {
+            throw Error.dataProviderConstructionFailed
         }
+        let font = CGFont(dataProvider)
+        var unmanagedError: Unmanaged<CFError>?
+        CTFontManagerRegisterGraphicsFont(font, &unmanagedError)
+        if let unmanagedError = unmanagedError {
+            throw unmanagedError.takeRetainedValue()
+        }
+        guard let fontName = (font.postScriptName ?? nil) as? String else {
+            throw Error.postScriptNameUnavailable
+        }
+        return fontName
     }
 
     private init() { }

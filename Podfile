@@ -7,7 +7,7 @@ workspace 'Sulfur'
 abstract_target 'SulfurProject' do
 
   pod 'XCGLogger', '~> 4.0'
-  pod 'Cartography', :git => 'https://github.com/robb/Cartography.git', :branch => 'swift3_ci'
+  pod 'Cartography', '~> 1.0'
   pod 'RxSwift', '~> 3.0.0-beta.1'
 
   target 'Sulfur' do

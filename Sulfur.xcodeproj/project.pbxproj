@@ -605,7 +605,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A2DAE250DCCC4A6E305DA5AB /* Pods-SulfurTests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				INFOPLIST_FILE = SulfurTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mattadatta.SulfurTests;
@@ -618,7 +617,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 329594F461F7F4F63EA42B4D /* Pods-SulfurTests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				INFOPLIST_FILE = SulfurTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mattadatta.SulfurTests;

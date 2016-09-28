@@ -1,30 +1,20 @@
 PODS:
-  - Cartography (0.7.0)
+  - Cartography (1.0.0)
   - RxSwift (3.0.0-beta.1)
   - XCGLogger (4.0.0):
     - XCGLogger/Core (= 4.0.0)
   - XCGLogger/Core (4.0.0)
 
 DEPENDENCIES:
-  - Cartography (from `https://github.com/robb/Cartography.git`, branch `swift3_ci`)
+  - Cartography (~> 1.0)
   - RxSwift (~> 3.0.0-beta.1)
   - XCGLogger (~> 4.0)
 
-EXTERNAL SOURCES:
-  Cartography:
-    :branch: swift3_ci
-    :git: https://github.com/robb/Cartography.git
-
-CHECKOUT OPTIONS:
-  Cartography:
-    :commit: 974961cbace94194eaa9ac1291fd807822755a20
-    :git: https://github.com/robb/Cartography.git
-
 SPEC CHECKSUMS:
-  Cartography: dd6044b6fe352252f68b648df5bff47841e591cc
+  Cartography: e576cf19c0c1f201686180bcf4537f981574ce8d
   RxSwift: 0823e8d7969c23bfa9ddfb2afa4881e424a1a710
   XCGLogger: 38063ea89b4c8b23232d18efd2e12eb0005f3ea4
 
-PODFILE CHECKSUM: d741c6f3ef51d74d6ddcfd644ea139369b5fc2ca
+PODFILE CHECKSUM: 0cc415df619a4e2f9574816472726ab5cbeec36c
 
 COCOAPODS: 1.1.0.rc.2
