@@ -140,6 +140,35 @@ public extension CGPoint {
     }
 }
 
+public extension CGPoint {
+
+    public func midpoint(between point: CGPoint) -> CGPoint {
+        return CGPoint(x: (self.x + point.x) / 2.0, y: (self.y + point.y) / 2.0)
+    }
+
+    public mutating func offset(dx: CGFloat = 0.0, dy: CGFloat = 0.0) {
+        self.x += dx
+        self.y += dy
+    }
+
+    public func offseting(dx: CGFloat = 0.0, dy: CGFloat = 0.0) -> CGPoint {
+        var point = self
+        point.offset(dx: dx, dy: dy)
+        return point
+    }
+
+    public mutating func scale(cx: CGFloat = 1.0, cy: CGFloat = 1.0) {
+        self.x *= cx
+        self.y *= cy
+    }
+
+    public func scaling(cx: CGFloat = 1.0, cy: CGFloat = 1.0) -> CGPoint {
+        var point = self
+        point.scale(cx: cx, cy: cy)
+        return point
+    }
+}
+
 public extension CGRect {
 
     public static func origin(forAnchor anchorPoint: CGPoint, point: CGPoint, size: CGSize) -> CGPoint {

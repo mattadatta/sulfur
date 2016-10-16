@@ -117,6 +117,7 @@ public final class GradientView: UIView {
     public var gradient: Gradient = Gradient() {
         didSet {
             self.gradientLayer.colors = self.gradient.colors.map({ $0.cgColor })
+            self.gradientLayer.locations = self.gradient.stops.map({ NSNumber(value: $0.percent) })
         }
     }
 

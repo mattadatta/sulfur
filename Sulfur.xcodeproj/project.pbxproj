@@ -31,6 +31,7 @@
 		32389E5E1CDFDD1F009475F6 /* UIView+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32389E4A1CDFDD1F009475F6 /* UIView+Utils.swift */; };
 		324150331D3C2483008A26CD /* Hashing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324150321D3C2483008A26CD /* Hashing.swift */; };
 		32588C481D83035C00060027 /* Data+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32588C471D83035C00060027 /* Data+Utils.swift */; };
+		3274F6061DB43A5F0063EBAD /* Async.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3274F6051DB43A5F0063EBAD /* Async.swift */; };
 		32A0D0D61D8F1D2C002F49CC /* FontUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A0D0D51D8F1D2C002F49CC /* FontUtils.swift */; };
 		32A5A1F11D7F17580026AD9C /* Rx+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A5A1F01D7F17580026AD9C /* Rx+Utils.swift */; };
 		32BC05961D1B3BE1008573BC /* ContextTransitioning+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05951D1B3BE1008573BC /* ContextTransitioning+Utils.swift */; };
@@ -80,6 +81,7 @@
 		32389E4A1CDFDD1F009475F6 /* UIView+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Utils.swift"; sourceTree = "<group>"; };
 		324150321D3C2483008A26CD /* Hashing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hashing.swift; sourceTree = "<group>"; };
 		32588C471D83035C00060027 /* Data+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+Utils.swift"; sourceTree = "<group>"; };
+		3274F6051DB43A5F0063EBAD /* Async.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Async.swift; sourceTree = "<group>"; };
 		329594F461F7F4F63EA42B4D /* Pods-SulfurTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SulfurTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SulfurTests/Pods-SulfurTests.release.xcconfig"; sourceTree = "<group>"; };
 		32A0D0D51D8F1D2C002F49CC /* FontUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FontUtils.swift; sourceTree = "<group>"; };
 		32A5A1F01D7F17580026AD9C /* Rx+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Rx+Utils.swift"; sourceTree = "<group>"; };
@@ -140,6 +142,7 @@
 			isa = PBXGroup;
 			children = (
 				32389E371CDFDD1F009475F6 /* Array+Utils.swift */,
+				3274F6051DB43A5F0063EBAD /* Async.swift */,
 				32389E3B1CDFDD1F009475F6 /* CG+Utils.swift */,
 				32389E3C1CDFDD1F009475F6 /* ConfigurableStoryboard.h */,
 				32389E3D1CDFDD1F009475F6 /* ConfigurableStoryboard.m */,
@@ -435,6 +438,7 @@
 				32389E591CDFDD1F009475F6 /* TabbedViewController.swift in Sources */,
 				32389E5C1CDFDD1F009475F6 /* UINib+Utils.swift in Sources */,
 				32588C481D83035C00060027 /* Data+Utils.swift in Sources */,
+				3274F6061DB43A5F0063EBAD /* Async.swift in Sources */,
 				32271E901D5AB36700F6FD08 /* ViewStateManager.swift in Sources */,
 				32BC059A1D1B3D75008573BC /* Context.swift in Sources */,
 				32389E511CDFDD1F009475F6 /* ConfigurableStoryboard.m in Sources */,

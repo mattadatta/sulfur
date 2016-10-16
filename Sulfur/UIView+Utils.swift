@@ -51,8 +51,8 @@ public extension UIView {
     }
 
     @discardableResult
-    public func constrain(_ view: UIView, with insets: UIEdgeInsets = .zero) -> ConstraintGroup {
-        return Cartography.constrain(self, view, block: UIView.edgeInsetsBlock(insets))
+    public func constrain(_ view: UIView, replace group: ConstraintGroup = ConstraintGroup(), with insets: UIEdgeInsets = .zero) -> ConstraintGroup {
+        return Cartography.constrain(self, view, replace: group, block: UIView.edgeInsetsBlock(insets))
     }
 
     @discardableResult
@@ -100,5 +100,21 @@ public extension UIViewController {
             self.view.removeFromSuperview()
             self.removeFromParentViewController()
         }
+    }
+}
+
+public extension UIViewController {
+
+    public func edgeInsetsBlock(_ insets: UIEdgeInsets) -> (LayoutProxy, LayoutProxy) -> Void { return { superview, view in
+        view.top == self.topLayoutGuideCartography + insets.top
+        view.bottom == self.bottomLayoutGuideCartography - insets.bottom
+        view.left == superview.left + insets.left
+        view.right == superview.right - insets.right
+    } }
+
+    @discardableResult
+    public func constrain(_ view1: UIView? = nil, to view2: UIView, with insets: UIEdgeInsets = .zero, replacing group: ConstraintGroup = ConstraintGroup()) -> ConstraintGroup {
+        let view1 = view1 ?? self.view!
+        return Cartography.constrain(view1, view2, replace: group, block: self.edgeInsetsBlock(insets))
     }
 }
