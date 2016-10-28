@@ -1,15 +1,20 @@
 PODS:
-  - Cartography (0.6.0)
-  - XCGLogger (3.3)
+  - Cartography (1.0.1)
+  - RxSwift (3.0.0)
+  - XCGLogger (4.0.0):
+    - XCGLogger/Core (= 4.0.0)
+  - XCGLogger/Core (4.0.0)
 
 DEPENDENCIES:
-  - Cartography (~> 0.6)
-  - XCGLogger (~> 3.3)
+  - Cartography (= 1.0.1)
+  - RxSwift (= 3.0.0)
+  - XCGLogger (= 4.0.0)
 
 SPEC CHECKSUMS:
-  Cartography: 70af183a248547694a8cfaa6b989cb7e04589985
-  XCGLogger: d6e196e78940ff6daab17d6917107876f973fa31
+  Cartography: c1460e99395b824d9d75360b0382faeb0b33dcd7
+  RxSwift: a930cd662f5b4a7ca9dc3518585dba91dadf497c
+  XCGLogger: 38063ea89b4c8b23232d18efd2e12eb0005f3ea4
 
-PODFILE CHECKSUM: 8f61adae9c78831ed625f99c0d230c61427aa425
+PODFILE CHECKSUM: 792b45fdeb96bbdb3e15e0e365a18db6bda1e4a5
 
-COCOAPODS: 1.0.1
+COCOAPODS: 1.2.0.beta.1

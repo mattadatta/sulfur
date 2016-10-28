@@ -9,20 +9,20 @@ import UIKit
 
 public final class GridCollectionViewLayout: UICollectionViewLayout {
 
-    // MARK: Inner Classes
+    // MARK: Utils
 
-    private enum GridMeasurementUtils {
+    fileprivate enum GridMeasurementUtils {
 
-        static func frameForGridRect(rect: GridRect, cellSize: CGSize, spacingSize: CGSize) -> CGRect {
-            let frameX = (cellSize.width + spacingSize.width) * rect.x
-            let frameY = (cellSize.height + spacingSize.height) * rect.y
-            let size = self.sizeForGridRect(rect, cellSize: cellSize, spacingSize: spacingSize)
+        static func frame(for gridRect: GridRect, cellSize: CGSize, spacingSize: CGSize) -> CGRect {
+            let frameX = (cellSize.width + spacingSize.width) * gridRect.x
+            let frameY = (cellSize.height + spacingSize.height) * gridRect.y
+            let size = self.size(for: gridRect, cellSize: cellSize, spacingSize: spacingSize)
             return CGRect(origin: CGPoint(x: frameX, y: frameY), size: size)
         }
 
-        static func sizeForGridRect(rect: GridRect, cellSize: CGSize, spacingSize: CGSize) -> CGSize {
-            let itemWidth = cellSize.width * rect.width + ((rect.width - 1.0) * spacingSize.width)
-            let itemHeight = cellSize.height * rect.height + ((rect.height - 1.0) * spacingSize.height)
+        static func size(for gridRect: GridRect, cellSize: CGSize, spacingSize: CGSize) -> CGSize {
+            let itemWidth = cellSize.width * gridRect.width + ((gridRect.width - 1.0) * spacingSize.width)
+            let itemHeight = cellSize.height * gridRect.height + ((gridRect.height - 1.0) * spacingSize.height)
             return CGSize(width: itemWidth, height: itemHeight)
         }
     }
@@ -47,6 +47,8 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
             self.height = height
         }
 
+        // MARK: Hashable conformance
+
         public var hashValue: Int {
             return Hasher()
                 .adding(part: self.x)
@@ -54,6 +56,10 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
                 .adding(part: self.width)
                 .adding(part: self.height)
                 .hashValue
+        }
+
+        public static func == (lhs: GridRect, rhs: GridRect) -> Bool {
+            return lhs.x == rhs.x && lhs.y == rhs.y && lhs.width == rhs.width && lhs.height == rhs.height
         }
     }
 
@@ -63,37 +69,50 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
 
         public enum Kind: Hashable {
 
-            case Item(ItemProperties)
-            case Supplementary(String, SupplementaryProperties)
+            case item(properties: ItemProperties)
+            case supplementary(kind: String, properties: SupplementaryProperties)
+
+            // MARK: Hashable conformance
 
             public var hashValue: Int {
                 switch self {
-                case .Item(let properties):
+                case .item(let properties):
                     return properties.hashValue
-                case .Supplementary(let kind, _):
+                case .supplementary(let kind, _):
                     return kind.hashValue
+                }
+            }
+
+            public static func == (lhs: Kind, rhs: Kind) -> Bool {
+                switch (lhs, rhs) {
+                case (.item(let lhs), .item(let rhs)):
+                    return lhs == rhs
+                case (.supplementary(let lhs, _), .supplementary(let rhs, _)):
+                    return lhs == rhs
+                default:
+                    return false
                 }
             }
         }
 
         public var section: Int = 0
-        public var kind: Kind = .Item(ItemProperties())
+        public var kind: Kind = .item(properties: ItemProperties())
 
-        override public func copyWithZone(zone: NSZone) -> AnyObject {
-            let attrs = super.copyWithZone(zone) as! LayoutAttributes
+        override public func copy(with zone: NSZone?) -> Any {
+            let attrs = super.copy(with: zone) as! LayoutAttributes
             attrs.section = self.section
             attrs.kind = self.kind
             return attrs
         }
 
-        override public func isEqual(object: AnyObject?) -> Bool {
+        override public func isEqual(_ object: Any?) -> Bool {
             guard let other = object as? LayoutAttributes else { return false }
             return self.section == other.section && self.kind == other.kind
         }
 
         public var rect: GridRect? {
             switch self.kind {
-            case .Item(let properties):
+            case .item(let properties):
                 return properties.gridRect
             default:
                 return nil
@@ -102,7 +121,7 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
 
         public var properties: SupplementaryProperties? {
             switch self.kind {
-            case .Supplementary(_, let properties):
+            case .supplementary(_, let properties):
                 return properties
             default:
                 return nil
@@ -111,9 +130,9 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
 
         override public var debugDescription: String {
             switch self.kind {
-            case .Item(let rect):
+            case .item(let rect):
                 return "LayoutParams(kind: Item, rect: \(rect), indexPath: \(self.indexPath)"
-            case .Supplementary(let properties):
+            case .supplementary(let properties):
                 return "LayoutParams(kind: Supplementary, properties: \(properties), indexPath: \(self.indexPath)"
             }
         }
@@ -128,16 +147,22 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
             self.init(gridRect: GridRect())
         }
 
-        public init(gridRect: GridRect, insets: UIEdgeInsets = UIEdgeInsetsZero) {
+        public init(gridRect: GridRect, insets: UIEdgeInsets = .zero) {
             self.gridRect = gridRect
             self.insets = insets
         }
+
+        // MARK: Hashable conformance
 
         public var hashValue: Int {
             return Hasher()
                 .adding(hashable: self.gridRect)
                 .adding(hashable: self.insets)
                 .hashValue
+        }
+
+        public static func == (lhs: ItemProperties, rhs: ItemProperties) -> Bool {
+            return lhs.gridRect == rhs.gridRect && lhs.insets == rhs.insets
         }
     }
 
@@ -152,29 +177,29 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
             self.init(lengthFn: { _ in return 0 })
         }
 
-        public init(lengthFn: (CGFloat) -> CGFloat, insets: UIEdgeInsets = UIEdgeInsetsZero) {
+        public init(lengthFn: @escaping (CGFloat) -> CGFloat, insets: UIEdgeInsets = .zero) {
             self.lengthFn = lengthFn
             self.insets = insets
         }
     }
 
     public enum Direction {
-        case Vertical
-        case Horizontal
+        case vertical
+        case horizontal
     }
 
-    public var direction: Direction = .Vertical {
+    public var direction: Direction = .vertical {
         didSet {
             guard self.direction != oldValue else { return }
             self.invalidateLayout()
         }
     }
 
-    public struct UnitInformation: Hashable {
+    public struct UnitMeasurements: Hashable {
 
         public enum Dimension {
-            case Width
-            case Height
+            case width
+            case height
         }
 
         public var dimension: Dimension
@@ -182,12 +207,14 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
         public var spacingSize: CGSize
         public var oppositeSideFn: (CGFloat) -> CGFloat
 
-        public init(dimension: Dimension, numUnits: CGFloat, spacingSize: CGSize, oppositeSideFn: (CGFloat) -> CGFloat = { $0 }) {
+        public init(dimension: Dimension, numUnits: CGFloat, spacingSize: CGSize, oppositeSideFn: @escaping (CGFloat) -> CGFloat = { $0 }) {
             self.dimension = dimension
             self.numUnits = numUnits
             self.spacingSize = spacingSize
             self.oppositeSideFn = oppositeSideFn
         }
+
+        // MARK: Hashable conformance
 
         public var hashValue: Int {
             return Hasher()
@@ -196,45 +223,68 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
                 .adding(hashable: self.spacingSize)
                 .hashValue
         }
+
+        public static func == (lhs: UnitMeasurements, rhs: UnitMeasurements) -> Bool {
+            return lhs.dimension == rhs.dimension && lhs.numUnits == rhs.numUnits && lhs.spacingSize == rhs.spacingSize
+        }
     }
 
-    public struct CellSizeInformation: Hashable {
+    public struct CellSizeMeasurements: Hashable {
 
         public var cellSize: CGSize
         public var oppositeDimensionSpacingFn: (CGFloat) -> CGFloat
 
-        public init(cellSize: CGSize, oppositeDimensionSpacingFn: (CGFloat) -> CGFloat = { $0 }) {
+        public init(cellSize: CGSize, oppositeDimensionSpacingFn: @escaping (CGFloat) -> CGFloat = { $0 }) {
             self.cellSize = cellSize
             self.oppositeDimensionSpacingFn = oppositeDimensionSpacingFn
         }
 
+        // MARK: Hashable conformance
+
         public var hashValue: Int {
             return self.cellSize.hashValue
+        }
+
+        public static func == (lhs: CellSizeMeasurements, rhs: CellSizeMeasurements) -> Bool {
+            return lhs.cellSize == rhs.cellSize
         }
     }
 
     public enum GridComputation: Hashable {
 
-        case Units(UnitInformation)
-        case CellSize(CellSizeInformation)
+        case units(measurements: UnitMeasurements)
+        case cellSize(measurements: CellSizeMeasurements)
+
+        // MARK: Hashable conformance
 
         public var hashValue: Int {
             switch self {
-            case .Units(let info):
+            case .units(let info):
                 return info.hashValue
-            case .CellSize(let info):
+            case .cellSize(let info):
                 return info.hashValue
+            }
+        }
+
+        public static func == (lhs: GridComputation, rhs: GridComputation) -> Bool {
+            switch (lhs, rhs) {
+            case (.units(let lhs), .units(let rhs)):
+                return lhs == rhs
+            case (.cellSize(let lhs), .cellSize(let rhs)):
+                return lhs == rhs
+            default:
+                return false
             }
         }
     }
 
-    public var gridComputation: GridComputation = .Units(UnitInformation(dimension: .Width, numUnits: 4, spacingSize: CGSizeZero)) {
+    public var gridComputation: GridComputation = .units(measurements: UnitMeasurements(dimension: .width, numUnits: 4, spacingSize: .zero)) {
         didSet {
             self.invalidateLayout()
         }
     }
 
-    public var sectionInsets: UIEdgeInsets = UIEdgeInsetsZero {
+    public var sectionInsets: UIEdgeInsets = .zero {
         didSet {
             guard self.sectionInsets != oldValue else { return }
             self.invalidateLayout()
@@ -248,29 +298,29 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
         }
     }
 
-    public private(set) var cellSize: CGSize = CGSizeZero
-    public private(set) var spacingSize: CGSize = CGSizeZero
-    public private(set) var numUnits: Int = 0
+    public fileprivate(set) var cellSize: CGSize = .zero
+    public fileprivate(set) var spacingSize: CGSize = .zero
+    public fileprivate(set) var numUnits: Int = 0
 
-    private var layoutAttrs: [LayoutAttributes] = []
-    private var itemLayoutAttrs: [NSIndexPath: LayoutAttributes] = [:]
-    private var headerLayoutAttrs: [NSIndexPath: LayoutAttributes] = [:]
-    private var footerLayoutAttrs: [NSIndexPath: LayoutAttributes] = [:]
-    private var contentOffsets: [(CGFloat, CGFloat, CGFloat)] = []
-    private var contentSize: CGSize = CGSizeZero
+    fileprivate var layoutAttrs: [LayoutAttributes] = []
+    fileprivate var itemLayoutAttrs: [IndexPath: LayoutAttributes] = [:]
+    fileprivate var headerLayoutAttrs: [IndexPath: LayoutAttributes] = [:]
+    fileprivate var footerLayoutAttrs: [IndexPath: LayoutAttributes] = [:]
+    fileprivate var contentOffsets: [(CGFloat, CGFloat, CGFloat)] = []
+    fileprivate var contentSize: CGSize = .zero
 
     // MARK: UICollectionViewLayout overrides
 
-    override public class func layoutAttributesClass() -> AnyClass {
+    override public class var layoutAttributesClass: AnyClass {
         return LayoutAttributes.self
     }
 
-    override public func shouldInvalidateLayoutForBoundsChange(newBounds: CGRect) -> Bool {
+    override public func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
         return self.collectionView?.bounds.size != newBounds.size
     }
 
-    override public func prepareLayout() {
-        super.prepareLayout()
+    override public func prepare() {
+        super.prepare()
 
         guard let collectionView = self.collectionView else { return }
         let bounds = collectionView.bounds
@@ -283,35 +333,35 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
 
         let spaceMinusPadding: CGFloat
         switch self.direction {
-        case .Vertical:
+        case .vertical:
             spaceMinusPadding = bounds.width - collectionView.contentInset.width
-        case .Horizontal:
+        case .horizontal:
             spaceMinusPadding = bounds.height - collectionView.contentInset.height
         }
 
         switch self.gridComputation {
-        case .Units(let info):
+        case .units(let info):
             let units = info.numUnits
             let spacingSize = info.spacingSize
             let sectionInsets = self.sectionInsets
 
             switch info.dimension {
-            case .Width:
+            case .width:
                 let cellWidth = ((bounds.width - collectionView.contentInset.width - sectionInsets.width) - ((units - 1.0) * spacingSize.width)) / units
                 self.cellSize = CGSize(width: cellWidth, height: info.oppositeSideFn(cellWidth))
-            case .Height:
+            case .height:
                 let cellHeight = ((bounds.height - collectionView.contentInset.height - sectionInsets.height) - ((units - 1.0) * spacingSize.height)) / units
                 self.cellSize = CGSize(width: info.oppositeSideFn(cellHeight), height: cellHeight)
             }
             self.spacingSize = spacingSize
 
-        case .CellSize(let info):
+        case .cellSize(let info):
             let cellSize = info.cellSize
             let cellDimension: CGFloat
             switch self.direction {
-            case .Vertical:
+            case .vertical:
                 cellDimension = cellSize.width
-            case .Horizontal:
+            case .horizontal:
                 cellDimension = cellSize.height
             }
             let numUnits = CGFloat(Int(spaceMinusPadding / cellDimension))
@@ -319,32 +369,32 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
 
             self.cellSize = cellSize
             switch self.direction {
-            case .Vertical:
+            case .vertical:
                 self.spacingSize = CGSize(width: itemSpacing, height: info.oppositeDimensionSpacingFn(itemSpacing))
-            case .Horizontal:
+            case .horizontal:
                 self.spacingSize = CGSize(width: info.oppositeDimensionSpacingFn(itemSpacing), height: itemSpacing)
             }
         }
 
         var cumulativeLength: CGFloat = 0.0
 
-        let numberOfSections = collectionView.numberOfSections()
+        let numberOfSections = collectionView.numberOfSections
         (0..<numberOfSections).forEach { section in
-            let sectionIndexPath = NSIndexPath(forItem: 0, inSection: section)
+            let sectionIndexPath = IndexPath(item: 0, section: section)
 
             // HEADER
-            let headerLayoutAttrs = LayoutAttributes(forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withIndexPath: sectionIndexPath)
-            let headerProperties = self.delegate?.gridCollectionViewLayout(self, propertiesForHeaderForSection: section) ?? SupplementaryProperties()
+            let headerLayoutAttrs = LayoutAttributes(forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, with: sectionIndexPath)
+            let headerProperties = self.delegate?.gridCollectionViewLayout(self, propertiesForHeaderInSection: section) ?? SupplementaryProperties()
             let headerInsets = headerProperties.insets
 
             let totalHeaderLength: CGFloat
             switch self.direction {
-            case .Vertical:
+            case .vertical:
                 let headerWidth = spaceMinusPadding - headerInsets.width
                 let headerLength = headerProperties.lengthFn(headerWidth)
                 headerLayoutAttrs.frame = CGRect(x: headerInsets.left, y: cumulativeLength + headerInsets.top, width: headerWidth, height: headerLength)
                 totalHeaderLength = headerLength + headerInsets.height
-            case .Horizontal:
+            case .horizontal:
                 let headerHeight = spaceMinusPadding - headerInsets.height
                 let headerLength = headerProperties.lengthFn(headerHeight)
                 headerLayoutAttrs.frame = CGRect(x: cumulativeLength + headerInsets.left, y: headerInsets.top, width: headerLength, height: headerHeight)
@@ -352,63 +402,63 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
             }
 
             headerLayoutAttrs.section = section
-            headerLayoutAttrs.kind = .Supplementary(UICollectionElementKindSectionHeader, headerProperties)
+            headerLayoutAttrs.kind = .supplementary(kind: UICollectionElementKindSectionHeader, properties: headerProperties)
             self.headerLayoutAttrs[sectionIndexPath] = headerLayoutAttrs
             self.layoutAttrs.append(headerLayoutAttrs)
 
             switch self.direction {
-            case .Vertical:
+            case .vertical:
                 cumulativeLength += totalHeaderLength + self.sectionInsets.top
-            case .Horizontal:
+            case .horizontal:
                 cumulativeLength += totalHeaderLength + self.sectionInsets.left
             }
 
             // CONTENT
             var sectionMaxLength: CGFloat = 0.0
 
-            let numberOfItems = collectionView.numberOfItemsInSection(section)
+            let numberOfItems = collectionView.numberOfItems(inSection: section)
             (0..<numberOfItems).forEach { item in
-                let indexPath = NSIndexPath(forItem: item, inSection: section)
-                let properties = self.delegate?.gridCollectionViewLayout(self, propertiesForIndexPath: indexPath) ?? ItemProperties()
+                let indexPath = IndexPath(item: item, section: section)
+                let properties = self.delegate?.gridCollectionViewLayout(self, propertiesFor: indexPath) ?? ItemProperties()
                 let rect = properties.gridRect
-                let attrs = LayoutAttributes(forCellWithIndexPath: indexPath)
-                let originalFrame = GridMeasurementUtils.frameForGridRect(rect, cellSize: self.cellSize, spacingSize: self.spacingSize).insetted(with: properties.insets)
+                let attrs = LayoutAttributes(forCellWith: indexPath)
+                let originalFrame = GridMeasurementUtils.frame(for: rect, cellSize: self.cellSize, spacingSize: self.spacingSize).insetted(with: properties.insets)
 
                 switch self.direction {
-                case .Vertical:
+                case .vertical:
                     attrs.frame = originalFrame.offsetBy(dx: self.sectionInsets.left, dy: cumulativeLength)
                     sectionMaxLength = max(sectionMaxLength, originalFrame.bottom)
-                case .Horizontal:
+                case .horizontal:
                     attrs.frame = originalFrame.offsetBy(dx: cumulativeLength, dy: self.sectionInsets.top)
                     sectionMaxLength = max(sectionMaxLength, originalFrame.right)
                 }
 
                 attrs.section = section
-                attrs.kind = .Item(properties)
+                attrs.kind = .item(properties: properties)
                 self.itemLayoutAttrs[indexPath] = attrs
                 self.layoutAttrs.append(attrs)
             }
 
             switch self.direction {
-            case .Vertical:
+            case .vertical:
                 cumulativeLength += sectionMaxLength + self.sectionInsets.bottom
-            case .Horizontal:
+            case .horizontal:
                 cumulativeLength += sectionMaxLength + self.sectionInsets.right
             }
 
             // FOOTER
-            let footerLayoutAttrs = LayoutAttributes(forSupplementaryViewOfKind: UICollectionElementKindSectionFooter, withIndexPath: sectionIndexPath)
-            let footerProperties = self.delegate?.gridCollectionViewLayout(self, propertiesForFooterForSection: section) ?? SupplementaryProperties()
+            let footerLayoutAttrs = LayoutAttributes(forSupplementaryViewOfKind: UICollectionElementKindSectionFooter, with: sectionIndexPath)
+            let footerProperties = self.delegate?.gridCollectionViewLayout(self, propertiesForFooterInSection: section) ?? SupplementaryProperties()
             let footerInsets = footerProperties.insets
 
             let totalFooterLength: CGFloat
             switch self.direction {
-            case .Vertical:
+            case .vertical:
                 let footerWidth = spaceMinusPadding - footerInsets.width
                 let footerLength = footerProperties.lengthFn(footerWidth)
                 footerLayoutAttrs.frame = CGRect(x: footerInsets.left, y: cumulativeLength + footerInsets.top, width: footerWidth, height: footerLength)
                 totalFooterLength = footerLength + footerInsets.height
-            case .Horizontal:
+            case .horizontal:
                 let footerHeight = spaceMinusPadding - footerInsets.height
                 let footerLength = footerProperties.lengthFn(footerHeight)
                 footerLayoutAttrs.frame = CGRect(x: cumulativeLength + footerInsets.left, y: footerInsets.top, width: footerLength, height: footerHeight)
@@ -416,7 +466,7 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
             }
 
             footerLayoutAttrs.section = section
-            footerLayoutAttrs.kind = .Supplementary(UICollectionElementKindSectionFooter, footerProperties)
+            footerLayoutAttrs.kind = .supplementary(kind: UICollectionElementKindSectionFooter, properties: footerProperties)
             self.footerLayoutAttrs[sectionIndexPath] = footerLayoutAttrs
             self.layoutAttrs.append(footerLayoutAttrs)
 
@@ -426,26 +476,26 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
         }
 
         switch self.direction {
-        case .Vertical:
+        case .vertical:
             self.contentSize = CGSize(width: spaceMinusPadding, height: cumulativeLength)
-        case .Horizontal:
+        case .horizontal:
             self.contentSize = CGSize(width: cumulativeLength, height: spaceMinusPadding)
         }
     }
 
-    override public func collectionViewContentSize() -> CGSize {
+    override public var collectionViewContentSize: CGSize {
         return self.contentSize
     }
 
-    override public func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+    override public func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         return self.layoutAttrs.filter({ rect.intersects($0.frame) })
     }
 
-    override public func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
+    override public func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
         return self.itemLayoutAttrs[indexPath]
     }
 
-    override public func layoutAttributesForSupplementaryViewOfKind(elementKind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
+    override public func layoutAttributesForSupplementaryView(ofKind elementKind: String, at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
         switch elementKind {
         case UICollectionElementKindSectionHeader:
             return self.headerLayoutAttrs[indexPath]
@@ -455,147 +505,13 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
             fatalError("Unkown element kind: \(elementKind)")
         }
     }
-
-//    public var gridSnapping = true
-//
-//    override public func targetContentOffsetForProposedContentOffset(proposedContentOffset: CGPoint, withScrollingVelocity velocity: CGPoint) -> CGPoint {
-//        guard let collectionView = self.collectionView where self.gridSnapping else {
-//            return proposedContentOffset
-//        }
-//
-//        let contentInset: CGFloat
-//        let contentOffset: CGFloat
-//        let contentSize: CGFloat
-//        let boundsSize: CGFloat
-//        let sectionStartLength: CGFloat
-//        let sectionEndLength: CGFloat
-//        switch self.direction {
-//        case .Vertical:
-//            contentInset = collectionView.contentInset.top
-//            contentOffset = proposedContentOffset.y
-//            contentSize = self.contentSize.height
-//            boundsSize = collectionView.bounds.height
-//            sectionStartLength = self.sectionInsets.top
-//            sectionEndLength = self.sectionInsets.bottom
-//        case .Horizontal:
-//            contentInset = collectionView.contentInset.left
-//            contentOffset = proposedContentOffset.x
-//            contentSize = self.contentSize.width
-//            boundsSize = collectionView.bounds.width
-//            sectionStartLength = self.sectionInsets.left
-//            sectionEndLength = self.sectionInsets.right
-//        }
-//
-//        var cumulatedOffset: CGFloat = 0.0
-//        var minDistance: CGFloat = CGFloat.max
-//        var finalOffset: CGFloat = 0.0
-//        for (headerLength, contentLength, footerLength) in self.contentOffsets {
-//            // HEADER
-//            if headerLength > 0 {
-//                let headerDistance = contentOffset - cumulatedOffset
-//                if (abs(headerDistance) < minDistance) {
-//                    minDistance = abs(headerDistance)
-//                } else {
-//                    break
-//                }
-//
-//                finalOffset = cumulatedOffset
-//                cumulatedOffset += (headerLength + sectionStartLength)
-//            }
-//
-//            // CONTENT
-//            let numCells = Int(round(contentLength - ((self.dimensionAndUnits.units - 1) * self.itemSpacing)) / self.cellDimension)
-//            var itemFound = false
-//            let cellRange = (0..<numCells)
-//            for i in cellRange {
-//                let itemDistance = contentOffset - cumulatedOffset
-//                if (abs(itemDistance) < minDistance) {
-//                    minDistance = abs(itemDistance)
-//                } else {
-//                    itemFound = true
-//                    break
-//                }
-//
-//                finalOffset = cumulatedOffset
-//                cumulatedOffset += self.cellDimension
-//                if i < cellRange.count - 1 {
-//                    cumulatedOffset += self.itemSpacing
-//                }
-//            }
-//            if itemFound {
-//                break
-//            }
-//
-//            if footerLength > 0 {
-//                cumulatedOffset += sectionEndLength
-//
-//                // FOOTER
-//                let footerDistance = contentOffset - cumulatedOffset
-//                if (abs(footerDistance) < minDistance) {
-//                    minDistance = abs(footerDistance)
-//                } else {
-//                    break
-//                }
-//
-//                finalOffset = cumulatedOffset
-//            }
-//        }
-//
-//        finalOffset = min(finalOffset, contentSize - boundsSize)
-//        finalOffset -= contentInset
-//
-//        switch self.direction {
-//        case .Vertical:
-//            return CGPoint(x: 0.0, y: finalOffset)
-//        case .Horizontal:
-//            return CGPoint(x: finalOffset, y: 0.0)
-//        }
-//    }
 }
 
 // MARK: - GridCellCollectionViewLayoutDelegate
 
 public protocol GridCollectionViewLayoutDelegate: class {
-
-    func gridCollectionViewLayout(layout: GridCollectionViewLayout, propertiesForIndexPath indexPath: NSIndexPath) -> GridCollectionViewLayout.ItemProperties
-    func gridCollectionViewLayout(layout: GridCollectionViewLayout, propertiesForHeaderForSection section: Int) -> GridCollectionViewLayout.SupplementaryProperties?
-    func gridCollectionViewLayout(layout: GridCollectionViewLayout, propertiesForFooterForSection section: Int) -> GridCollectionViewLayout.SupplementaryProperties?
-}
-
-public func == (lhs: GridCollectionViewLayout.GridRect, rhs: GridCollectionViewLayout.GridRect) -> Bool {
-    return lhs.x == rhs.x && lhs.y == rhs.y && lhs.width == rhs.width && lhs.height == rhs.height
-}
-
-public func == (lhs: GridCollectionViewLayout.ItemProperties, rhs: GridCollectionViewLayout.ItemProperties) -> Bool {
-    return lhs.gridRect == rhs.gridRect && lhs.insets == rhs.insets
-}
-
-public func == (lhs: GridCollectionViewLayout.UnitInformation, rhs: GridCollectionViewLayout.UnitInformation) -> Bool {
-    return lhs.dimension == rhs.dimension && lhs.numUnits == rhs.numUnits && lhs.spacingSize == rhs.spacingSize
-}
-
-public func == (lhs: GridCollectionViewLayout.CellSizeInformation, rhs: GridCollectionViewLayout.CellSizeInformation) -> Bool {
-    return lhs.cellSize == rhs.cellSize
-}
-
-public func == (lhs: GridCollectionViewLayout.GridComputation, rhs: GridCollectionViewLayout.GridComputation) -> Bool {
-    switch (lhs, rhs) {
-    case (.Units(let lhs), .Units(let rhs)):
-        return lhs == rhs
-    case (.CellSize(let lhs), .CellSize(let rhs)):
-        return lhs == rhs
-    default:
-        return false
-    }
-}
-
-public func == (lhs: GridCollectionViewLayout.LayoutAttributes.Kind, rhs: GridCollectionViewLayout.LayoutAttributes.Kind) -> Bool {
-    switch (lhs, rhs) {
-    case (.Item(let lhs), .Item(let rhs)):
-        return lhs == rhs
-    case (.Supplementary(let lhs, _), .Supplementary(let rhs, _)):
-        return lhs == rhs
-    default:
-        return false
-    }
+    
+    func gridCollectionViewLayout(_ layout: GridCollectionViewLayout, propertiesFor indexPath: IndexPath) -> GridCollectionViewLayout.ItemProperties
+    func gridCollectionViewLayout(_ layout: GridCollectionViewLayout, propertiesForHeaderInSection section: Int) -> GridCollectionViewLayout.SupplementaryProperties?
+    func gridCollectionViewLayout(_ layout: GridCollectionViewLayout, propertiesForFooterInSection section: Int) -> GridCollectionViewLayout.SupplementaryProperties?
 }

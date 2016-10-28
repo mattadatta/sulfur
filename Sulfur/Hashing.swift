@@ -9,56 +9,114 @@ import UIKit
 
 public struct Hasher: Hashable {
 
-    private enum State: Hashable {
+    fileprivate enum State: Hashable {
 
-        case Initial
-        case Computed(Int)
+        case initial
+        case computed(result: Int)
 
         var hashValue: Int {
             switch self {
-            case .Initial:
+            case .initial:
                 return 0
-            case .Computed(let hash):
+            case .computed(let hash):
                 return hash
+            }
+        }
+
+        static func == (lhs: State, rhs: State) -> Bool {
+            switch (lhs, rhs) {
+            case (.initial, .initial):
+                return true
+            case (.computed(let lhs), .computed(let rhs)):
+                return lhs == rhs
+            default:
+                return false
             }
         }
     }
 
-    private var state: State = .Initial
+    fileprivate var state: State = .initial
 
-    public init() {
-    }
+    public init() {}
 
-    private mutating func hash(value value: Int) {
+    fileprivate mutating func hash(value: Int) {
         switch self.state {
-        case .Initial:
-            self.state = .Computed(value)
-        case .Computed(let result):
-            self.state = .Computed(37 &* result &+ value)
+        case .initial:
+            self.state = .computed(result: value)
+        case .computed(let result):
+            self.state = .computed(result: 37 &* result &+ value)
         }
     }
 
-    public mutating func add(part part: HashablePart?) {
+    public mutating func add(part: HashablePart?) {
         self.hash(value: part?.hashComponent ?? 0)
     }
 
-    public func adding(part part: HashablePart?) -> Hasher {
+    public func adding(part: HashablePart?) -> Hasher {
         var hasher = self
         hasher.add(part: part)
         return hasher
     }
 
-    public mutating func add<H: Hashable>(hashable hashable: H?) {
+    public mutating func add<C: Collection>(parts: C?) where C.Iterator.Element: HashablePart {
+        if let parts = parts {
+            parts.forEach { part in
+                self.add(part: part)
+            }
+        } else {
+            self.hash(value: 0)
+        }
+    }
+
+    public func adding<C: Collection>(parts: C?) -> Hasher where C.Iterator.Element: HashablePart {
+        var hasher = self
+        hasher.add(parts: parts)
+        return hasher
+    }
+
+    public mutating func add<H: Hashable>(hashable: H?) {
         self.hash(value: hashable?.hashValue ?? 0)
     }
 
-    public func adding<H: Hashable>(hashable hashable: H?) -> Hasher {
+    public func adding<H: Hashable>(hashable: H?) -> Hasher {
         var hasher = self
         hasher.add(hashable: hashable)
         return hasher
     }
 
-    public mutating func add(object object: AnyObject?) {
+    public mutating func add<H: Hashable, C: Collection>(hashables: C?) where C.Iterator.Element == H {
+        if let hashables = hashables {
+            hashables.forEach { hashable in
+                self.add(hashable: hashable)
+            }
+        } else {
+            self.hash(value: 0)
+        }
+    }
+
+    public func adding<H: Hashable, C: Collection>(hashables: C?) -> Hasher where C.Iterator.Element == H {
+        var hasher = self
+        hasher.add(hashables: hashables)
+        return hasher
+    }
+
+    public mutating func add<C: Collection>(anyHashables: C?) where C.Iterator.Element == AnyHashable {
+        if let hashables = anyHashables {
+            hashables.forEach { hashable in
+                self.add(hashable: hashable)
+            }
+        } else {
+            self.hash(value: 0)
+        }
+    }
+
+    public func adding<C: Collection>(anyHashables: C?) -> Hasher where C.Iterator.Element == AnyHashable {
+        var hasher = self
+        hasher.add(anyHashables: anyHashables)
+        return hasher
+    }
+
+    public mutating func add(object: AnyObject?) {
         if let obj = object {
             self.hash(value: ObjectIdentifier(obj).hashValue)
         } else {
@@ -66,30 +124,37 @@ public struct Hasher: Hashable {
         }
     }
 
-    public func adding(object object: AnyObject?) -> Hasher {
+    public func adding(object: AnyObject?) -> Hasher {
         var hasher = self
         hasher.add(object: object)
         return hasher
     }
 
+    public mutating func add<C: Collection>(objects: C?) where C.Iterator.Element: AnyObject {
+        if let objects = objects {
+            objects.forEach { object in
+                self.add(object: object)
+            }
+        } else {
+            self.hash(value: 0)
+        }
+    }
+
+    public func adding<C: Collection>(objects: C?) -> Hasher where C.Iterator.Element == AnyObject {
+        var hasher = self
+        hasher.add(objects: objects)
+        return hasher
+    }
+
+    // MARK: Hashable conformance
+
     public var hashValue: Int {
         return self.state.hashValue
     }
-}
 
-private func == (lhs: Hasher.State, rhs: Hasher.State) -> Bool {
-    switch (lhs, rhs) {
-    case (.Initial, .Initial):
-        return true
-    case (.Computed(let lhs), .Computed(let rhs)):
-        return lhs == rhs
-    default:
-        return false
+    public static func == (lhs: Hasher, rhs: Hasher) -> Bool {
+        return lhs.state == rhs.state
     }
-}
-
-public func == (lhs: Hasher, rhs: Hasher) -> Bool {
-    return lhs.state == rhs.state
 }
 
 // MARK: - HashablePart
@@ -102,14 +167,14 @@ public protocol HashablePart {
 extension Float: HashablePart {
 
     public var hashComponent: Int {
-        return Int(unsafeBitCast(self, UInt32.self))
+        return Int(self.bitPattern)
     }
 }
 
 extension Double: HashablePart {
 
     public var hashComponent: Int {
-        let bitPatten = unsafeBitCast(self, UInt64.self)
+        let bitPatten = self.bitPattern
         return Int(bitPatten ^ (bitPatten >> 32))
     }
 }
@@ -125,6 +190,27 @@ extension Int: HashablePart {
 
     public var hashComponent: Int {
         return self
+    }
+}
+
+extension UInt: HashablePart {
+
+    public var hashComponent: Int {
+        return Int(bitPattern: self).hashComponent
+    }
+}
+
+extension Int64: HashablePart {
+
+    public var hashComponent: Int {
+        return Int(self ^ (self >> 32))
+    }
+}
+
+extension UInt64: HashablePart {
+
+    public var hashComponent: Int {
+        return Int64(bitPattern: self).hashComponent
     }
 }
 

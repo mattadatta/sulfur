@@ -1,80 +1,87 @@
 /*
  This file is subject to the terms and conditions defined in
- file 'LICENSE', which is part of this source code package.
+ file 'LICENSE.txt', which is part of this source code package.
  */
 
 import UIKit
 
 // MARK: - Gradient
 
-struct Gradient {
+public struct Gradient {
 
-    private struct Constants {
+    fileprivate struct Constants {
 
-        static let defaultColors = [
-            Stop(color: UIColor.blackColor(), percent: 0.0),
-            Stop(color: UIColor.whiteColor(), percent: 1.0),
-        ]
+        static let defaultStops = [
+            Stop(color: .black, percent: 0.0),
+            Stop(color: .white, percent: 1.0),
+            ]
     }
 
-    struct Stop {
+    public struct Stop: Hashable {
 
-        var color: UIColor
-        var percent: Double
+        public var color: UIColor
+        public var percent: Double
 
-        init(color: UIColor, percent: Double) {
+        public init(color: UIColor, percent: Double) {
             self.color = color
             self.percent = max(0.0, min(1.0, percent))
         }
+
+        public var hashValue: Int {
+            return Hasher()
+                .adding(hashable: self.color)
+                .adding(part: self.percent)
+                .hashValue
+        }
+
+        public static func ==(lhs: Stop, rhs: Stop) -> Bool {
+            return lhs.color == rhs.color && lhs.percent == rhs.percent
+        }
     }
 
-    var stops: [Stop] {
+    public var stops: [Stop] {
         didSet {
             if self.stops.count < 2 {
-                log.warning("Number of stops must be > 1. Got \(self.stops.count)")
-                self.stops = Constants.defaultColors
+                self.stops = Constants.defaultStops
             }
-            self.stops.sortInPlace({ $0.percent <= $1.percent })
+            self.stops.sort(by: { $0.percent <= $1.percent })
         }
     }
 
-    var colors: [UIColor] {
-        get {
-            return self.stops.map({ $0.color })
-        }
+    public var colors: [UIColor] {
+        get { return self.stops.map({ $0.color }) }
         set {
             guard newValue.count > 1 else {
-                log.warning("Number of colors must be > 1. Got \(self.stops.count)")
-                self.stops = Constants.defaultColors
+                self.stops = Constants.defaultStops
                 return
             }
 
             let increment = 1.0 / Double(newValue.count - 1)
-            self.stops = newValue.mapPass(0.0) { (color, percentage) in
+            self.stops = newValue.mapPass(0.0) { color, percentage in
                 return (Stop(color: color, percent: percentage), percentage + increment)
             }
         }
     }
 
-    init() {
-        self.init(stops: Constants.defaultColors)
+    public init() {
+        self.init(stops: Constants.defaultStops)
     }
 
-    init(stops: [Stop]) {
-        self.stops = stops
+    public init(stops: [Stop]) {
+        self.stops = (stops.count > 2) ? stops : Constants.defaultStops
     }
 
-    init(colors: [UIColor]) {
-        self.stops = Constants.defaultColors
+    public init(colors: [UIColor]) {
+        self.stops = Constants.defaultStops
         self.colors = colors
     }
 
-    func interpolatedColorForPercentage(percent: Double) -> UIColor {
+    public func interpolatedColorForPercentage(_ percent: Double) -> UIColor {
         let percent = max(self.stops.first!.percent, min(self.stops.last!.percent, percent))
         var firstIndex = 0, lastIndex = 1
         while !(self.stops[firstIndex].percent <= percent &&
             self.stops[lastIndex].percent >= percent) &&
-        lastIndex < self.stops.count
+            lastIndex < self.stops.count
         {
             firstIndex = firstIndex + 1
             lastIndex = lastIndex + 1
@@ -95,16 +102,46 @@ struct Gradient {
     }
 }
 
-extension Gradient.Stop: Hashable {
+// MARK: - GradientView
 
-    var hashValue: Int {
-        return Hasher()
-            .adding(hashable: self.color)
-            .adding(part: self.percent)
-            .hashValue
+public final class GradientView: UIView {
+
+    override public class var layerClass: AnyClass {
+        return CAGradientLayer.self
     }
-}
 
-func == (lhs: Gradient.Stop, rhs: Gradient.Stop) -> Bool {
-    return lhs.color == rhs.color && lhs.percent == rhs.percent
+    public var gradientLayer: CAGradientLayer {
+        return self.layer as! CAGradientLayer
+    }
+
+    public var gradient: Gradient = Gradient() {
+        didSet {
+            self.gradientLayer.colors = self.gradient.colors.map({ $0.cgColor })
+            self.gradientLayer.locations = self.gradient.stops.map({ NSNumber(value: $0.percent) })
+        }
+    }
+
+    public var startPoint: CGPoint {
+        get { return self.gradientLayer.startPoint }
+        set { self.gradientLayer.startPoint = newValue }
+    }
+
+    public var endPoint: CGPoint {
+        get { return self.gradientLayer.endPoint }
+        set { self.gradientLayer.endPoint = newValue }
+    }
+
+    override public init(frame: CGRect) {
+        super.init(frame: frame)
+        self.commonInit()
+    }
+
+    required public init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        self.commonInit()
+    }
+
+    fileprivate func commonInit() {
+        self.gradient = Gradient() // Trigger didSet
+    }
 }

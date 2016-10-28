@@ -5,7 +5,7 @@
 
 import Foundation
 
-public func inspect<Object>(@autoclosure objFn: ((Void) -> Object), inspectFn: ((Object) -> Void)) -> Object {
+public func inspect<Object>(_ objFn: @autoclosure () -> Object, inspectFn: (Object) -> Void) -> Object {
     let obj = objFn()
     inspectFn(obj)
     return obj
@@ -18,7 +18,7 @@ public func inspectPrint<Object>(functionName: String = #function, fileName: Str
     }
 }
 
-public func time<Input, Output>(fn: (Input -> Output), onTime: ((CFAbsoluteTime) -> Void)) -> (Input -> Output) {
+public func time<Input, Output>(fn: @escaping (Input) -> Output, onTime: @escaping (CFAbsoluteTime) -> Void) -> (Input) -> Output {
     return { (input) -> Output in
         let startTime = CFAbsoluteTimeGetCurrent()
         let result = fn(input)
@@ -29,8 +29,8 @@ public func time<Input, Output>(fn: (Input -> Output), onTime: ((CFAbsoluteTime)
     }
 }
 
-public func timePrint<Input, Output>(functionName: String = #function, fileName: String = #file, lineNumber: Int = #line, fn: (Input -> Output)) -> (Input -> Output) {
-    return time(fn) { (time) in
+public func timePrint<Input, Output>(functionName: String = #function, fileName: String = #file, lineNumber: Int = #line, fn: @escaping ((Input) -> Output)) -> ((Input) -> Output) {
+    return time(fn: fn) { (time) in
         print("[\((fileName as NSString).lastPathComponent):\(lineNumber) - \(functionName)] - Elapsed time: \(time) ms")
     }
 }

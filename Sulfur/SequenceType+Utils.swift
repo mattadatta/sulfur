@@ -5,10 +5,10 @@
 
 import Foundation
 
-public extension SequenceType {
+public extension Sequence {
 
-    public func cartestianProduct<S where S : SequenceType>(seq: S) -> [(Self.Generator.Element, S.Generator.Element)] {
-        var product: [(Self.Generator.Element, S.Generator.Element)] = []
+    public func cartestianProduct<S>(_ seq: S) -> [(Self.Iterator.Element, S.Iterator.Element)] where S : Sequence {
+        var product: [(Self.Iterator.Element, S.Iterator.Element)] = []
         self.forEach { (s1) in
             seq.forEach { (s2) in
                 product.append((s1, s2))
@@ -17,7 +17,7 @@ public extension SequenceType {
         return product
     }
 
-    public func mapPass<T, U>(initialData: U, @noescape transform: (Self.Generator.Element, U) throws -> (T, U)) rethrows -> [T] {
+    public func mapPass<T, U>(_ initialData: U, transform:  (Self.Iterator.Element, U) throws -> (T, U)) rethrows -> [T] {
         var result: [T] = []
         var data = initialData
         try self.forEach { (element) in

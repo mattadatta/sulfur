@@ -5,24 +5,49 @@
 
 import UIKit
 
+public protocol ViewBinder {
+
+    var view: UIView { get }
+
+    func bind()
+    func unbind()
+}
+
+public protocol ViewCell: ViewBinder {
+
+    var viewBinder: ViewBinder? { get }
+}
+
 // MARK: - TableViewCell
 
-public final class TableViewCell<View: UIView>: UITableViewCell {
+public final class TableViewCell<View: UIView>: UITableViewCell, ViewCell {
 
     public static var viewReuseIdentifier: String {
-        return String(self)
+        return String(describing: self)
     }
 
-    public class func registerInTableView(tableView: UITableView) {
-        tableView.registerClass(self, forCellReuseIdentifier: self.viewReuseIdentifier)
+    public class func register(in tableView: UITableView) {
+        tableView.register(self, forCellReuseIdentifier: self.viewReuseIdentifier)
     }
 
-    public class func dequeueFromTableView(tableView: UITableView, forIndexPath indexPath: NSIndexPath) -> (TableViewCell<View>, View) {
-        let cell = tableView.dequeueReusableCellWithIdentifier(self.viewReuseIdentifier, forIndexPath: indexPath) as! TableViewCell<View>
+    public class func dequeue(from tableView: UITableView, for indexPath: IndexPath) -> (TableViewCell<View>, View) {
+        let cell = tableView.dequeueReusableCell(withIdentifier: self.viewReuseIdentifier, for: indexPath) as! TableViewCell<View>
         return (cell, cell.nestedView)
     }
 
-    public private(set) weak var nestedView: View!
+    public weak var nestedView: View! {
+        willSet {
+            guard let view = self.nestedView else { return }
+            view.removeFromSuperview()
+        }
+        didSet {
+            self.contentView.addAndConstrain(self.nestedView)
+        }
+    }
+
+    public var view: UIView {
+        return self.nestedView
+    }
 
     override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -34,31 +59,81 @@ public final class TableViewCell<View: UIView>: UITableViewCell {
         self.commonInit()
     }
 
-    private func commonInit() {
-        let view = View.init()
-        self.contentView.addAndConstrainView(view)
-        self.nestedView = view
+    fileprivate func commonInit() {
+        self.nestedView = View()
+    }
+
+    public var viewBinder: ViewBinder? {
+        willSet {
+            self.viewBinder?.unbind()
+        }
+        didSet {
+            self.viewBinder?.bind()
+        }
+    }
+
+    public func bind() {
+        self.viewBinder?.bind()
+    }
+
+    public func unbind() {
+        self.viewBinder?.unbind()
+    }
+
+    public private(set) var isSetup = false
+
+    public func setup(_ block: (_ cell: TableViewCell<View>, _ view: View) -> Void) {
+        guard !self.isSetup else { return }
+        self.isSetup = true
+        block(self, self.nestedView)
+    }
+
+    public var didPrepareForReuse: ((_ cell: TableViewCell<View>, _ view: View) -> Void)?
+
+    override public func prepareForReuse() {
+        super.prepareForReuse()
+        self.didPrepareForReuse?(self, self.nestedView)
+        self.viewBinder = nil
+    }
+
+    public var didSetSelected: ((_ cell: TableViewCell<View>, _ view: View, _ selected: Bool, _ animated: Bool) -> Void)?
+
+    override public func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+        self.didSetSelected?(self, self.nestedView, selected, animated)
     }
 }
 
 // MARK: - TableViewHeaderFooterView
 
-public final class TableViewHeaderFooterView<View: UIView>: UITableViewHeaderFooterView {
+public final class TableViewHeaderFooterView<View: UIView>: UITableViewHeaderFooterView, ViewCell {
 
     public static var viewReuseIdentifier: String {
-        return String(self)
+        return String(describing: self)
     }
 
-    public class func registerInTableView(tableView: UITableView) {
-        tableView.registerClass(self, forHeaderFooterViewReuseIdentifier: self.viewReuseIdentifier)
+    public class func register(in tableView: UITableView) {
+        tableView.register(self, forHeaderFooterViewReuseIdentifier: self.viewReuseIdentifier)
     }
 
-    public class func dequeueFromTableView(tableView: UITableView) -> (TableViewHeaderFooterView<View>, View) {
-        let view = tableView.dequeueReusableHeaderFooterViewWithIdentifier(self.viewReuseIdentifier) as! TableViewHeaderFooterView<View>
+    public class func dequeue(from tableView: UITableView) -> (TableViewHeaderFooterView<View>, View) {
+        let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: self.viewReuseIdentifier) as! TableViewHeaderFooterView<View>
         return (view, view.nestedView)
     }
 
-    public private(set) weak var nestedView: View!
+    public weak var nestedView: View! {
+        willSet {
+            guard let view = self.nestedView else { return }
+            view.removeFromSuperview()
+        }
+        didSet {
+            self.contentView.addAndConstrain(self.nestedView)
+        }
+    }
+
+    public var view: UIView {
+        return self.nestedView
+    }
 
     override public init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
@@ -70,31 +145,74 @@ public final class TableViewHeaderFooterView<View: UIView>: UITableViewHeaderFoo
         self.commonInit()
     }
 
-    private func commonInit() {
-        let view = View.init()
-        self.contentView.addAndConstrainView(view)
-        self.nestedView = view
+    fileprivate func commonInit() {
+        self.nestedView = View()
+    }
+
+    public var viewBinder: ViewBinder? {
+        willSet {
+            self.viewBinder?.unbind()
+        }
+        didSet {
+            self.viewBinder?.bind()
+        }
+    }
+
+    public func bind() {
+        self.viewBinder?.bind()
+    }
+
+    public func unbind() {
+        self.viewBinder?.unbind()
+    }
+
+    public private(set) var isSetup = false
+
+    public func setup(_ block: (_ cell: TableViewHeaderFooterView<View>, _ view: View) -> Void) {
+        guard !self.isSetup else { return }
+        self.isSetup = true
+        block(self, self.nestedView)
+    }
+
+    public var didPrepareForReuse: ((_ headerFooterView: TableViewHeaderFooterView<View>, _ view: View) -> Void)?
+
+    override public func prepareForReuse() {
+        super.prepareForReuse()
+        self.didPrepareForReuse?(self, self.nestedView)
+        self.viewBinder = nil
     }
 }
 
 // MARK: - CollectionViewCell
 
-public final class CollectionViewCell<View: UIView>: UICollectionViewCell {
+public final class CollectionViewCell<View: UIView>: UICollectionViewCell, ViewCell {
 
     public class var viewReuseIdentifier: String {
-        return String(self)
+        return String(describing: self)
     }
 
-    public class func registerInCollectionView(collectionView: UICollectionView) {
-        collectionView.registerClass(self, forCellWithReuseIdentifier: self.viewReuseIdentifier)
+    public class func register(in collectionView: UICollectionView) {
+        collectionView.register(self, forCellWithReuseIdentifier: self.viewReuseIdentifier)
     }
 
-    public class func dequeueFromCollectionView(collectionView: UICollectionView, forIndexPath indexPath: NSIndexPath) -> (CollectionViewCell<View>, View) {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(self.viewReuseIdentifier, forIndexPath: indexPath) as! CollectionViewCell<View>
+    public class func dequeue(from collectionView: UICollectionView, for indexPath: IndexPath) -> (CollectionViewCell<View>, View) {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.viewReuseIdentifier, for: indexPath) as! CollectionViewCell<View>
         return (cell, cell.nestedView)
     }
 
-    public private(set) weak var nestedView: View!
+    public weak var nestedView: View! {
+        willSet {
+            guard let view = self.nestedView else { return }
+            view.removeFromSuperview()
+        }
+        didSet {
+            self.contentView.addAndConstrain(self.nestedView)
+        }
+    }
+
+    public var view: UIView {
+        return self.nestedView
+    }
 
     override public init(frame: CGRect) {
         super.init(frame: frame)
@@ -106,31 +224,82 @@ public final class CollectionViewCell<View: UIView>: UICollectionViewCell {
         self.commonInit()
     }
 
-    private func commonInit() {
-        let view = View.init()
-        self.contentView.addAndConstrainView(view)
-        self.nestedView = view
+    fileprivate func commonInit() {
+        self.nestedView = View()
+    }
+
+    public var viewBinder: ViewBinder? {
+        willSet {
+            self.viewBinder?.unbind()
+        }
+        didSet {
+            self.viewBinder?.bind()
+        }
+    }
+
+    public func bind() {
+        self.viewBinder?.bind()
+    }
+
+    public func unbind() {
+        self.viewBinder?.unbind()
+    }
+
+    public private(set) var isSetup = false
+
+    public func setup(_ block: (_ cell: CollectionViewCell<View>, _ view: View) -> Void) {
+        guard !self.isSetup else { return }
+        self.isSetup = true
+        block(self, self.nestedView)
+    }
+
+    public var didPrepareForReuse: ((_ cell: CollectionViewCell<View>, _ view: View) -> Void)?
+
+    override public func prepareForReuse() {
+        super.prepareForReuse()
+        self.didPrepareForReuse?(self, self.nestedView)
+        self.viewBinder = nil
+    }
+
+    public var didSetSelected: ((_ cell: CollectionViewCell<View>, _ view: View, _ selected: Bool, _ animated: Bool) -> Void)?
+
+    override public var isSelected: Bool {
+        didSet {
+            self.didSetSelected?(self, self.nestedView, self.isSelected, false)
+        }
     }
 }
 
 // MARK: - CollectionReusableView
 
-public final class CollectionReusableView<View: UIView>: UICollectionReusableView {
+public final class CollectionReusableView<View: UIView>: UICollectionReusableView, ViewCell {
 
     public static var viewReuseIdentifier: String {
-        return String(self)
+        return String(describing: self)
     }
 
-    public class func registerInCollectionView(collectionView: UICollectionView, forSupplementaryViewOfKind kind: String) {
-        collectionView.registerClass(self, forSupplementaryViewOfKind: kind, withReuseIdentifier: self.viewReuseIdentifier)
+    public class func register(in collectionView: UICollectionView, forSupplementaryViewOfKind kind: String) {
+        collectionView.register(self, forSupplementaryViewOfKind: kind, withReuseIdentifier: self.viewReuseIdentifier)
     }
 
-    public class func dequeueFromCollectionView(collectionView: UICollectionView, forSupplementaryViewOfKind kind: String, forIndexPath indexPath: NSIndexPath) -> (CollectionReusableView<View>, View) {
-        let view = collectionView.dequeueReusableSupplementaryViewOfKind(kind, withReuseIdentifier: self.viewReuseIdentifier, forIndexPath: indexPath) as! CollectionReusableView<View>
+    public class func dequeue(from collectionView: UICollectionView, forSupplementaryViewOfKind kind: String, for indexPath: IndexPath) -> (CollectionReusableView<View>, View) {
+        let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: self.viewReuseIdentifier, for: indexPath) as! CollectionReusableView<View>
         return (view, view.nestedView)
     }
 
-    public private(set) weak var nestedView: View!
+    public weak var nestedView: View! {
+        willSet {
+            guard let view = self.nestedView else { return }
+            view.removeFromSuperview()
+        }
+        didSet {
+            self.addAndConstrain(self.nestedView)
+        }
+    }
+
+    public var view: UIView {
+        return self.nestedView
+    }
 
     override public init(frame: CGRect) {
         super.init(frame: frame)
@@ -142,9 +311,40 @@ public final class CollectionReusableView<View: UIView>: UICollectionReusableVie
         self.commonInit()
     }
 
-    private func commonInit() {
-        let view = View.init()
-        self.addAndConstrainView(view)
-        self.nestedView = view
+    fileprivate func commonInit() {
+        self.nestedView = View()
+    }
+
+    public var viewBinder: ViewBinder? {
+        willSet {
+            self.viewBinder?.unbind()
+        }
+        didSet {
+            self.viewBinder?.bind()
+        }
+    }
+
+    public func bind() {
+        self.viewBinder?.bind()
+    }
+
+    public func unbind() {
+        self.viewBinder?.unbind()
+    }
+
+    public private(set) var isSetup = false
+
+    public func setup(_ block: (_ cell: CollectionReusableView<View>, _ view: View) -> Void) {
+        guard !self.isSetup else { return }
+        self.isSetup = true
+        block(self, self.nestedView)
+    }
+
+    public var didPrepareForReuse: ((CollectionReusableView<View>, View) -> Void)?
+
+    override public func prepareForReuse() {
+        super.prepareForReuse()
+        self.didPrepareForReuse?(self, self.nestedView)
+        self.viewBinder = nil
     }
 }

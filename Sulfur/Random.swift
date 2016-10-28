@@ -5,28 +5,46 @@
 
 import UIKit
 
-public enum Random {
+public struct Random {
 
-    public static func randomNumberInclusiveMinimum(minimum: Int, maximum: Int) -> Int {
-        if maximum < minimum {
-            return 0
-        }
-        let range = UInt32(maximum - minimum)
-        let random = Int(arc4random_uniform(range + 1))
-        return random + minimum
-    }
-
-    public static func randomFloat() -> CGFloat {
+    public static func float() -> CGFloat {
         return CGFloat(arc4random()) / CGFloat(UINT32_MAX)
     }
 }
 
-public extension CollectionType where Self.Index == Int {
+public extension MutableCollection where
+    Self.IndexDistance == Int,
+    Self.Index == Int,
+    Self.Indices == CountableRange<Int>
+{
 
-    public var randomElement: Self.Generator.Element? {
-        if self.isEmpty {
-            return nil
+    public mutating func shuffle() {
+        self.indices.dropLast().forEach { index in
+            let other = Int(arc4random_uniform(UInt32(self.count - index))) + index
+            guard index != other else { return }
+            swap(&self[other], &self[index])
         }
-        return self[Random.randomNumberInclusiveMinimum(0, maximum: self.count - 1)]
+    }
+}
+
+public extension Collection where
+    Self.IndexDistance == Int,
+    Self.Index == Int,
+    Self.Indices == CountableRange<Int>
+{
+
+    public func shuffled() -> [Self.Iterator.Element] {
+        var elements = Array(self)
+        elements.shuffle()
+        return elements
+    }
+
+    public var randomElement: Self.Iterator.Element? {
+        guard !self.isEmpty else { return nil }
+        return self[Int(arc4random_uniform(UInt32(self.count)))]
+    }
+    
+    public func chooseAny(_ n: Int) -> [Self.Iterator.Element] {
+        return Array(self.shuffled().prefix(n))
     }
 }

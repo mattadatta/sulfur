@@ -5,11 +5,14 @@ project 'Sulfur.xcodeproj'
 workspace 'Sulfur'
 
 abstract_target 'SulfurProject' do
-  pod 'Cartography', '~> 0.6'
-  pod 'XCGLogger', '~> 3.3'
+
+  pod 'XCGLogger', '4.0.0'
+  pod 'Cartography', '1.0.1'
+  pod 'RxSwift', '3.0.0'
 
   target 'Sulfur' do
-  end
-  target 'SulfurTests' do
+    target 'SulfurTests' do
+      inherit! :search_paths
+    end
   end
 end
