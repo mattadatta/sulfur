@@ -56,6 +56,8 @@ public protocol NodeInspector {
 
 public struct ViewNodeInspector: NodeInspector {
 
+    public init() { }
+
     public func children(of node: UIView) -> [UIView] {
         return node.subviews
     }

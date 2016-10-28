@@ -5,71 +5,102 @@
 
 import UIKit
 
-public func * (size: CGSize, scale: CGFloat) -> CGSize {
-    return CGSize(width: size.width * scale, height: size.height * scale)
+public protocol TwoDimensional {
+
+    init()
+
+    var d1: Double { get set }
+    var d2: Double { get set }
 }
 
-public func *= (size: inout CGSize, scale: CGFloat) {
-    size = size * scale
-}
+public extension TwoDimensional {
 
-public func / (size: CGSize, scale: CGFloat) -> CGSize {
-    return CGSize(width: size.width / scale, height: size.height / scale)
-}
-
-public func /= (size: inout CGSize, scale: CGFloat) {
-    size = size / scale
-}
-
-public extension CGSize {
-
-    public init(length: CGFloat) {
-        self.width = length
-        self.height = length
+    public init(d1: Double, d2: Double) {
+        self.init()
+        self.d1 = d1
+        self.d2 = d2
     }
 
-    public var toPoint: CGPoint {
-        return CGPoint(x: self.width, y: self.height)
-    }
-
-    public var aspectRatio: CGFloat {
-        return self.width / self.height
+    public init(value: Double) {
+        self.init(d1: value, d2: value)
     }
 }
 
-public func + (lhs: CGVector, rhs: CGVector) -> CGVector {
-    return CGVector(dx: lhs.dx + rhs.dx, dy: lhs.dy + rhs.dy)
+public extension TwoDimensional {
+
+    public var point: CGPoint { return CGPoint(x: self.d1, y: self.d2) }
+    public var vector: CGVector { return CGVector(dx: self.d1, dy: self.d2) }
+    public var size: CGSize { return CGSize(width: self.d1, height: self.d2) }
 }
 
-public func += (lhs: inout CGVector, rhs: CGVector) {
-    lhs = lhs + rhs
+public extension TwoDimensional {
+
+    public var aspectRatio: Double { return self.d1 / self.d2 }
 }
 
-public func - (lhs: CGVector, rhs: CGVector) -> CGVector {
-    return CGVector(dx: lhs.dx - rhs.dx, dy: lhs.dy - rhs.dy)
+public extension TwoDimensional /* : Hashable */ {
+
+    public var hashValue: Int {
+        return Hasher()
+            .adding(part: self.d1)
+            .adding(part: self.d2)
+            .hashValue
+    }
+
+    public static func == (lhs: TwoDimensional, rhs: TwoDimensional) -> Bool {
+        return lhs.d1 == rhs.d1 && lhs.d2 == rhs.d2
+    }
 }
 
-public func -= (lhs: inout CGVector, rhs: CGVector) {
-    lhs = lhs - rhs
+public func + <TwoD: TwoDimensional> (twoD1: TwoD, twoD2: TwoD) -> TwoD {
+    return TwoD(d1: twoD1.d1 + twoD2.d1, d2: twoD1.d2 + twoD2.d2)
 }
 
-public func * (vector: CGVector, scale: CGFloat) -> CGVector {
-    return CGVector(dx: vector.dx * scale, dy: vector.dy * scale)
+public func += <TwoD: TwoDimensional> (twoD1: inout TwoD, twoD2: TwoD) {
+    twoD1 = twoD1 + twoD2
 }
 
-public func *= (vector: inout CGVector, scale: CGFloat) {
-    vector = vector * scale
+public func - <TwoD: TwoDimensional> (twoD1: TwoD, twoD2: TwoD) -> TwoD {
+    return TwoD(d1: twoD1.d1 - twoD2.d1, d2: twoD1.d2 - twoD2.d2)
 }
 
-public func / (vector: CGVector, scale: CGFloat) -> CGVector {
-    return CGVector(dx: vector.dx / scale, dy: vector.dy / scale)
+public func -= <TwoD: TwoDimensional> (twoD1: inout TwoD, twoD2: TwoD) {
+    twoD1 = twoD1 - twoD2
 }
 
-public func /= (vector: inout CGVector, scale: CGFloat) {
-    vector = vector / scale
+public func * <TwoD: TwoDimensional> (twoD1: TwoD, twoD2: TwoD) -> TwoD {
+    return TwoD(d1: twoD1.d1 * twoD2.d1, d2: twoD1.d2 * twoD2.d2)
 }
 
-public func angleBetween(u: CGVector, v: CGVector) -> CGFloat {
+public func *= <TwoD: TwoDimensional> (twoD1: inout TwoD, twoD2: TwoD) {
+    twoD1 = twoD1 * twoD2
+}
+
+public func * <TwoD: TwoDimensional> (twoD: TwoD, scale: Double) -> TwoD {
+    return TwoD(d1: twoD.d1 * scale, d2: twoD.d2 * scale)
+}
+
+public func *= <TwoD: TwoDimensional> (twoD: inout TwoD, scale: Double) {
+    twoD = twoD * scale
+}
+
+public func / <TwoD: TwoDimensional> (twoD1: TwoD, twoD2: TwoD) -> TwoD {
+    return TwoD(d1: twoD1.d1 / twoD2.d1, d2: twoD1.d2 / twoD2.d2)
+}
+
+public func /= <TwoD: TwoDimensional> (twoD1: inout TwoD, twoD2: TwoD) {
+    twoD1 = twoD1 / twoD2
+}
+
+public func / <TwoD: TwoDimensional> (twoD: TwoD, scale: Double) -> TwoD {
+    return TwoD(d1: twoD.d1 / scale, d2: twoD.d2 / scale)
+}
+
+public func /= <TwoD: TwoDimensional> (twoD: inout TwoD, scale: Double) {
+    twoD = twoD / scale
+}
+
+fileprivate func angleBetween(u: CGVector, v: CGVector) -> CGFloat {
     let dotProduct = (u.dx * v.dx) + (u.dy * v.dy)
     return acos(dotProduct / (u.length * v.length))
 }
@@ -81,15 +112,11 @@ public extension CGVector {
     }
 
     public var normalized: CGVector {
-        return self / self.length
+        return self / self.length.double
     }
 
     public var isFullyNormal: Bool {
         return self.dx.isNormal && self.dy.isNormal
-    }
-
-    public var toPoint: CGPoint {
-        return CGPoint(x: self.dx, y: self.dy)
     }
 
     public func angleTo(_ vector: CGVector) -> CGFloat {
@@ -97,46 +124,10 @@ public extension CGVector {
     }
 }
 
-public func + (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
-    return CGPoint(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
-}
-
-public func += (lhs: inout CGPoint, rhs: CGPoint) {
-    lhs = lhs + rhs
-}
-
-public func - (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
-    return CGPoint(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
-}
-
-public func -= (lhs: inout CGPoint, rhs: CGPoint) {
-    lhs = lhs - rhs
-}
-
-public func * (point: CGPoint, scale: CGFloat) -> CGPoint {
-    return CGPoint(x: point.x * scale, y: point.y * scale)
-}
-
-public func *= (point: inout CGPoint, scale: CGFloat) {
-    point = point * scale
-}
-
-public func / (point: CGPoint, scale: CGFloat) -> CGPoint {
-    return CGPoint(x: point.x / scale, y: point.y / scale)
-}
-
-public func /= (point: inout CGPoint, scale: CGFloat) {
-    point = point / scale
-}
-
 public extension CGPoint {
 
     public func vector(to point: CGPoint) -> CGVector {
         return CGVector(dx: point.x - self.x, dy: point.y - self.y)
-    }
-
-    public var toVector: CGVector {
-        return CGVector(dx: self.x, dy: self.y)
     }
 }
 
@@ -246,27 +237,46 @@ public extension CGRect {
     }
 
     public var aspectRatio: CGFloat {
-        return self.size.aspectRatio
+        return self.size.aspectRatio.cgFloat
     }
 }
 
-extension CGPoint: Hashable {
+extension CGPoint: TwoDimensional, Hashable {
 
-    public var hashValue: Int {
-        return Hasher()
-            .adding(part: self.x)
-            .adding(part: self.y)
-            .hashValue
+    public var d1: Double {
+        get { return self.x.double }
+        set { self.x = newValue.cgFloat }
+    }
+
+    public var d2: Double {
+        get { return self.y.double }
+        set { self.y = newValue.cgFloat }
     }
 }
 
-extension CGSize: Hashable {
+extension CGVector: TwoDimensional, Hashable {
 
-    public var hashValue: Int {
-        return Hasher()
-            .adding(part: self.width)
-            .adding(part: self.height)
-            .hashValue
+    public var d1: Double {
+        get { return self.dx.double }
+        set { self.dx = newValue.cgFloat }
+    }
+
+    public var d2: Double {
+        get { return self.dy.double }
+        set { self.dy = newValue.cgFloat }
+    }
+}
+
+extension CGSize: TwoDimensional, Hashable {
+
+    public var d1: Double {
+        get { return self.width.double }
+        set { self.width = newValue.cgFloat }
+    }
+
+    public var d2: Double {
+        get { return self.height.double }
+        set { self.height = newValue.cgFloat }
     }
 }
 
@@ -375,16 +385,35 @@ public extension CGRect {
         self = self.rect(for: transform)
     }
 
-    public func transform(to rect: CGRect, anchorPoint: CGPoint = CGPoint.zero) -> CGAffineTransform {
-        let xScale = rect.width / self.width
-        let yScale = rect.height / self.height
+    public func transform(to rect: CGRect, anchorPoint: CGPoint = CGPoint.zero, maintainAspectRatio: Bool = false, rescale: CGFloat = 1.0) -> CGAffineTransform {
+        var xScale = rect.width / self.width
+        var yScale = rect.height / self.height
+        if maintainAspectRatio {
+            if self.aspectRatio >= rect.aspectRatio {
+                yScale = xScale
+            } else {
+                xScale = yScale
+            }
+        }
+
+        xScale *= rescale
+        yScale *= rescale
+        
         var transform = CGAffineTransform(xScale: xScale, yScale: yScale)
 
-        let translationVector = rect.pointAtAnchor(anchorPoint).toVector - self.pointAtAnchor(anchorPoint).toVector
-        transform.xTranslate = translationVector.dx
-        transform.yTranslate = translationVector.dy
+        let translationVector = rect.pointAtAnchor(anchorPoint).vector - self.pointAtAnchor(anchorPoint).vector
+        transform.xTranslate = translationVector.dx * xScale
+        transform.yTranslate = translationVector.dy * yScale
 
         return transform
+    }
+
+    public func insets(to rect: CGRect) -> UIEdgeInsets {
+        return UIEdgeInsets(
+            top: rect.top - self.top,
+            left: rect.left - self.left,
+            bottom: self.bottom - rect.bottom,
+            right: self.right - rect.right)
     }
 }
 
@@ -401,26 +430,30 @@ public extension UIView {
     public func applyTransform(to rect: CGRect) {
         self.transform = self.transform(to: rect)
     }
-}
 
-public extension CGFloat {
-
-    public var asRadians: CGFloat {
-        return self * (CGFloat(M_PI) / 180.0)
-    }
-
-    public var asDegrees: CGFloat {
-        return self * (180.0 / CGFloat(M_PI))
+    public func insets(for rect: CGRect) -> UIEdgeInsets {
+        return self.bounds.insets(to: rect)
     }
 }
 
 public extension Double {
 
-    public var asRadians: CGFloat {
-        return CGFloat(self * (M_PI / 180.0))
+    public var asRadians: Double {
+        return self * (.pi / 180.0)
     }
 
-    public var asDegrees: CGFloat {
-        return CGFloat(self * (180.0 / M_PI))
+    public var asDegrees: Double {
+        return self * (180.0 / .pi)
+    }
+
+    public var cgFloat: CGFloat {
+        return CGFloat(self)
+    }
+}
+
+public extension CGFloat {
+
+    public var double: Double {
+        return Double(self)
     }
 }

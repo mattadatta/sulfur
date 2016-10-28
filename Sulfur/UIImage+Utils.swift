@@ -20,7 +20,7 @@ public extension UIImage {
 
 public extension UIImage {
 
-    public static func image(withColor color: UIColor, size: CGSize = CGSize(length: 1.0)) -> UIImage? {
+    public static func image(withColor color: UIColor, size: CGSize = CGSize(value: 1.0)) -> UIImage? {
         let imageRect = CGRect(origin: .zero, size: size)
         UIGraphicsBeginImageContext(imageRect.size)
         guard let ctx = UIGraphicsGetCurrentContext() else { return nil }

@@ -252,6 +252,7 @@ public extension ContextNode {
         return self.contextToken!.context
     }
 
+    @discardableResult
     public func contextWrap<Object>(_ obj: Object) -> Object {
         return self.context.wrap(obj)
     }
@@ -286,7 +287,7 @@ public extension ContextNode where Self: UIViewController {
         guard let storyboard = self.storyboard else { return nil }
         let controller = storyboard.instantiateViewController(withIdentifier: String(describing: Controller.self)) as! Controller
         if !storyboard.hasContextWrapper {
-            self.context.wrap(controller)
+            self.contextWrap(controller)
         }
         return controller
     }
