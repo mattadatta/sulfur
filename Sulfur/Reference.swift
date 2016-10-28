@@ -201,26 +201,28 @@ public struct AssociatedUtils {
         return objc_getAssociatedObject(object, key)
     }
 
-
-    public enum Storage {
-
-        case value(value: Any)
-        case strong(object: AnyObject)
-        case weak(object: AnyObject)
-
-        case valueOrNil(value: Any?)
-        case strongOrNil(object: AnyObject?)
-        case weakOrNil(object: AnyObject?)
+    public static func store(for object: AnyObject, key: UnsafeRawPointer, storage: Storage?) {
+        self.store(for: object, key: key, value: AssociatedReference(optionalReferent: storage?.reference), policy: .retainNonAtomic)
     }
 
-    public static func store(for object: AnyObject, key: UnsafeRawPointer, storage: Storage?) {
-        guard let storage = storage else {
-            self.store(for: object, key: key, value: nil, policy: .retainNonAtomic)
-            return
-        }
+    public static func retrieveValue<Value>(for object: AnyObject, key: UnsafeRawPointer) -> Value? {
+        return (self.retrieve(for: object, key: key) as? AssociatedReference<AnyReference>)?.referent?.referent as? Value
+    }
+}
 
+public enum Storage {
+
+    case value(value: Any)
+    case strong(object: AnyObject)
+    case weak(object: AnyObject)
+
+    case valueOrNil(value: Any?)
+    case strongOrNil(object: AnyObject?)
+    case weakOrNil(object: AnyObject?)
+
+    public var reference: AnyReference? {
         let reference: AnyReference?
-        switch storage {
+        switch self {
         case .value(let value):
             reference = AnyReference(reference: ValueWrapper(value: value))
         case .strong(let object):
@@ -234,11 +236,6 @@ public struct AssociatedUtils {
         case .weakOrNil(let object):
             reference = AnyReference(optionalReference: WeakReference(optionalReferent: object))
         }
-
-        self.store(for: object, key: key, value: AssociatedReference(optionalReferent: reference), policy: .retainNonAtomic)
-    }
-
-    public static func retrieveValue<Value>(for object: AnyObject, key: UnsafeRawPointer) -> Value? {
-        return (self.retrieve(for: object, key: key) as? AssociatedReference<AnyReference>)?.referent?.referent as? Value
+        return reference
     }
 }

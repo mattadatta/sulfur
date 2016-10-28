@@ -40,7 +40,6 @@ public final class Context {
     }
 
     fileprivate var services: [AnyContextServiceTag: AnyContextService] = [:]
-    fileprivate var serviceVariableWrappers: [AnyContextServiceTag: ServiceVariableWrapper] = [:]
 
     public func store<Tag: ContextServiceTag, Service>(service: Service?, for tag: Tag) where Service == Tag.Service {
         let anyTag = tag as? AnyContextServiceTag ?? AnyContextServiceTag(tag: tag)
@@ -59,8 +58,8 @@ public final class Context {
     }
 
     private func add(service: Any) {
-        if let contextNodeContainer = service as? ContextNodeContainer {
-            for child in contextNodeContainer.childContextObjects {
+        if let contextualContainer = service as? ContextualContainer {
+            for child in contextualContainer.childContextuals {
                 self.add(service: child)
             }
         }
@@ -75,8 +74,8 @@ public final class Context {
             contextServiceNode.removed(from: self)
             contextServiceNode.contextFn = nil
         }
-        if let contextNodeContainer = service as? ContextNodeContainer {
-            for child in contextNodeContainer.childContextObjects {
+        if let contextualContainer = service as? ContextualContainer {
+            for child in contextualContainer.childContextuals {
                 self.remove(service: child)
             }
         }
@@ -102,36 +101,25 @@ public final class Context {
         if let contextPreloadable = obj as? ContextPreloadable {
             contextPreloadable.contextPreload()
         }
-        if let contextNodeContainer = obj as? ContextNodeContainer {
-            for child in contextNodeContainer.childContextObjects {
+        if let contextualContainer = obj as? ContextualContainer {
+            for child in contextualContainer.childContextuals {
                 self.wrap(child)
             }
         }
         if let viewController = obj as? UIViewController {
             self.wrap(viewController.view)
         }
-        self.setupContextNodeIfNecessary(obj)
+        self.setupContextualIfNecessary(obj)
         return obj
     }
 
-    fileprivate func setupContextNodeIfNecessary(_ obj: Any) {
-        guard let contextNode = obj as? ContextNode, contextNode.contextToken == nil else { return }
+    fileprivate func setupContextualIfNecessary(_ obj: Any) {
+        guard let contextual = obj as? Contextual, contextual.contextToken == nil else { return }
 
         let contextToken = self.generateToken()
-        contextToken.contextNode = contextNode
-        contextNode.contextToken = contextToken
-        contextNode.contextAvailable()
-    }
-}
-
-private struct ServiceVariableWrapper {
-
-    let variable: Any
-    weak var observable: AnyObject?
-
-    public init<Service: ContextService>(variable: Variable<Service?>, observable: Observable<Service?>) {
-        self.variable = variable
-        self.observable = observable
+        contextToken.contextual = contextual
+        contextual.contextToken = contextToken
+        contextual.contextAvailable()
     }
 }
 
@@ -151,7 +139,7 @@ public extension Context {
 public final class ContextToken: Hashable {
 
     public let context: Context
-    fileprivate weak var contextNode: ContextNode?
+    fileprivate weak var contextual: Contextual?
 
     fileprivate init(context: Context) {
         self.context = context
@@ -163,42 +151,10 @@ public final class ContextToken: Hashable {
 
     // MARK: Stored References
 
-    public enum Storage {
-
-        case value(value: Any)
-        case strong(object: AnyObject)
-        case weak(object: AnyObject)
-
-        case valueOrNil(value: Any?)
-        case strongOrNil(object: AnyObject?)
-        case weakOrNil(object: AnyObject?)
-    }
-
     private var storedReferences: [String: AnyReference] = [:]
 
     public func store(key: String, storage: Storage?) {
-        guard let storage = storage else {
-            self.storedReferences[key] = nil
-            return
-        }
-
-        let reference: AnyReference?
-        switch storage {
-        case .value(let value):
-            reference = AnyReference(reference: ValueWrapper(value: value))
-        case .strong(let object):
-            reference = AnyReference(reference: StrongReference(referent: object))
-        case .weak(let object):
-            reference = AnyReference(reference: WeakReference(referent: object))
-        case .valueOrNil(let value):
-            reference = AnyReference(optionalReference: ValueWrapper(optionalValue: value))
-        case .strongOrNil(let object):
-            reference = AnyReference(optionalReference: StrongReference(optionalReferent: object))
-        case .weakOrNil(let object):
-            reference = AnyReference(optionalReference: WeakReference(optionalReferent: object))
-        }
-
-        self.storedReferences[key] = reference
+        self.storedReferences[key] = storage?.reference
     }
 
     public func retrieveValue<Value>(forKey key: String) -> Value? {
@@ -238,15 +194,15 @@ fileprivate extension UIStoryboard {
     }
 }
 
-// MARK: - ContextNode
+// MARK: - Contextual
 
-public protocol ContextNode: class {
+public protocol Contextual: class {
 
     var contextToken: ContextToken? { get set }
     func contextAvailable()
 }
 
-public extension ContextNode {
+public extension Contextual {
 
     public var context: Context {
         return self.contextToken!.context
@@ -257,32 +213,17 @@ public extension ContextNode {
         return self.context.wrap(obj)
     }
 
-    public func store(key: String, storage: ContextToken.Storage?) {
+    public func store(key: String, storage: Storage?) {
         self.contextToken?.store(key: key, storage: storage)
     }
 
     public func retrieveValue<Value>(forKey key: String) -> Value? {
         return self.contextToken?.retrieveValue(forKey: key)
     }
-
-    public func newViewController<ViewController: UIViewController>() -> ViewController {
-        return self.context.newViewController()
-    }
-
-    public func newView<View: UIView>() -> View {
-        return self.context.newView()
-    }
 }
 
-public extension ContextNode where Self: UIViewController {
+public extension Contextual where Self: UIViewController {
 
-    /**
-     Instantiate a view controller from the view controller's storyboard. The `UIViewController` subclass you're
-     instantiating must have the same storyboard tag as its class name, such that the tag is the
-     result of executing `String(Controller)`.
-
-     - returns: The new `UIViewController` instance
-     */
     public func viewControllerFromStoryboard<Controller: UIViewController>() -> Controller? {
         guard let storyboard = self.storyboard else { return nil }
         let controller = storyboard.instantiateViewController(withIdentifier: String(describing: Controller.self)) as! Controller
@@ -293,23 +234,23 @@ public extension ContextNode where Self: UIViewController {
     }
 }
 
-// MARK: - ContextNodeContainer
+// MARK: - ContextualContainer
 
-public protocol ContextNodeContainer {
+public protocol ContextualContainer {
 
-    var childContextObjects: [Any] { get }
+    var childContextuals: [Any] { get }
 }
 
-extension UIViewController: ContextNodeContainer {
+extension UIViewController: ContextualContainer {
 
-    open var childContextObjects: [Any] {
+    open var childContextuals: [Any] {
         return self.childViewControllers.map({ $0 })
     }
 }
 
-extension UIView: ContextNodeContainer {
+extension UIView: ContextualContainer {
 
-    open var childContextObjects: [Any] {
+    open var childContextuals: [Any] {
         return self.subviews.map({ $0 })
     }
 }
@@ -322,7 +263,7 @@ public protocol ContextPreloadable {
 extension UIViewController: ContextPreloadable {
 
     open func contextPreload() {
-        guard let contextNode = self as? ContextNode, contextNode.contextToken == nil else { return }
+        guard let contextual = self as? Contextual, contextual.contextToken == nil else { return }
         self.loadViewIfNeeded()
     }
 }
@@ -330,7 +271,7 @@ extension UIViewController: ContextPreloadable {
 extension UIView: ContextPreloadable {
 
     open func contextPreload() {
-        guard let contextNode = self as? ContextNode, contextNode.contextToken == nil else { return }
+        guard let contextual = self as? Contextual, contextual.contextToken == nil else { return }
         guard let inflatable = self as? UINibViewInflatable else { return }
         let view = inflatable.inflateView()
         self.addAndConstrain(view)

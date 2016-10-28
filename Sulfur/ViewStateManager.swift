@@ -412,13 +412,13 @@ public extension ViewStateManagerConfiguration {
     }
 }
 
-private let contextNode_viewStateManagerKey = "Sulfur.ViewStateManager"
+private let contextual_viewStateManagerKey = "Sulfur.ViewStateManager"
 
-public extension ContextNode where Self: UIView {
+public extension Contextual where Self: UIView {
 
     fileprivate var _stateManager: ViewStateManager? {
-        get { return self.retrieveValue(forKey: contextNode_viewStateManagerKey) }
-        set { self.store(key: contextNode_viewStateManagerKey, storage: .strongOrNil(object: newValue)) }
+        get { return self.retrieveValue(forKey: contextual_viewStateManagerKey) }
+        set { self.store(key: contextual_viewStateManagerKey, storage: .strongOrNil(object: newValue)) }
     }
     
     public var stateManager: ViewStateManager {
@@ -431,13 +431,13 @@ public extension ContextNode where Self: UIView {
     }
 }
 
-public extension ContextNode {
+public extension Contextual {
 
     public func stateManager(for view: UIView) -> ViewStateManager {
-        let key = "contextNode_viewStateManagerKey/\(view.hashValue)"
+        let key = "contextual_viewStateManagerKey/\(view.hashValue)"
         guard let stateManager: ViewStateManager = self.retrieveValue(forKey: key) else {
             let stateManager = ViewStateManager(view: view)
-            self.store(key: key, storage: .strongOrNil(object: stateManager))
+            self.store(key: key, storage: .strong(object: stateManager))
             return stateManager
         }
         return stateManager
