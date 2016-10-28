@@ -6,9 +6,9 @@ workspace 'Sulfur'
 
 abstract_target 'SulfurProject' do
 
-  pod 'XCGLogger', '~> 4.0'
-  pod 'Cartography', '~> 1.0'
-  pod 'RxSwift', '~> 3.0.0-beta.1'
+  pod 'XCGLogger', '4.0.0'
+  pod 'Cartography', '1.0.1'
+  pod 'RxSwift', '3.0.0'
 
   target 'Sulfur' do
     target 'SulfurTests' do
