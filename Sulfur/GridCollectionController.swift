@@ -477,7 +477,7 @@ public final class ItemViewCell: UICollectionViewCell {
         didSet {
             guard self.nestedView != oldValue else { return }
             guard let view = self.nestedView else { return }
-            self.contentView.addAndConstrain(view)
+            self.contentView.addAndConstrainView(view)
         }
     }
 
@@ -502,7 +502,7 @@ public final class ItemReusableView: UICollectionReusableView {
         didSet {
             guard self.nestedView != oldValue else { return }
             guard let view = self.nestedView else { return }
-            self.addAndConstrain(view)
+            self.addAndConstrainView(view)
         }
     }
 

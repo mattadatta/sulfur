@@ -169,7 +169,7 @@ public final class TabbedView: UIView {
     fileprivate var tabBarConstraintGroup = ConstraintGroup()
     public var tabBarAlignment: TabBarAlignment = .top(0) {
         didSet {
-            self.tabBarConstraintGroup = Cartography.constrain(self, self.tabBarView, replace: self.tabBarConstraintGroup) { superview, tabBarView in
+            self.tabBarConstraintGroup = constrain(self, self.tabBarView, replace: self.tabBarConstraintGroup) { superview, tabBarView in
                 tabBarView.left == superview.left
                 tabBarView.right == superview.right
                 switch self.tabBarAlignment {
@@ -186,7 +186,7 @@ public final class TabbedView: UIView {
     public var tabBarHeight: CGFloat = -1 {
         didSet {
             guard self.tabBarHeight != oldValue else { return }
-            self.tabBarHeightConstraintGroup = Cartography.constrain(self.tabBarView, replace: self.tabBarHeightConstraintGroup) { tabBarView in
+            self.tabBarHeightConstraintGroup = constrain(self.tabBarView, replace: self.tabBarHeightConstraintGroup) { tabBarView in
                 tabBarView.height == self.tabBarHeight
             }
         }
@@ -204,7 +204,7 @@ public final class TabbedView: UIView {
 
     fileprivate func commonInit() {
         let containerView = UIView()
-        self.addAndConstrain(containerView)
+        self.addAndConstrainView(containerView)
         self.containerView = containerView
 
         let tabBarView = TabBarView()
@@ -361,7 +361,7 @@ public final class TabBarView: UIView {
             self.index = index
 
             self.tabView.translatesAutoresizingMaskIntoConstraints = false
-            self.tabView.addAndConstrain(self.tab.view)
+            self.tabView.addAndConstrainView(self.tab.view)
 
             self.tapGestureRecognizer.addTarget(self, action: #selector(self.tabViewDidTap(_:)))
             self.tabView.addGestureRecognizer(self.tapGestureRecognizer)
@@ -485,7 +485,7 @@ public final class TabBarView: UIView {
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
         stackView.alignment = .fill
-        self.addAndConstrain(stackView)
+        self.addAndConstrainView(stackView)
         self.stackView = stackView
     }
 

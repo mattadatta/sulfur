@@ -41,7 +41,7 @@ public final class TableViewCell<View: UIView>: UITableViewCell, ViewCell {
             view.removeFromSuperview()
         }
         didSet {
-            self.contentView.addAndConstrain(self.nestedView)
+            self.contentView.addAndConstrainView(self.nestedView)
         }
     }
 
@@ -127,7 +127,7 @@ public final class TableViewHeaderFooterView<View: UIView>: UITableViewHeaderFoo
             view.removeFromSuperview()
         }
         didSet {
-            self.contentView.addAndConstrain(self.nestedView)
+            self.contentView.addAndConstrainView(self.nestedView)
         }
     }
 
@@ -206,7 +206,7 @@ public final class CollectionViewCell<View: UIView>: UICollectionViewCell, ViewC
             view.removeFromSuperview()
         }
         didSet {
-            self.contentView.addAndConstrain(self.nestedView)
+            self.contentView.addAndConstrainView(self.nestedView)
         }
     }
 
@@ -293,7 +293,7 @@ public final class CollectionReusableView<View: UIView>: UICollectionReusableVie
             view.removeFromSuperview()
         }
         didSet {
-            self.addAndConstrain(self.nestedView)
+            self.addAndConstrainView(self.nestedView)
         }
     }
 

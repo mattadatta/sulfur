@@ -51,29 +51,30 @@ public extension UIView {
     }
 
     @discardableResult
-    public func constrain(_ view: UIView, replace group: ConstraintGroup = ConstraintGroup(), with insets: UIEdgeInsets = .zero) -> ConstraintGroup {
-        return Cartography.constrain(self, view, replace: group, block: UIView.edgeInsetsBlock(insets))
+    public func constrainView(_ view: UIView, replace group: ConstraintGroup = ConstraintGroup(), with insets: UIEdgeInsets = .zero) -> ConstraintGroup {
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return constrain(self, view, replace: group, block: UIView.edgeInsetsBlock(insets))
     }
 
     @discardableResult
-    public func addAndConstrain(_ view: UIView, with insets: UIEdgeInsets = .zero) -> ConstraintGroup {
+    public func addAndConstrainView(_ view: UIView, with insets: UIEdgeInsets = .zero) -> ConstraintGroup {
         view.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(view)
-        return self.constrain(view, with: insets)
+        return self.constrainView(view, with: insets)
     }
 
     @discardableResult
-    public func replaceAndConstrain(_ view: UIView, withBlock block: ((LayoutProxy, LayoutProxy) -> Void)) -> ConstraintGroup {
+    public func replaceAndConstrainView(_ view: UIView, withBlock block: ((LayoutProxy, LayoutProxy) -> Void)) -> ConstraintGroup {
         let filteredConstraints = self.constraints.filter { constraint in
             return (constraint.firstItem === view || constraint.secondItem === view)
         }
         NSLayoutConstraint.deactivate(filteredConstraints)
-        return Cartography.constrain(self, view, block: block)
+        return constrain(self, view, block: block)
     }
 
     @discardableResult
     public func replaceAndConstrainFirstView(block: ((LayoutProxy, LayoutProxy) -> Void)) -> ConstraintGroup {
-        return self.replaceAndConstrain(self.subviews[0], withBlock: block)
+        return self.replaceAndConstrainView(self.subviews[0], withBlock: block)
     }
 
     @discardableResult
@@ -85,9 +86,9 @@ public extension UIView {
 public extension UIViewController {
 
     @discardableResult
-    public func addAndConstrain(_ viewController: UIViewController, parentView: UIView? = nil, insets: UIEdgeInsets = .zero, performTransition: (_ complete: () -> Void) -> Void = { $0() }) -> ConstraintGroup {
+    public func addAndConstrainView(_ viewController: UIViewController, parentView: UIView? = nil, insets: UIEdgeInsets = .zero, performTransition: (_ complete: () -> Void) -> Void = { $0() }) -> ConstraintGroup {
         self.addChildViewController(viewController)
-        let constraintGroup = (parentView ?? self.view).addAndConstrain(viewController.view, with: insets)
+        let constraintGroup = (parentView ?? self.view).addAndConstrainView(viewController.view, with: insets)
         performTransition() {
             viewController.didMove(toParentViewController: self)
         }
@@ -113,8 +114,8 @@ public extension UIViewController {
     } }
 
     @discardableResult
-    public func constrain(_ view1: UIView? = nil, to view2: UIView, with insets: UIEdgeInsets = .zero, replacing group: ConstraintGroup = ConstraintGroup()) -> ConstraintGroup {
+    public func constrainView(_ view1: UIView? = nil, to view2: UIView, with insets: UIEdgeInsets = .zero, replacing group: ConstraintGroup = ConstraintGroup()) -> ConstraintGroup {
         let view1 = view1 ?? self.view!
-        return Cartography.constrain(view1, view2, replace: group, block: self.edgeInsetsBlock(insets))
+        return constrain(view1, view2, replace: group, block: self.edgeInsetsBlock(insets))
     }
 }

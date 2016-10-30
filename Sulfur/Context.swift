@@ -274,7 +274,7 @@ extension UIView: ContextPreloadable {
         guard let contextual = self as? Contextual, contextual.contextToken == nil else { return }
         guard let inflatable = self as? UINibViewInflatable else { return }
         let view = inflatable.inflateView()
-        self.addAndConstrain(view)
+        self.addAndConstrainView(view)
     }
 }
 
