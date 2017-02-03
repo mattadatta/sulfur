@@ -1,7 +1,7 @@
-/*
- This file is subject to the terms and conditions defined in
- file 'LICENSE.txt', which is part of this source code package.
- */
+//
+// This file is subject to the terms and conditions defined in
+// file 'LICENSE.txt', which is part of this source code package.
+//
 
 import UIKit
 
@@ -39,13 +39,20 @@ public struct Gradient {
         }
     }
 
+    private var interpolated: [UIColor] = []
+
     public var stops: [Stop] {
         didSet {
             if self.stops.count < 2 {
                 self.stops = Constants.defaultStops
             }
             self.stops.sort(by: { $0.percent <= $1.percent })
+            self.invalidateInterpolationCache()
         }
+    }
+
+    private mutating func invalidateInterpolationCache() {
+        self.interpolated = (0..<100).map({ index in self._interpolatedColorForPercentage(Double(index) / 100.0) })
     }
 
     public var colors: [UIColor] {
@@ -69,14 +76,25 @@ public struct Gradient {
 
     public init(stops: [Stop]) {
         self.stops = (stops.count > 2) ? stops : Constants.defaultStops
+        self.invalidateInterpolationCache()
     }
 
     public init(colors: [UIColor]) {
-        self.stops = Constants.defaultStops
+        self.stops = []
         self.colors = colors
+        self.invalidateInterpolationCache()
+    }
+
+    public init(solidColor: UIColor) {
+        self.init(colors: [solidColor, solidColor])
     }
 
     public func interpolatedColorForPercentage(_ percent: Double) -> UIColor {
+        let index = Int(max(0, min(99, percent * 100)))
+        return self.interpolated[index]
+    }
+
+    private func _interpolatedColorForPercentage(_ percent: Double) -> UIColor {
         let percent = max(self.stops.first!.percent, min(self.stops.last!.percent, percent))
         var firstIndex = 0, lastIndex = 1
         while !(self.stops[firstIndex].percent <= percent &&
@@ -100,6 +118,19 @@ public struct Gradient {
 
         return UIColor(red: resultRed, green: resultGreen, blue: resultBlue, alpha: resultAlpha)
     }
+}
+
+public extension Gradient {
+
+    public static func from(_ colors: UIColor...) -> Gradient {
+        return Gradient(colors: colors)
+    }
+}
+
+public extension Gradient {
+
+    public static let clear = Gradient(colors: [.clear, .clear])
+    public static let white = Gradient(colors: [.white, .white])
 }
 
 // MARK: - GradientView

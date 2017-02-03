@@ -119,12 +119,18 @@ public extension CGVector {
         return self.dx.isNormal && self.dy.isNormal
     }
 
+    public var inversed: CGVector {
+        return CGVector(dx: -self.dx, dy: -self.dy)
+    }
+
     public func angleTo(_ vector: CGVector) -> CGFloat {
         return angleBetween(u: self, v: vector)
     }
 }
 
 public extension CGPoint {
+
+    public static let one = CGPoint(x: 1, y: 1)
 
     public func vector(to point: CGPoint) -> CGVector {
         return CGVector(dx: point.x - self.x, dy: point.y - self.y)
@@ -399,6 +405,10 @@ public extension CGRect {
         xScale *= rescale
         yScale *= rescale
         
+        return self.transform(to: rect, xScale: xScale, yScale: yScale, anchorPoint: anchorPoint)
+    }
+
+    public func transform(to rect: CGRect, xScale: CGFloat, yScale: CGFloat, anchorPoint: CGPoint = CGPoint.zero) -> CGAffineTransform {
         var transform = CGAffineTransform(xScale: xScale, yScale: yScale)
 
         let translationVector = rect.pointAtAnchor(anchorPoint).vector - self.pointAtAnchor(anchorPoint).vector

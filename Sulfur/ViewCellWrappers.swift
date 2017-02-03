@@ -268,6 +268,14 @@ public final class CollectionViewCell<View: UIView>: UICollectionViewCell, ViewC
             self.didSetSelected?(self, self.nestedView, self.isSelected, false)
         }
     }
+
+    public var didSetHighlighted: ((_ cell: CollectionViewCell<View>, _ view: View, _ highlighted: Bool, _ animated: Bool) -> Void)?
+
+    override public var isHighlighted: Bool {
+        didSet {
+            self.didSetHighlighted?(self, self.nestedView, self.isHighlighted, false)
+        }
+    }
 }
 
 // MARK: - CollectionReusableView

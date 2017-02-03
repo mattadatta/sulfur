@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		2535992BB285DB293078798F /* Pods_SulfurTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7825E9A15B88B6B7BB69EA11 /* Pods_SulfurTests.framework */; };
 		3203E9EC1CEFBA9000D14253 /* ViewCellWrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3203E9EB1CEFBA9000D14253 /* ViewCellWrappers.swift */; };
+		32067E971E351F5100442E74 /* Dictionary+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32067E961E351F5100442E74 /* Dictionary+Utils.swift */; };
+		3222E8781DDD5EF800BC0DE8 /* CAAnimation+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3222E8771DDD5EF800BC0DE8 /* CAAnimation+Utils.swift */; };
 		32271E901D5AB36700F6FD08 /* ViewStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32271E8F1D5AB36700F6FD08 /* ViewStateManager.swift */; };
 		322D66111D57C2F100CBCA4F /* Sulfur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322D66101D57C2F100CBCA4F /* Sulfur.swift */; };
 		32389E211CDFDCD1009475F6 /* Sulfur.h in Headers */ = {isa = PBXBuildFile; fileRef = 32389E201CDFDCD1009475F6 /* Sulfur.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -36,7 +38,6 @@
 		32A5A1F11D7F17580026AD9C /* Rx+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A5A1F01D7F17580026AD9C /* Rx+Utils.swift */; };
 		32BC05961D1B3BE1008573BC /* ContextTransitioning+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05951D1B3BE1008573BC /* ContextTransitioning+Utils.swift */; };
 		32BC05981D1B3C39008573BC /* DebugFns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05971D1B3C39008573BC /* DebugFns.swift */; };
-		32BC059A1D1B3D75008573BC /* Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05991D1B3D75008573BC /* Context.swift */; };
 		32D04B101D31C0CB00EB8D5D /* GridCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D04B0F1D31C0CB00EB8D5D /* GridCollectionViewLayout.swift */; };
 		32D04B121D31C16200EB8D5D /* GridCollectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D04B111D31C16200EB8D5D /* GridCollectionController.swift */; };
 		32D450461D2A125B00637DE9 /* HierarchyPrinter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D450451D2A125B00637DE9 /* HierarchyPrinter.swift */; };
@@ -56,6 +57,8 @@
 /* Begin PBXFileReference section */
 		1318E88367628EEE396B8F5F /* Pods_SulfurProject_Sulfur.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SulfurProject_Sulfur.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3203E9EB1CEFBA9000D14253 /* ViewCellWrappers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewCellWrappers.swift; sourceTree = "<group>"; };
+		32067E961E351F5100442E74 /* Dictionary+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+Utils.swift"; sourceTree = "<group>"; };
+		3222E8771DDD5EF800BC0DE8 /* CAAnimation+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CAAnimation+Utils.swift"; sourceTree = "<group>"; };
 		32271E8F1D5AB36700F6FD08 /* ViewStateManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewStateManager.swift; sourceTree = "<group>"; };
 		322D66101D57C2F100CBCA4F /* Sulfur.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sulfur.swift; sourceTree = "<group>"; };
 		32389E1D1CDFDCD1009475F6 /* Sulfur.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Sulfur.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -87,7 +90,6 @@
 		32A5A1F01D7F17580026AD9C /* Rx+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Rx+Utils.swift"; sourceTree = "<group>"; };
 		32BC05951D1B3BE1008573BC /* ContextTransitioning+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ContextTransitioning+Utils.swift"; sourceTree = "<group>"; };
 		32BC05971D1B3C39008573BC /* DebugFns.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugFns.swift; sourceTree = "<group>"; };
-		32BC05991D1B3D75008573BC /* Context.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Context.swift; sourceTree = "<group>"; };
 		32D04B0F1D31C0CB00EB8D5D /* GridCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GridCollectionViewLayout.swift; sourceTree = "<group>"; };
 		32D04B111D31C16200EB8D5D /* GridCollectionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GridCollectionController.swift; sourceTree = "<group>"; };
 		32D450451D2A125B00637DE9 /* HierarchyPrinter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HierarchyPrinter.swift; sourceTree = "<group>"; };
@@ -143,12 +145,13 @@
 			children = (
 				32389E371CDFDD1F009475F6 /* Array+Utils.swift */,
 				3274F6051DB43A5F0063EBAD /* Async.swift */,
+				3222E8771DDD5EF800BC0DE8 /* CAAnimation+Utils.swift */,
 				32389E3B1CDFDD1F009475F6 /* CG+Utils.swift */,
 				32389E3C1CDFDD1F009475F6 /* ConfigurableStoryboard.h */,
 				32389E3D1CDFDD1F009475F6 /* ConfigurableStoryboard.m */,
-				32BC05991D1B3D75008573BC /* Context.swift */,
 				32BC05951D1B3BE1008573BC /* ContextTransitioning+Utils.swift */,
 				32588C471D83035C00060027 /* Data+Utils.swift */,
+				32067E961E351F5100442E74 /* Dictionary+Utils.swift */,
 				32BC05971D1B3C39008573BC /* DebugFns.swift */,
 				32A0D0D51D8F1D2C002F49CC /* FontUtils.swift */,
 				32389E3E1CDFDD1F009475F6 /* Gradient.swift */,
@@ -425,11 +428,13 @@
 				32A0D0D61D8F1D2C002F49CC /* FontUtils.swift in Sources */,
 				3203E9EC1CEFBA9000D14253 /* ViewCellWrappers.swift in Sources */,
 				32389E581CDFDD1F009475F6 /* String+Utils.swift in Sources */,
+				3222E8781DDD5EF800BC0DE8 /* CAAnimation+Utils.swift in Sources */,
 				32389E551CDFDD1F009475F6 /* Random.swift in Sources */,
 				32389E4B1CDFDD1F009475F6 /* Array+Utils.swift in Sources */,
 				32389E521CDFDD1F009475F6 /* Gradient.swift in Sources */,
 				32BC05961D1B3BE1008573BC /* ContextTransitioning+Utils.swift in Sources */,
 				32D450461D2A125B00637DE9 /* HierarchyPrinter.swift in Sources */,
+				32067E971E351F5100442E74 /* Dictionary+Utils.swift in Sources */,
 				32389E5E1CDFDD1F009475F6 /* UIView+Utils.swift in Sources */,
 				32389E561CDFDD1F009475F6 /* Reference.swift in Sources */,
 				32389E4F1CDFDD1F009475F6 /* CG+Utils.swift in Sources */,
@@ -440,7 +445,6 @@
 				32588C481D83035C00060027 /* Data+Utils.swift in Sources */,
 				3274F6061DB43A5F0063EBAD /* Async.swift in Sources */,
 				32271E901D5AB36700F6FD08 /* ViewStateManager.swift in Sources */,
-				32BC059A1D1B3D75008573BC /* Context.swift in Sources */,
 				32389E511CDFDD1F009475F6 /* ConfigurableStoryboard.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

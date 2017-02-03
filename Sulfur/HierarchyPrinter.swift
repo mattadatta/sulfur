@@ -63,7 +63,10 @@ public struct ViewNodeInspector: NodeInspector {
     }
 
     public func describe(_ node: UIView, depth: Int, prefix: String, last: Bool) -> String {
-        return "[\(type(of: node)): Frame = \(node.frame)]"
+        guard let viewController = node.next as? UIViewController else {
+            return "[\(type(of: node)): Frame = \(node.frame)]"
+        }
+        return "[\(type(of: viewController))] [\(type(of: node)): Frame = \(node.frame)]"
     }
 }
 

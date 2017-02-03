@@ -4,17 +4,35 @@
  */
 
 import UIKit
+import Photos
 
 public extension UIImage {
 
     public convenience init?(view: UIView) {
-        UIGraphicsBeginImageContextWithOptions(view.bounds.size, view.isOpaque, 0.0)
+        let scale = UIScreen.main.scale
+
+        UIGraphicsBeginImageContextWithOptions(view.bounds.size * Double(scale), view.isOpaque, scale)
         guard let ctx = UIGraphicsGetCurrentContext() else { return nil }
+        ctx.scaleBy(x: scale, y: scale)
         view.layer.render(in: ctx)
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        guard let cgImage = image?.cgImage else { return nil }
+
+        guard
+            let snapshotImage = image,
+            let cgImage = snapshotImage.cgImage else
+        { return nil }
+
         self.init(cgImage: cgImage)
+    }
+
+    public func scaledBy(scale: CGFloat) -> UIImage? {
+        guard
+            let cgImage = self.cgImage,
+            let scaledCGImage = UIImage(cgImage: cgImage, scale: scale, orientation: self.imageOrientation).cgImage else
+        { return nil }
+
+        return UIImage(cgImage: scaledCGImage)
     }
 }
 
@@ -101,16 +119,16 @@ public extension UIImage {
         case aspectFill
     }
 
-    public func resizing(to targetSize: CGSize, type: ResizeType) -> UIImage? {
+    public func resized(to targetSize: CGSize, type: ResizeType) -> UIImage? {
         guard let cgImage = self.cgImage else { return nil }
         let bitmapSize = CGSize(width: cgImage.width, height: cgImage.height)
         let scaleHor = targetSize.width / bitmapSize.width
         let scaleVert = targetSize.height / bitmapSize.height
         let scale = type == .aspectFill ? max(scaleHor, scaleVert) : min(scaleHor, scaleVert)
-        return self.resizing(toScale: CGFloat(min(scale, 1)))
+        return self.resized(toScale: CGFloat(min(scale, 1)))
     }
 
-    public func resizing(toScale scale: CGFloat) -> UIImage? {
+    public func resized(toScale scale: CGFloat) -> UIImage? {
         guard let cgImage = self.cgImage else { return nil }
 
         let size = CGSize(width: round(scale * CGFloat(cgImage.width)), height: round(scale * CGFloat(cgImage.height)))

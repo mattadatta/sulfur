@@ -1,7 +1,7 @@
-/*
- This file is subject to the terms and conditions defined in
- file 'LICENSE.txt', which is part of this source code package.
- */
+//
+// This file is subject to the terms and conditions defined in
+// file 'LICENSE.txt', which is part of this source code package.
+//
 
 import UIKit
 import UIKit.UIGestureRecognizerSubclass
@@ -152,13 +152,18 @@ public final class ViewStateManager {
             self.stateManager = stateManager
             super.init(target: stateManager, action: #selector(stateManager.handleGestureRecognizer(_:)))
             self.delegate = self
+            self.cancelsTouchesInView = true
         }
 
         var isTouchInside = false
         var isTracking = false
 
         func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-            return true
+            let shouldRecognizeSimultaneously = !(otherGestureRecognizer is UIPanGestureRecognizer)
+            if !shouldRecognizeSimultaneously {
+                self.cancelTouches([])
+            }
+            return shouldRecognizeSimultaneously
         }
 
         override func canPrevent(_ preventedGestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -166,7 +171,7 @@ public final class ViewStateManager {
         }
 
         override func canBePrevented(by preventingGestureRecognizer: UIGestureRecognizer) -> Bool {
-            return false
+            return preventingGestureRecognizer is UIPanGestureRecognizer
         }
 
         override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
@@ -221,6 +226,10 @@ public final class ViewStateManager {
 
         override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
             super.touchesCancelled(touches, with: event)
+            self.cancelTouches(touches, withEvent: event)
+        }
+
+        fileprivate func cancelTouches(_ touches: Set<UITouch>, withEvent event: UIEvent? = nil) {
             guard let stateManager = self.stateManager, stateManager.view != nil else { return }
 
             self.isTracking = false
@@ -254,7 +263,9 @@ public final class ViewStateManager {
         view.addGestureRecognizer(self.touchGestureRecognizer)
 
         self.tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleGestureRecognizer(_:)))
+        self.tapGestureRecognizer.delaysTouchesBegan = true
         self.longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleGestureRecognizer(_:)))
+        self.longPressGestureRecognizer.delaysTouchesBegan = true
     }
 
     public var state: State = .enabled {
@@ -400,11 +411,6 @@ public protocol ViewStateManagerConfiguration: class {
     func viewStateManager(_ viewStateManager: ViewStateManager, didDispatchStateChangeFrom fromState: ViewStateManager.State, to toState: ViewStateManager.State)
 }
 
-fileprivate struct ViewStateManagerConfigurationKeys {
-
-    static var stateManagerKey: UInt8 = 0
-}
-
 public extension ViewStateManagerConfiguration {
 
     public var viewStateManager: ViewStateManager? {
@@ -412,13 +418,25 @@ public extension ViewStateManagerConfiguration {
     }
 }
 
-private let contextual_viewStateManagerKey = "Sulfur.ViewStateManager"
+private struct ViewStateManagerKeys {
 
-public extension Contextual where Self: UIView {
+    static var stateManager: UInt8 = 0
+}
+
+public extension UIView {
 
     fileprivate var _stateManager: ViewStateManager? {
-        get { return self.retrieveValue(forKey: contextual_viewStateManagerKey) }
-        set { self.store(key: contextual_viewStateManagerKey, storage: .strongOrNil(object: newValue)) }
+        get {
+            return AssociatedUtils.retrieveValue(
+                for: self,
+                key: &ViewStateManagerKeys.stateManager)
+        }
+        set {
+            AssociatedUtils.store(
+                for: self,
+                key: &ViewStateManagerKeys.stateManager,
+                storage: .strongOrNil(object: newValue))
+        }
     }
     
     public var stateManager: ViewStateManager {
@@ -426,19 +444,6 @@ public extension Contextual where Self: UIView {
             let newManager = ViewStateManager(view: self)
             self._stateManager = newManager
             return newManager
-        }
-        return stateManager
-    }
-}
-
-public extension Contextual {
-
-    public func stateManager(for view: UIView) -> ViewStateManager {
-        let key = "contextual_viewStateManagerKey/\(view.hashValue)"
-        guard let stateManager: ViewStateManager = self.retrieveValue(forKey: key) else {
-            let stateManager = ViewStateManager(view: view)
-            self.store(key: key, storage: .strong(object: stateManager))
-            return stateManager
         }
         return stateManager
     }

@@ -17,9 +17,9 @@ public protocol Reference {
 
 public struct AnyReference: Reference {
 
-    public let reference: Any
+    public let baseReference: Any
 
-    fileprivate var _referent: () -> Any?
+    private var _referent: () -> Any?
     public var referent: Any? {
         return self._referent()
     }
@@ -30,7 +30,7 @@ public struct AnyReference: Reference {
     }
 
     public init<R: Reference>(reference: R) {
-        self.reference = reference
+        self.baseReference = reference
         self._referent = { reference.referent }
     }
 }
@@ -39,9 +39,9 @@ public struct AnyReference: Reference {
 
 public struct StrongReference<Referent: AnyObject>: Reference, Hashable {
 
-    fileprivate var _referent: Referent
+    public let baseReferent: Referent
     public var referent: Referent? {
-        return self._referent
+        return self.baseReferent
     }
 
     public init?(optionalReferent referent: Referent?) {
@@ -50,15 +50,15 @@ public struct StrongReference<Referent: AnyObject>: Reference, Hashable {
     }
 
     public init(referent: Referent) {
-        self._referent = referent
+        self.baseReferent = referent
     }
 
     public var hashValue: Int {
-        return ObjectIdentifier(self._referent).hashValue
+        return ObjectIdentifier(self.baseReferent).hashValue
     }
 
     public static func == <Referent>(lhs: StrongReference<Referent>, rhs: StrongReference<Referent>) -> Bool {
-        return ObjectIdentifier(lhs._referent) == ObjectIdentifier(rhs._referent)
+        return ObjectIdentifier(lhs.baseReferent) == ObjectIdentifier(rhs.baseReferent)
     }
 }
 
@@ -66,9 +66,9 @@ public struct StrongReference<Referent: AnyObject>: Reference, Hashable {
 
 public struct WeakReference<Referent: AnyObject>: Reference, Hashable {
 
-    fileprivate weak var _referent: Referent?
+    public private(set) weak var baseReferent: Referent?
     public var referent: Referent? {
-        return self._referent
+        return self.baseReferent
     }
 
     public init?(optionalReferent referent: Referent?) {
@@ -77,24 +77,24 @@ public struct WeakReference<Referent: AnyObject>: Reference, Hashable {
     }
 
     public init(referent: Referent) {
-        self._referent = referent
+        self.baseReferent = referent
     }
 
     public var isNil: Bool {
-        return self._referent == nil
+        return self.baseReferent == nil
     }
 
     public var isNotNil: Bool {
-        return self._referent != nil
+        return !self.isNil
     }
 
     public var hashValue: Int {
-        guard let referent = self._referent else { return 0 }
+        guard let referent = self.baseReferent else { return 0 }
         return ObjectIdentifier(referent).hashValue
     }
 
     public static func == <Referent>(lhs: WeakReference<Referent>, rhs: WeakReference<Referent>) -> Bool {
-        switch (lhs._referent, rhs._referent) {
+        switch (lhs.baseReferent, rhs.baseReferent) {
         case (.none, .none):
             return true
         case (.some(let lhs), .some(let rhs)):
@@ -105,13 +105,13 @@ public struct WeakReference<Referent: AnyObject>: Reference, Hashable {
     }
 }
 
-// MARK: - ValueWrapper
+// MARK: - BoxedValue
 
-public struct ValueWrapper<Value>: Reference {
+public struct BoxedValue<Value>: Reference {
 
-    public let _value: Value
+    public let value: Value
     public var referent: Value? {
-        return self._value
+        return self.value
     }
 
     public init?(optionalValue value: Value?) {
@@ -120,18 +120,18 @@ public struct ValueWrapper<Value>: Reference {
     }
 
     public init(value: Value) {
-        self._value = value
+        self.value = value
     }
 }
 
-public extension ValueWrapper where Value: Hashable {
+public extension BoxedValue where Value: Hashable {
 
     public var hashValue: Int {
-        return self._value.hashValue
+        return self.value.hashValue
     }
 
-    public static func == <Value: Hashable>(lhs: ValueWrapper<Value>, rhs: ValueWrapper<Value>) -> Bool {
-        return lhs._value == rhs._value
+    public static func == <Value: Hashable>(lhs: BoxedValue<Value>, rhs: BoxedValue<Value>) -> Bool {
+        return lhs.value == rhs.value
     }
 }
 
@@ -139,9 +139,9 @@ public extension ValueWrapper where Value: Hashable {
 
 public final class AssociatedReference<Referent>: NSObject, NSCopying {
 
-    fileprivate var _referent: Referent
+    public private(set) var baseReferent: Referent
     public var referent: Referent? {
-        return self._referent
+        return self.baseReferent
     }
 
     public convenience init?(optionalReferent referent: Referent?) {
@@ -150,18 +150,18 @@ public final class AssociatedReference<Referent>: NSObject, NSCopying {
     }
 
     public init(referent: Referent) {
-        self._referent = referent
+        self.baseReferent = referent
     }
 
     public func copy(with zone: NSZone? = nil) -> Any {
-        return type(of: self).init(referent: self._referent)
+        return type(of: self).init(referent: self.baseReferent)
     }
 }
 
 public extension AssociatedReference where Referent: NSCopying {
 
     public func copy(with zone: NSZone? = nil) -> Any {
-        return type(of: self).init(referent: self._referent.copy(with: zone) as! Referent)
+        return type(of: self).init(referent: self.baseReferent.copy(with: zone) as! Referent)
     }
 }
 
@@ -193,7 +193,7 @@ public struct AssociatedUtils {
         }
     }
 
-    public static func store(for object: AnyObject, key: UnsafeRawPointer, value: Any?, policy: Policy = .retainNonAtomic) {
+    public static func store(for object: AnyObject, key: UnsafeRawPointer, value: Any?, policy: Policy) {
         objc_setAssociatedObject(object, key, value, policy.objcPolicy)
     }
 
@@ -224,13 +224,13 @@ public enum Storage {
         let reference: AnyReference?
         switch self {
         case .value(let value):
-            reference = AnyReference(reference: ValueWrapper(value: value))
+            reference = AnyReference(reference: BoxedValue(value: value))
         case .strong(let object):
             reference = AnyReference(reference: StrongReference(referent: object))
         case .weak(let object):
             reference = AnyReference(reference: WeakReference(referent: object))
         case .valueOrNil(let value):
-            reference = AnyReference(optionalReference: ValueWrapper(optionalValue: value))
+            reference = AnyReference(optionalReference: BoxedValue(optionalValue: value))
         case .strongOrNil(let object):
             reference = AnyReference(optionalReference: StrongReference(optionalReferent: object))
         case .weakOrNil(let object):

@@ -25,6 +25,14 @@ public extension UIEdgeInsets {
     }
 }
 
+public func + (lhs: UIEdgeInsets, rhs: UIEdgeInsets) -> UIEdgeInsets {
+    return UIEdgeInsets(
+        top: lhs.top + rhs.top,
+        left: lhs.left + rhs.left,
+        bottom: lhs.bottom + rhs.bottom,
+        right: lhs.right + rhs.right)
+}
+
 extension UIEdgeInsets: Hashable {
 
     public var hashValue: Int {
@@ -57,10 +65,16 @@ public extension UIView {
     }
 
     @discardableResult
-    public func addAndConstrainView(_ view: UIView, with insets: UIEdgeInsets = .zero) -> ConstraintGroup {
+    public func addAndConstrainView(_ view: UIView, insets: UIEdgeInsets) -> ConstraintGroup {
         view.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(view)
         return self.constrainView(view, with: insets)
+    }
+
+    @discardableResult
+    public func addAndConstrainView(_ view: UIView, block: (LayoutProxy, LayoutProxy) -> Void = UIView.edgeInsetsBlock(.zero)) -> ConstraintGroup {
+        self.addSubview(view)
+        return constrain(self, view, block: block)
     }
 
     @discardableResult
@@ -81,24 +95,53 @@ public extension UIView {
     public func replaceAndConstrainFirstView(with insets: UIEdgeInsets) -> ConstraintGroup {
         return self.replaceAndConstrainFirstView(block: UIView.edgeInsetsBlock(insets))
     }
+
+    @discardableResult
+    public func constrainView(width: CGFloat, height: CGFloat) -> ConstraintGroup {
+        return constrain(self) { view in
+            view.width == width
+            view.height == height
+        }
+    }
 }
 
 public extension UIViewController {
 
     @discardableResult
-    public func addAndConstrainView(_ viewController: UIViewController, parentView: UIView? = nil, insets: UIEdgeInsets = .zero, performTransition: (_ complete: () -> Void) -> Void = { $0() }) -> ConstraintGroup {
+    public func addAndConstrain(_ viewController: UIViewController, parentView: UIView? = nil, insets: UIEdgeInsets = .zero, performTransition: ((_ complete: () -> Void) -> Void)? = nil) -> ConstraintGroup {
         self.addChildViewController(viewController)
-        let constraintGroup = (parentView ?? self.view).addAndConstrainView(viewController.view, with: insets)
-        performTransition() {
+
+        if let performTransition = performTransition {
+            //viewController.beginAppearanceTransition(true, animated: true)
+            let constraintGroup = (parentView ?? self.view).addAndConstrainView(viewController.view, insets: insets)
+            performTransition() {
+                //viewController.endAppearanceTransition()
+                viewController.didMove(toParentViewController: self)
+            }
+            return constraintGroup
+        } else {
+            //viewController.beginAppearanceTransition(true, animated: false)
+            let constraintGroup = (parentView ?? self.view).addAndConstrainView(viewController.view, insets: insets)
+            //viewController.endAppearanceTransition()
             viewController.didMove(toParentViewController: self)
+            return constraintGroup
         }
-        return constraintGroup
     }
 
-    public func fullyRemove(performTransition: (_ complete: () -> Void) -> Void =  { $0() }) {
+    public func removeFullyFromParent(performTransition: ((_ complete: () -> Void) -> Void)? = nil) {
         self.willMove(toParentViewController: nil)
-        performTransition() {
+
+        if let performTransition = performTransition {
+            //self.beginAppearanceTransition(false, animated: true)
+            performTransition() {
+                self.view.removeFromSuperview()
+                //self.endAppearanceTransition()
+                self.removeFromParentViewController()
+            }
+        } else {
+            //self.beginAppearanceTransition(false, animated: false)
             self.view.removeFromSuperview()
+            //self.endAppearanceTransition()
             self.removeFromParentViewController()
         }
     }

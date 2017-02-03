@@ -12,6 +12,13 @@ public struct Random {
     }
 }
 
+public extension Int {
+
+    public var randomBelow: Int {
+        return Int(arc4random_uniform(UInt32(self)))
+    }
+}
+
 public extension MutableCollection where
     Self.IndexDistance == Int,
     Self.Index == Int,
@@ -41,7 +48,7 @@ public extension Collection where
 
     public var randomElement: Self.Iterator.Element? {
         guard !self.isEmpty else { return nil }
-        return self[Int(arc4random_uniform(UInt32(self.count)))]
+        return self[self.count.randomBelow]
     }
     
     public func chooseAny(_ n: Int) -> [Self.Iterator.Element] {
