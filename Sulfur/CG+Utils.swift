@@ -166,6 +166,20 @@ public extension CGPoint {
     }
 }
 
+public extension CGSize {
+
+    public mutating func offset(width: CGFloat = 0, height: CGFloat = 0) {
+        self.width += width
+        self.height += height
+    }
+
+    public func offsetting(width: CGFloat = 0, height: CGFloat = 0) -> CGSize {
+        var size = self
+        size.offset(width: width, height: height)
+        return size
+    }
+}
+
 public extension CGRect {
 
     public static func origin(forAnchor anchorPoint: CGPoint, point: CGPoint, size: CGSize) -> CGPoint {

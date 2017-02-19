@@ -5,7 +5,12 @@
 
 import Foundation
 
-public struct Delayed {
+public protocol Cancelable {
+
+    func cancel()
+}
+
+public struct CancelableBlock: Cancelable {
 
     private let onCancel: () -> Void
 
@@ -19,13 +24,27 @@ public struct Delayed {
 }
 
 @discardableResult
-public func delay(by time: Double, on queue: DispatchQueue = .main, block: @escaping () -> Void) -> Delayed {
+public func delay(by time: Double, on queue: DispatchQueue = .main, block: @escaping () -> Void) -> Cancelable {
     var cancelled = false
     queue.asyncAfter(deadline: .now() + time) {
         guard !cancelled else { return }
         block()
     }
-    return Delayed() {
+    return CancelableBlock() {
         cancelled = true
+    }
+}
+
+public extension DispatchQueue {
+
+    public func cancelableAsync(block: @escaping () -> Void) -> Cancelable {
+        var cancelled = false
+        self.async {
+            guard !cancelled else { return }
+            block()
+        }
+        return CancelableBlock() {
+            cancelled = true
+        }
     }
 }
