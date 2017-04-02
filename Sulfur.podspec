@@ -14,5 +14,5 @@ Pod::Spec.new do |s|
   s.module_name           = s.name
 
   s.dependency 'XCGLogger',    '4.0.0'
-  s.dependency 'Cartography',  '1.0.1'
+  s.dependency 'Cartography',  '1.1.0'
 end
