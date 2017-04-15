@@ -24,7 +24,7 @@ public struct FontUtils {
         if let unmanagedError = unmanagedError {
             throw unmanagedError.takeRetainedValue()
         }
-        guard let fontName = (font.postScriptName ?? nil) as? String else {
+        guard let fontName = (font.postScriptName ?? nil) as String? else {
             throw Error.postScriptNameUnavailable
         }
         return fontName

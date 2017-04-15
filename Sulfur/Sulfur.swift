@@ -10,7 +10,16 @@ public final class SulfurSDK {
 
     public static let log: XCGLogger = {
         let log = XCGLogger()
-        log.setup(level: .info, showFunctionName: true, showThreadName: false, showLevel: true, showFileNames: true, showLineNumbers: true, showDate: false, writeToFile: nil, fileLevel: nil)
+        log.setup(
+            level: .verbose,
+            showFunctionName: true,
+            showThreadName: false,
+            showLevel: true,
+            showFileNames: true,
+            showLineNumbers: true,
+            showDate: false,
+            writeToFile: nil,
+            fileLevel: nil)
         return log
     }()
 }

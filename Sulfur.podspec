@@ -13,6 +13,6 @@ Pod::Spec.new do |s|
   s.source_files          = "Sulfur/**/*.{swift,h,m}"
   s.module_name           = s.name
 
-  s.dependency 'XCGLogger',    '4.0.0'
-  s.dependency 'Cartography',  '1.1.0'
+  s.dependency 'XCGLogger',    '~> 5.0'
+  s.dependency 'Cartography',  '~> 1.1'
 end

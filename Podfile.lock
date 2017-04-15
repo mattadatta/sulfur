@@ -1,17 +1,22 @@
 PODS:
-  - Cartography (1.0.1)
-  - XCGLogger (4.0.0):
-    - XCGLogger/Core (= 4.0.0)
-  - XCGLogger/Core (4.0.0)
+  - Cartography (1.1.0)
+  - ObjcExceptionBridging (1.0.1):
+    - ObjcExceptionBridging/ObjcExceptionBridging (= 1.0.1)
+  - ObjcExceptionBridging/ObjcExceptionBridging (1.0.1)
+  - XCGLogger (5.0.1):
+    - XCGLogger/Core (= 5.0.1)
+  - XCGLogger/Core (5.0.1):
+    - ObjcExceptionBridging
 
 DEPENDENCIES:
-  - Cartography (= 1.0.1)
-  - XCGLogger (= 4.0.0)
+  - Cartography (~> 1.1)
+  - XCGLogger (~> 5.0)
 
 SPEC CHECKSUMS:
-  Cartography: c1460e99395b824d9d75360b0382faeb0b33dcd7
-  XCGLogger: 38063ea89b4c8b23232d18efd2e12eb0005f3ea4
+  Cartography: 0538ccb4044acbbda2266335fc58cb4228794d90
+  ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
+  XCGLogger: 0b43697155d41e4a1b15fc776f319c2141646b09
 
-PODFILE CHECKSUM: 1e4fb2297dea857c0f971ed0e42851cae7111837
+PODFILE CHECKSUM: cea971e69e198cec0f0827dcc8d8ff18f276f0ea
 
-COCOAPODS: 1.2.0
+COCOAPODS: 1.2.1
