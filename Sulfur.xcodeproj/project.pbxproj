@@ -34,6 +34,7 @@
 		324150331D3C2483008A26CD /* Hashing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324150321D3C2483008A26CD /* Hashing.swift */; };
 		32588C481D83035C00060027 /* Data+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32588C471D83035C00060027 /* Data+Utils.swift */; };
 		3274F6061DB43A5F0063EBAD /* Async.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3274F6051DB43A5F0063EBAD /* Async.swift */; };
+		3282ADB51EA40CBB00C31516 /* Rx+Touches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3282ADB41EA40CBB00C31516 /* Rx+Touches.swift */; };
 		32A0D0D61D8F1D2C002F49CC /* FontUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A0D0D51D8F1D2C002F49CC /* FontUtils.swift */; };
 		32BC05961D1B3BE1008573BC /* ContextTransitioning+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05951D1B3BE1008573BC /* ContextTransitioning+Utils.swift */; };
 		32BC05981D1B3C39008573BC /* DebugFns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC05971D1B3C39008573BC /* DebugFns.swift */; };
@@ -84,6 +85,7 @@
 		324150321D3C2483008A26CD /* Hashing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hashing.swift; sourceTree = "<group>"; };
 		32588C471D83035C00060027 /* Data+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+Utils.swift"; sourceTree = "<group>"; };
 		3274F6051DB43A5F0063EBAD /* Async.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Async.swift; sourceTree = "<group>"; };
+		3282ADB41EA40CBB00C31516 /* Rx+Touches.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Rx+Touches.swift"; sourceTree = "<group>"; };
 		329594F461F7F4F63EA42B4D /* Pods-SulfurTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SulfurTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SulfurTests/Pods-SulfurTests.release.xcconfig"; sourceTree = "<group>"; };
 		32A0D0D51D8F1D2C002F49CC /* FontUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FontUtils.swift; sourceTree = "<group>"; };
 		32BC05951D1B3BE1008573BC /* ContextTransitioning+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ContextTransitioning+Utils.swift"; sourceTree = "<group>"; };
@@ -161,6 +163,7 @@
 				32389E421CDFDD1F009475F6 /* Reference.swift */,
 				32389E431CDFDD1F009475F6 /* SequenceType+Utils.swift */,
 				32389E441CDFDD1F009475F6 /* String+Utils.swift */,
+				3282ADB41EA40CBB00C31516 /* Rx+Touches.swift */,
 				32389E451CDFDD1F009475F6 /* TabbedViewController.swift */,
 				32389E461CDFDD1F009475F6 /* UIColor+Utils.swift */,
 				32389E471CDFDD1F009475F6 /* UIImage+Utils.swift */,
@@ -442,6 +445,7 @@
 				3274F6061DB43A5F0063EBAD /* Async.swift in Sources */,
 				32271E901D5AB36700F6FD08 /* ViewStateManager.swift in Sources */,
 				32389E511CDFDD1F009475F6 /* ConfigurableStoryboard.m in Sources */,
+				3282ADB51EA40CBB00C31516 /* Rx+Touches.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

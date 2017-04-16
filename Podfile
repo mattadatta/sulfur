@@ -8,6 +8,10 @@ abstract_target 'SulfurProject' do
 
   pod 'XCGLogger',    '~> 5.0'
   pod 'Cartography',  '~> 1.1'
+  pod 'RxSwift',      '~> 3.4'
+  pod 'RxCocoa',      '~> 3.4'
+  pod 'RxSwiftExt',   '~> 2.4'
+  pod 'RxGesture',    '~> 1.0'
 
   target 'Sulfur' do
     target 'SulfurTests' do
