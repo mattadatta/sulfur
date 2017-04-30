@@ -451,6 +451,10 @@ public extension UIView {
         return newTransform
     }
 
+    public func applyFrame(from view: UIView) {
+        self.frame = self.superview!.convert(view.bounds, from: view)
+    }
+
     public func applyTransform(to rect: CGRect) {
         self.transform = self.transform(to: rect)
     }

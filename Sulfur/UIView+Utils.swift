@@ -59,7 +59,7 @@ public extension UIView {
     }
 
     @discardableResult
-    public func constrainView(_ view: UIView, replace group: ConstraintGroup = ConstraintGroup(), with insets: UIEdgeInsets = .zero) -> ConstraintGroup {
+    public func constrainView(_ view: UIView, replace group: ConstraintGroup = ConstraintGroup(), insets: UIEdgeInsets = .zero) -> ConstraintGroup {
         view.translatesAutoresizingMaskIntoConstraints = false
         return constrain(self, view, replace: group, block: UIView.edgeInsetsBlock(insets))
     }
@@ -68,7 +68,7 @@ public extension UIView {
     public func addAndConstrainView(_ view: UIView, insets: UIEdgeInsets) -> ConstraintGroup {
         view.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(view)
-        return self.constrainView(view, with: insets)
+        return self.constrainView(view, insets: insets)
     }
 
     @discardableResult
@@ -92,7 +92,7 @@ public extension UIView {
     }
 
     @discardableResult
-    public func replaceAndConstrainFirstView(with insets: UIEdgeInsets) -> ConstraintGroup {
+    public func replaceAndConstrainFirstView(insets: UIEdgeInsets) -> ConstraintGroup {
         return self.replaceAndConstrainFirstView(block: UIView.edgeInsetsBlock(insets))
     }
 
@@ -108,24 +108,51 @@ public extension UIView {
 public extension UIViewController {
 
     @discardableResult
-    public func addAndConstrain(_ viewController: UIViewController, parentView: UIView? = nil, insets: UIEdgeInsets = .zero, performTransition: ((_ complete: () -> Void) -> Void)? = nil) -> ConstraintGroup {
+    public func addAndConstrain(
+        _ viewController: UIViewController,
+        parentView: UIView? = nil,
+        insets: UIEdgeInsets = .zero,
+        useLayoutGuides: Bool = true,
+        performTransition: ((_ complete: () -> Void) -> Void)? = nil)
+        -> ConstraintGroup
+    {
         self.addChildViewController(viewController)
 
+        let parentView = parentView ?? self.view!
+        parentView.addSubview(viewController.view)
+        let constraintGroup = self.constrainView(
+            parentView,
+            to: viewController.view,
+            insets: insets,
+            useLayoutGuides: useLayoutGuides)
+
         if let performTransition = performTransition {
-            //viewController.beginAppearanceTransition(true, animated: true)
-            let constraintGroup = (parentView ?? self.view).addAndConstrainView(viewController.view, insets: insets)
             performTransition() {
-                //viewController.endAppearanceTransition()
                 viewController.didMove(toParentViewController: self)
             }
-            return constraintGroup
         } else {
-            //viewController.beginAppearanceTransition(true, animated: false)
-            let constraintGroup = (parentView ?? self.view).addAndConstrainView(viewController.view, insets: insets)
-            //viewController.endAppearanceTransition()
             viewController.didMove(toParentViewController: self)
-            return constraintGroup
         }
+
+        return constraintGroup
+    }
+
+    @discardableResult
+    public func addAndConstrain(
+        _ view: UIView,
+        parentView: UIView? = nil,
+        insets: UIEdgeInsets = .zero,
+        useLayoutGuides: Bool = true)
+        -> ConstraintGroup
+    {
+        let parentView = parentView ?? self.view!
+        parentView.addSubview(view)
+        let constraintGroup = self.constrainView(
+            parentView,
+            to: view,
+            insets: insets,
+            useLayoutGuides: useLayoutGuides)
+        return constraintGroup
     }
 
     public func removeFullyFromParent(performTransition: ((_ complete: () -> Void) -> Void)? = nil) {
@@ -149,16 +176,36 @@ public extension UIViewController {
 
 public extension UIViewController {
 
-    public func edgeInsetsBlock(_ insets: UIEdgeInsets) -> (LayoutProxy, LayoutProxy) -> Void { return { superview, view in
-        view.top == self.topLayoutGuideCartography + insets.top
-        view.bottom == self.bottomLayoutGuideCartography - insets.bottom
-        view.left == superview.left + insets.left
-        view.right == superview.right - insets.right
-    } }
+    public func edgeInsetsBlock(
+        _ insets: UIEdgeInsets,
+        useLayoutGuides: Bool)
+        -> (LayoutProxy, LayoutProxy)
+        -> Void
+    {
+        return { superview, view in
+            if useLayoutGuides {
+                view.top == self.topLayoutGuideCartography + insets.top
+                view.bottom == self.bottomLayoutGuideCartography - insets.bottom
+            }
+            else {
+                view.top == superview.top + insets.top
+                view.bottom == superview.bottom - insets.bottom
+            }
+            view.left == superview.left + insets.left
+            view.right == superview.right - insets.right
+        }
+    }
 
     @discardableResult
-    public func constrainView(_ view1: UIView? = nil, to view2: UIView, with insets: UIEdgeInsets = .zero, replacing group: ConstraintGroup = ConstraintGroup()) -> ConstraintGroup {
+    public func constrainView(
+        _ view1: UIView? = nil,
+        to view2: UIView,
+        insets: UIEdgeInsets = .zero,
+        useLayoutGuides: Bool = true,
+        replace group: ConstraintGroup = ConstraintGroup())
+        -> ConstraintGroup
+    {
         let view1 = view1 ?? self.view!
-        return constrain(view1, view2, replace: group, block: self.edgeInsetsBlock(insets))
+        return constrain(view1, view2, replace: group, block: self.edgeInsetsBlock(insets, useLayoutGuides: useLayoutGuides))
     }
 }
