@@ -405,7 +405,13 @@ public extension CGRect {
         self = self.rect(for: transform)
     }
 
-    public func transform(to rect: CGRect, anchorPoint: CGPoint = CGPoint.zero, maintainAspectRatio: Bool = false, rescale: CGFloat = 1.0) -> CGAffineTransform {
+    public func _transform(to rect: CGRect) -> CGAffineTransform {
+        let scales = CGSize(width: rect.width / self.width, height: rect.height / self.height)
+        let offset = CGPoint(x: rect.midX - self.midX, y: rect.midY - self.midY)
+        return CGAffineTransform(a: scales.width, b: 0, c: 0, d: scales.height, tx: offset.x, ty: offset.y)
+    }
+
+    public func transform(to rect: CGRect, anchorPoint: CGPoint = CGPoint(x: 0.5, y: 0.5), maintainAspectRatio: Bool = false, rescale: CGFloat = 1.0) -> CGAffineTransform {
         var xScale = rect.width / self.width
         var yScale = rect.height / self.height
         if maintainAspectRatio {
@@ -443,6 +449,14 @@ public extension CGRect {
 
 public extension UIView {
 
+    public func _transform(to rect: CGRect) -> CGAffineTransform {
+        let oldTransform = self.transform
+        self.transform = .identity
+        let newTransform = self.frame._transform(to: rect)
+        self.transform = oldTransform
+        return newTransform
+    }
+
     public func transform(to rect: CGRect) -> CGAffineTransform {
         let oldTransform = self.transform
         self.transform = .identity
@@ -452,7 +466,15 @@ public extension UIView {
     }
 
     public func applyFrame(from view: UIView) {
-        self.frame = self.superview!.convert(view.bounds, from: view)
+        self.frame = self.relativeFrame(from: view)
+    }
+
+    public func relativeFrame(from view: UIView) -> CGRect {
+        return self.superview!.convert(view.bounds, from: view)
+    }
+
+    public func insetsForFrame(from view: UIView) -> UIEdgeInsets {
+        return self.insets(for: self.convert(view.bounds, from: view))
     }
 
     public func applyTransform(to rect: CGRect) {
