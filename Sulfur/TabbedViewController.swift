@@ -367,7 +367,7 @@ public final class TabBarView: UIView {
             self.tabView.addGestureRecognizer(self.tapGestureRecognizer)
         }
 
-        dynamic func tabViewDidTap(_ tapGestureRecognizer: UITapGestureRecognizer) {
+        @objc func tabViewDidTap(_ tapGestureRecognizer: UITapGestureRecognizer) {
             if tapGestureRecognizer.state == .ended {
                 self.tabBarView.didTapView(for: self)
             }
@@ -383,7 +383,7 @@ public final class TabBarView: UIView {
     public var tabs: [Tab] {
         get { return self.tabManagers.map({ $0.tab }) }
         set(newTabs) {
-            self.tabManagers = newTabs.enumerated().map({ TabManager(tabBarView: self, tab: $1, index: $0) })
+            self.tabManagers = newTabs.enumerated().map({ TabManager(tabBarView: self, tab: $0.1, index: $0.0) })
             self._selectedIndex = nil
             self.desiredIndex = self.tabManagers.isEmpty ? nil : 0
             self.forceTabReselection = true

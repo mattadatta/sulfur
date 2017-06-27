@@ -6,7 +6,8 @@
 import Foundation
 
 public func += <Key, Value> (lhs: inout [Key: Value], rhs: [Key: Value]) {
-    rhs.forEach { key, value in
+    rhs.forEach { (pair) in
+        let (key, value) = pair
         lhs.updateValue(value, forKey: key)
     }
 }
