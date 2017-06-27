@@ -40,7 +40,7 @@ public struct Hasher: Hashable {
     public init() {
     }
 
-    fileprivate mutating func hash(value: Int) {
+    private mutating func hash(value: Int) {
         switch self.state {
         case .initial:
             self.state = .computed(result: value)

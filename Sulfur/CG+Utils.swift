@@ -100,7 +100,7 @@ public func /= <TwoD: TwoDimensional> (twoD: inout TwoD, scale: Double) {
     twoD = twoD / scale
 }
 
-fileprivate func angleBetween(u: CGVector, v: CGVector) -> CGFloat {
+private func angleBetween(u: CGVector, v: CGVector) -> CGFloat {
     let dotProduct = (u.dx * v.dx) + (u.dy * v.dy)
     return acos(dotProduct / (u.length * v.length))
 }

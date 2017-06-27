@@ -9,7 +9,7 @@ import UIKit
 
 public struct Gradient {
 
-    fileprivate struct Constants {
+    private struct Constants {
 
         static let defaultStops = [
             Stop(color: .black, percent: 0.0),
@@ -172,7 +172,7 @@ public final class GradientView: UIView {
         self.commonInit()
     }
 
-    fileprivate func commonInit() {
+    private func commonInit() {
         self.gradient = Gradient() // Trigger didSet
     }
 }

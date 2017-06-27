@@ -59,7 +59,7 @@ public final class TableViewCell<View: UIView>: UITableViewCell, ViewCell {
         self.commonInit()
     }
 
-    fileprivate func commonInit() {
+    private func commonInit() {
         self.nestedView = View()
     }
 
@@ -145,7 +145,7 @@ public final class TableViewHeaderFooterView<View: UIView>: UITableViewHeaderFoo
         self.commonInit()
     }
 
-    fileprivate func commonInit() {
+    private func commonInit() {
         self.nestedView = View()
     }
 
@@ -224,7 +224,7 @@ public final class CollectionViewCell<View: UIView>: UICollectionViewCell, ViewC
         self.commonInit()
     }
 
-    fileprivate func commonInit() {
+    private func commonInit() {
         self.nestedView = View()
     }
 
@@ -319,7 +319,7 @@ public final class CollectionReusableView<View: UIView>: UICollectionReusableVie
         self.commonInit()
     }
 
-    fileprivate func commonInit() {
+    private func commonInit() {
         self.nestedView = View()
     }
 

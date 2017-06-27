@@ -11,7 +11,7 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
 
     // MARK: Utils
 
-    fileprivate enum GridMeasurementUtils {
+    private enum GridMeasurementUtils {
 
         static func frame(for gridRect: GridRect, cellSize: CGSize, spacingSize: CGSize) -> CGRect {
             let frameX = (cellSize.width + spacingSize.width) * gridRect.x
@@ -298,16 +298,16 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
         }
     }
 
-    public fileprivate(set) var cellSize: CGSize = .zero
-    public fileprivate(set) var spacingSize: CGSize = .zero
-    public fileprivate(set) var numUnits: Int = 0
+    public private(set) var cellSize: CGSize = .zero
+    public private(set) var spacingSize: CGSize = .zero
+    public private(set) var numUnits: Int = 0
 
-    fileprivate var layoutAttrs: [LayoutAttributes] = []
-    fileprivate var itemLayoutAttrs: [IndexPath: LayoutAttributes] = [:]
-    fileprivate var headerLayoutAttrs: [IndexPath: LayoutAttributes] = [:]
-    fileprivate var footerLayoutAttrs: [IndexPath: LayoutAttributes] = [:]
-    fileprivate var contentOffsets: [(CGFloat, CGFloat, CGFloat)] = []
-    fileprivate var contentSize: CGSize = .zero
+    private var layoutAttrs: [LayoutAttributes] = []
+    private var itemLayoutAttrs: [IndexPath: LayoutAttributes] = [:]
+    private var headerLayoutAttrs: [IndexPath: LayoutAttributes] = [:]
+    private var footerLayoutAttrs: [IndexPath: LayoutAttributes] = [:]
+    private var contentOffsets: [(CGFloat, CGFloat, CGFloat)] = []
+    private var contentSize: CGSize = .zero
 
     // MARK: UICollectionViewLayout overrides
 
