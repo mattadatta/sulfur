@@ -208,34 +208,34 @@ public struct AssociatedUtils {
     public static func retrieveValue<Value>(for object: AnyObject, key: UnsafeRawPointer) -> Value? {
         return (self.retrieve(for: object, key: key) as? AssociatedReference<AnyReference>)?.referent?.referent as? Value
     }
-}
-
-public enum Storage {
-
-    case value(value: Any)
-    case strong(object: AnyObject)
-    case weak(object: AnyObject)
-
-    case valueOrNil(value: Any?)
-    case strongOrNil(object: AnyObject?)
-    case weakOrNil(object: AnyObject?)
-
-    public var reference: AnyReference? {
-        let reference: AnyReference?
-        switch self {
-        case .value(let value):
-            reference = AnyReference(reference: BoxedValue(value: value))
-        case .strong(let object):
-            reference = AnyReference(reference: StrongReference(referent: object))
-        case .weak(let object):
-            reference = AnyReference(reference: WeakReference(referent: object))
-        case .valueOrNil(let value):
-            reference = AnyReference(optionalReference: BoxedValue(optionalValue: value))
-        case .strongOrNil(let object):
-            reference = AnyReference(optionalReference: StrongReference(optionalReferent: object))
-        case .weakOrNil(let object):
-            reference = AnyReference(optionalReference: WeakReference(optionalReferent: object))
+    
+    public enum Storage {
+        
+        case value(value: Any)
+        case strong(object: AnyObject)
+        case weak(object: AnyObject)
+        
+        case valueOrNil(value: Any?)
+        case strongOrNil(object: AnyObject?)
+        case weakOrNil(object: AnyObject?)
+        
+        public var reference: AnyReference? {
+            let reference: AnyReference?
+            switch self {
+            case .value(let value):
+                reference = AnyReference(reference: BoxedValue(value: value))
+            case .strong(let object):
+                reference = AnyReference(reference: StrongReference(referent: object))
+            case .weak(let object):
+                reference = AnyReference(reference: WeakReference(referent: object))
+            case .valueOrNil(let value):
+                reference = AnyReference(optionalReference: BoxedValue(optionalValue: value))
+            case .strongOrNil(let object):
+                reference = AnyReference(optionalReference: StrongReference(optionalReferent: object))
+            case .weakOrNil(let object):
+                reference = AnyReference(optionalReference: WeakReference(optionalReferent: object))
+            }
+            return reference
         }
-        return reference
     }
 }

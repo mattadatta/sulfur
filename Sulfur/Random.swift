@@ -21,7 +21,6 @@ public extension Int {
 
 public extension MutableCollection where
     Self.IndexDistance == Int,
-    Self.Index == Int,
     Self.Indices == CountableRange<Int>
 {
 
@@ -29,14 +28,13 @@ public extension MutableCollection where
         self.indices.dropLast().forEach { index in
             let other = Int(arc4random_uniform(UInt32(self.count - index))) + index
             guard index != other else { return }
-            swap(&self[other], &self[index])
+            self.swapAt(other, index)
         }
     }
 }
 
 public extension Collection where
     Self.IndexDistance == Int,
-    Self.Index == Int,
     Self.Indices == CountableRange<Int>
 {
 

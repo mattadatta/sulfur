@@ -10,6 +10,7 @@ public struct FontUtils {
     public enum Error: Swift.Error {
 
         case dataProviderConstructionFailed
+        case fontConstructionFailed
         case postScriptNameUnavailable
     }
 
@@ -18,7 +19,9 @@ public struct FontUtils {
         guard let dataProvider = CGDataProvider(data: fontData as CFData) else {
             throw Error.dataProviderConstructionFailed
         }
-        let font = CGFont(dataProvider)
+        guard let font = CGFont(dataProvider) else {
+            throw Error.fontConstructionFailed
+        }
         var unmanagedError: Unmanaged<CFError>?
         CTFontManagerRegisterGraphicsFont(font, &unmanagedError)
         if let unmanagedError = unmanagedError {
