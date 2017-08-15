@@ -75,7 +75,7 @@ public struct Gradient {
     }
 
     public init(stops: [Stop]) {
-        self.stops = (stops.count > 2) ? stops : Constants.defaultStops
+        self.stops = (stops.count > 1) ? stops : Constants.defaultStops
         self.invalidateInterpolationCache()
     }
 

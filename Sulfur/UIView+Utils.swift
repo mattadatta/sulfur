@@ -112,7 +112,7 @@ public extension UIViewController {
         _ viewController: UIViewController,
         parentView: UIView? = nil,
         insets: UIEdgeInsets = .zero,
-        useLayoutGuides: Bool = true,
+        useLayoutGuides: Bool = false,
         performTransition: ((_ complete: () -> Void) -> Void)? = nil)
         -> ConstraintGroup
     {
