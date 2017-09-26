@@ -320,6 +320,10 @@ public extension CGAffineTransform {
         self.ty = yTranslate
     }
 
+    public init(scale: CGFloat) {
+        self.init(xScale: scale, yScale: scale, angle: 0.0, xTranslate: 0.0, yTranslate: 0.0)
+    }
+
     public init(xScale: CGFloat, yScale: CGFloat) {
         self.init(xScale: xScale, yScale: yScale, angle: 0.0, xTranslate: 0.0, yTranslate: 0.0)
     }

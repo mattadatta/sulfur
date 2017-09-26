@@ -48,9 +48,9 @@ extension UIEdgeInsets: Hashable {
 public extension UIView {
 
     public static func edgeInsetsBlock(_ insets: UIEdgeInsets) -> (LayoutProxy, LayoutProxy) -> Void { return { containerView, view in
-        view.left == containerView.left + insets.left
+        view.leading == containerView.leading + insets.left
         view.top == containerView.top + insets.top
-        view.right == containerView.right - insets.right
+        view.trailing == containerView.trailing - insets.right
         view.bottom == containerView.bottom - insets.bottom
     } }
 
@@ -113,7 +113,7 @@ public extension UIViewController {
         parentView: UIView? = nil,
         insets: UIEdgeInsets = .zero,
         useLayoutGuides: Bool = false,
-        performTransition: ((_ complete: () -> Void) -> Void)? = nil)
+        performTransition: ((@escaping () -> Void) -> Void)? = nil)
         -> ConstraintGroup
     {
         self.addChildViewController(viewController)
@@ -191,8 +191,8 @@ public extension UIViewController {
                 view.top == superview.top + insets.top
                 view.bottom == superview.bottom - insets.bottom
             }
-            view.left == superview.left + insets.left
-            view.right == superview.right - insets.right
+            view.leading == superview.leading + insets.left
+            view.trailing == superview.trailing - insets.right
         }
     }
 
