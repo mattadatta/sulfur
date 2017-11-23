@@ -8,6 +8,8 @@ import UIKit
 public protocol TwoDimensional {
 
     init()
+    init(d1: Double, d2: Double)
+    init<TwoD: TwoDimensional>(_ twoD: TwoD)
 
     var d1: Double { get set }
     var d2: Double { get set }
@@ -24,18 +26,15 @@ public extension TwoDimensional {
     public init(value: Double) {
         self.init(d1: value, d2: value)
     }
+
+    public init<TwoD: TwoDimensional>(_ twoD: TwoD) {
+        self.init(d1: twoD.d1, d2: twoD.d2)
+    }
 }
 
 public extension TwoDimensional {
 
-    public var point: CGPoint { return CGPoint(x: self.d1, y: self.d2) }
-    public var vector: CGVector { return CGVector(dx: self.d1, dy: self.d2) }
-    public var size: CGSize { return CGSize(width: self.d1, height: self.d2) }
-}
-
-public extension TwoDimensional {
-
-    public var aspectRatio: Double { return self.d1 / self.d2 }
+    public var ratio: Double { return self.d1 / self.d2 }
 }
 
 public extension TwoDimensional /* : Hashable */ {
@@ -100,7 +99,7 @@ public func /= <TwoD: TwoDimensional> (twoD: inout TwoD, scale: Double) {
     twoD = twoD / scale
 }
 
-fileprivate func angleBetween(u: CGVector, v: CGVector) -> CGFloat {
+private func angleBetween(u: CGVector, v: CGVector) -> CGFloat {
     let dotProduct = (u.dx * v.dx) + (u.dy * v.dy)
     return acos(dotProduct / (u.length * v.length))
 }
@@ -257,7 +256,7 @@ public extension CGRect {
     }
 
     public var aspectRatio: CGFloat {
-        return self.size.aspectRatio.cgFloat
+        return self.size.ratio.cgFloat
     }
 }
 
@@ -319,6 +318,10 @@ public extension CGAffineTransform {
         self.d = yScale * cos(angle)
         self.tx = xTranslate
         self.ty = yTranslate
+    }
+
+    public init(scale: CGFloat) {
+        self.init(xScale: scale, yScale: scale, angle: 0.0, xTranslate: 0.0, yTranslate: 0.0)
     }
 
     public init(xScale: CGFloat, yScale: CGFloat) {
@@ -431,7 +434,7 @@ public extension CGRect {
     public func transform(to rect: CGRect, xScale: CGFloat, yScale: CGFloat, anchorPoint: CGPoint = CGPoint.zero) -> CGAffineTransform {
         var transform = CGAffineTransform(xScale: xScale, yScale: yScale)
 
-        let translationVector = rect.pointAtAnchor(anchorPoint).vector - self.pointAtAnchor(anchorPoint).vector
+        let translationVector = CGVector(rect.pointAtAnchor(anchorPoint)) - CGVector(self.pointAtAnchor(anchorPoint))
         transform.xTranslate = translationVector.dx * xScale
         transform.yTranslate = translationVector.dy * yScale
 

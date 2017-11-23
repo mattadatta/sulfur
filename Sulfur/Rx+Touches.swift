@@ -66,7 +66,7 @@ public final class TouchGestureRecognizer: UIGestureRecognizer, UIGestureRecogni
 
     private final class NopTarget {
 
-        fileprivate dynamic func nop(_ _: Any) { }
+        @objc fileprivate func nop(_ _: Any) { }
     }
 
     private var nop: NopTarget!
@@ -91,7 +91,7 @@ public final class TouchGestureRecognizer: UIGestureRecognizer, UIGestureRecogni
         self.cancelsTouchesInView = true
     }
 
-    private dynamic func nop(_ r: Any) { }
+    @objc private func nop(_ r: Any) { }
 
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         let shouldRecognizeSimultaneously = !(otherGestureRecognizer is UIPanGestureRecognizer)

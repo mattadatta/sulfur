@@ -239,8 +239,8 @@ public final class GridCollectionController: NSObject {
     public let gridLayout: GridCollectionViewLayout
     public weak var delegate: GridCollectionControllerDelegate?
 
-    fileprivate var itemIndexPaths: [ItemIndex: IndexPath] = [:]
-    fileprivate var itemsBySection: [[Item]] = []
+    private var itemIndexPaths: [ItemIndex: IndexPath] = [:]
+    private var itemsBySection: [[Item]] = []
 
     public var items: [Item] = [] {
         didSet {
@@ -273,8 +273,8 @@ public final class GridCollectionController: NSObject {
         }
     }
 
-    fileprivate var supplementaryIndexPaths: [SupplementaryIndex: IndexPath] = [:]
-    fileprivate var supplementariesByIndex: [SupplementaryIndex: Supplementary] = [:]
+    private var supplementaryIndexPaths: [SupplementaryIndex: IndexPath] = [:]
+    private var supplementariesByIndex: [SupplementaryIndex: Supplementary] = [:]
 
     public var supplementaries: [Supplementary] = [] {
         didSet {
@@ -349,30 +349,30 @@ public final class GridCollectionController: NSObject {
 
     // MARK: Internal
 
-    fileprivate func itemComponent(for indexPath: IndexPath) -> Component? {
+    private func itemComponent(for indexPath: IndexPath) -> Component? {
         guard let cell = self.collectionView.cellForItem(at: indexPath) else { return nil }
         return self.itemComponent(for: indexPath, with: cell)
     }
 
-    fileprivate func supplementaryComponent(of kind: SupplementaryIndex.Kind, for indexPath: IndexPath) -> Component? {
+    private func supplementaryComponent(of kind: SupplementaryIndex.Kind, for indexPath: IndexPath) -> Component? {
         guard let view = self.collectionView.supplementaryView(forElementKind: kind.collectionViewKind, at: indexPath) else { return nil }
         return self.supplementaryComponent(of: kind, inSection: indexPath.section, with: view)
     }
 
-    fileprivate func itemComponent(for indexPath: IndexPath, with cell: UICollectionViewCell) -> Component {
+    private func itemComponent(for indexPath: IndexPath, with cell: UICollectionViewCell) -> Component {
         let item = self.item(for: indexPath)
         let itemCell = cell as! ItemViewCell
         return Component(item: item, itemViewCell: itemCell)
     }
 
-    fileprivate func supplementaryComponent(ofCollectionViewKind elementKind: String, inSection section: Int, with view: UICollectionReusableView) -> Component? {
+    private func supplementaryComponent(ofCollectionViewKind elementKind: String, inSection section: Int, with view: UICollectionReusableView) -> Component? {
         guard let kind = GridCollectionController.SupplementaryIndex.Kind.kind(forCollectionViewKind: elementKind) else {
             return nil
         }
         return supplementaryComponent(of: kind, inSection: section, with: view)
     }
 
-    fileprivate func supplementaryComponent(of kind: SupplementaryIndex.Kind, inSection section: Int, with view: UICollectionReusableView) -> Component? {
+    private func supplementaryComponent(of kind: SupplementaryIndex.Kind, inSection section: Int, with view: UICollectionReusableView) -> Component? {
         guard let supplementary = self.supplementary(of: kind, inSection: section) else {
             return nil
         }
@@ -380,16 +380,16 @@ public final class GridCollectionController: NSObject {
         return Component(supplementary: supplementary, itemReusableView: supplementaryView)
     }
 
-    fileprivate func item(for indexPath: IndexPath) -> Item {
+    private func item(for indexPath: IndexPath) -> Item {
         return self.itemsBySection[indexPath.section][indexPath.row]
     }
 
-    fileprivate func supplementary(ofCollectionViewKind elementKind: String, inSection section: Int) -> Supplementary? {
+    private func supplementary(ofCollectionViewKind elementKind: String, inSection section: Int) -> Supplementary? {
         guard let kind = GridCollectionController.SupplementaryIndex.Kind.kind(forCollectionViewKind: elementKind) else { return nil }
         return self.supplementary(of: kind, inSection: section)
     }
 
-    fileprivate func supplementary(of kind: SupplementaryIndex.Kind, inSection section: Int) -> Supplementary? {
+    private func supplementary(of kind: SupplementaryIndex.Kind, inSection section: Int) -> Supplementary? {
         return self.supplementariesByIndex[SupplementaryIndex(section: section, kind: kind)]
     }
 }

@@ -13,7 +13,7 @@ public extension UIColor {
         characterSet.formUnion(CharacterSet(charactersIn: "#"))
 
         let colorString = hex.trimmingCharacters(in: characterSet as CharacterSet).uppercased()
-        let charCount = colorString.characters.count
+        let charCount = colorString.count
         if charCount == 6 {
             var rgbValue: UInt32 = 0
             Scanner(string: colorString).scanHexInt32(&rgbValue)

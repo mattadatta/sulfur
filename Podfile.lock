@@ -1,40 +1,40 @@
 PODS:
-  - Cartography (1.1.0)
+  - Cartography (3.0.1)
   - ObjcExceptionBridging (1.0.1):
     - ObjcExceptionBridging/ObjcExceptionBridging (= 1.0.1)
   - ObjcExceptionBridging/ObjcExceptionBridging (1.0.1)
-  - RxCocoa (3.4.0):
-    - RxSwift (~> 3.4)
-  - RxGesture (1.0.1):
-    - RxCocoa (~> 3.4)
-    - RxSwift (~> 3.4)
-  - RxSwift (3.4.0)
-  - RxSwiftExt (2.4.1):
-    - RxSwiftExt/Core (= 2.4.1)
-  - RxSwiftExt/Core (2.4.1):
-    - RxSwift (~> 3.4)
-  - XCGLogger (5.0.1):
-    - XCGLogger/Core (= 5.0.1)
-  - XCGLogger/Core (5.0.1):
+  - RxCocoa (4.0.0):
+    - RxSwift (~> 4.0)
+  - RxGesture (1.2.1):
+    - RxCocoa (~> 4.0)
+    - RxSwift (~> 4.0)
+  - RxSwift (4.0.0)
+  - RxSwiftExt (3.0.0):
+    - RxSwiftExt/Core (= 3.0.0)
+  - RxSwiftExt/Core (3.0.0):
+    - RxSwift (~> 4.0)
+  - XCGLogger (6.0.1):
+    - XCGLogger/Core (= 6.0.1)
+  - XCGLogger/Core (6.0.1):
     - ObjcExceptionBridging
 
 DEPENDENCIES:
-  - Cartography (~> 1.1)
-  - RxCocoa (~> 3.4)
-  - RxGesture (~> 1.0)
-  - RxSwift (~> 3.4)
-  - RxSwiftExt (~> 2.4)
-  - XCGLogger (~> 5.0)
+  - Cartography (~> 3.0)
+  - RxCocoa (~> 4.0)
+  - RxGesture (~> 1.2)
+  - RxSwift (~> 4.0)
+  - RxSwiftExt (~> 3.0)
+  - XCGLogger (~> 6.0)
 
 SPEC CHECKSUMS:
-  Cartography: 0538ccb4044acbbda2266335fc58cb4228794d90
+  Cartography: f8c899bb0f5cf20758644a8eea59a75e98a03a5d
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
-  RxCocoa: d14ef6b6029e1ddc6e966508c09289090de68ff9
-  RxGesture: 1f770b247c69e8133fb8f4ef263571efd0ae91a1
-  RxSwift: 3789a1af753002a14edecdb698a2424624296a9c
-  RxSwiftExt: 72278e4a84f35324a82a8dd359859782706576a6
-  XCGLogger: 0b43697155d41e4a1b15fc776f319c2141646b09
+  RxCocoa: d62846ca96495d862fa4c59ea7d87e5031d7340e
+  RxGesture: c278eb05b187abd47e11e65464ae4de53ab71d95
+  RxSwift: fd680d75283beb5e2559486f3c0ff852f0d35334
+  RxSwiftExt: b06c47dff66cd33ca7683bba1e74b0c5c8e3592e
+  XCGLogger: b4ca980580108cfeaf221afe158f5d89c1be22e0
 
-PODFILE CHECKSUM: af892ea004f5cc34a85f4f43432aeba68454198c
+PODFILE CHECKSUM: ea6b4e7d4b3ab600a5317bfcabaa53ae48695773
 
-COCOAPODS: 1.2.1
+COCOAPODS: 1.4.0.beta.2

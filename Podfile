@@ -1,4 +1,4 @@
-platform :ios, '9.0'
+platform :ios, '11.0'
 use_frameworks!
 
 project 'Sulfur.xcodeproj'
@@ -6,12 +6,12 @@ workspace 'Sulfur'
 
 abstract_target 'SulfurProject' do
 
-  pod 'XCGLogger',    '~> 5.0'
-  pod 'Cartography',  '~> 1.1'
-  pod 'RxSwift',      '~> 3.4'
-  pod 'RxCocoa',      '~> 3.4'
-  pod 'RxSwiftExt',   '~> 2.4'
-  pod 'RxGesture',    '~> 1.0'
+  pod 'XCGLogger',    '~> 6.0'
+  pod 'Cartography',  '~> 3.0'
+  pod 'RxSwift',      '~> 4.0'
+  pod 'RxCocoa',      '~> 4.0'
+  pod 'RxSwiftExt',   '~> 3.0'
+  pod 'RxGesture',    '~> 1.2'
 
   target 'Sulfur' do
     target 'SulfurTests' do
