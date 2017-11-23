@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name                  = "Sulfur"
-  s.version               = "2.0.1"
+  s.version               = "3.0.0"
   s.summary               = "A collection of various utilities I've been building out over time for iOS."
   s.homepage              = "https://github.com/mattadatta/sulfur"
   s.authors               = { "Matthew Brown" => "me.matt.brown@gmail.com" }
@@ -13,10 +13,10 @@ Pod::Spec.new do |s|
   s.source_files          = "Sulfur/**/*.{swift,h,m}"
   s.module_name           = s.name
 
-  s.dependency 'XCGLogger',    '~> 5.0'
-  s.dependency 'Cartography',  '~> 1.1'
-  s.dependency 'RxSwift',      '~> 3.4'
-  s.dependency 'RxCocoa',      '~> 3.4'
-  s.dependency 'RxSwiftExt',   '~> 2.4'
-  s.dependency 'RxGesture',    '~> 1.0'
+  s.dependency 'XCGLogger',    '~> 6.0'
+  s.dependency 'Cartography',  '~> 3.0'
+  s.dependency 'RxSwift',      '~> 4.0'
+  s.dependency 'RxCocoa',      '~> 4.0'
+  s.dependency 'RxSwiftExt',   '~> 3.0'
+  s.dependency 'RxGesture',    '~> 1.2'
 end

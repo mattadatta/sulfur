@@ -149,10 +149,10 @@ public extension UIColor {
         alpha: CGFloat? = nil) -> UIColor
     {
         return UIColor(
-            hue: hue ?? Random.float(),
-            saturation: saturation ?? Random.float(),
-            brightness: brightness ?? Random.float(),
-            alpha: alpha ?? Random.float())
+            hue: hue ?? randomFloat(),
+            saturation: saturation ?? randomFloat(),
+            brightness: brightness ?? randomFloat(),
+            alpha: alpha ?? randomFloat())
     }
 
     public static func randomizeRGBA(red: CGFloat? = nil,
@@ -161,10 +161,10 @@ public extension UIColor {
         alpha: CGFloat? = nil) -> UIColor
     {
         return UIColor(
-            red: red ?? Random.float(),
-            green: green ?? Random.float(),
-            blue: blue ?? Random.float(),
-            alpha: alpha ?? Random.float())
+            red: red ?? randomFloat(),
+            green: green ?? randomFloat(),
+            blue: blue ?? randomFloat(),
+            alpha: alpha ?? randomFloat())
     }
 }
 
@@ -173,4 +173,8 @@ public extension Sequence where Self.Iterator.Element: UIColor {
     public var asFloatArray: [CGFloat] {
         return self.flatMap({ [$0.red, $0.green, $0.blue, $0.alpha] })
     }
+}
+
+private func randomFloat() -> CGFloat {
+    return CGFloat(arc4random()) / CGFloat(UINT32_MAX)
 }
