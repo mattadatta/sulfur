@@ -7,7 +7,7 @@ Pod::Spec.new do |s|
   s.license               = { :type => "MIT", :file => 'LICENSE' }
 
   s.platform              = :ios
-  s.ios.deployment_target = "9.0"
+  s.ios.deployment_target = "11.0"
   s.requires_arc          = true
   s.source                = { :git => "https://github.com/mattadatta/sulfur.git", :tag => "v/#{s.version}" }
   s.source_files          = "Sulfur/**/*.{swift,h,m}"

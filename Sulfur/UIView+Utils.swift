@@ -55,13 +55,13 @@ public extension UIView {
             self.rawValue = rawValue
         }
 
-        static let top       = SafeAreaEdge(rawValue: 1 << 0)
-        static let bottom    = SafeAreaEdge(rawValue: 1 << 1)
-        static let leading   = SafeAreaEdge(rawValue: 1 << 2)
-        static let trailing  = SafeAreaEdge(rawValue: 1 << 3)
+        public static let top       = SafeAreaEdge(rawValue: 1 << 0)
+        public static let bottom    = SafeAreaEdge(rawValue: 1 << 1)
+        public static let leading   = SafeAreaEdge(rawValue: 1 << 2)
+        public static let trailing  = SafeAreaEdge(rawValue: 1 << 3)
     }
 
-    public static func edgeInsetsBlock(_ insets: UIEdgeInsets, safeAreaEdges: SafeAreaEdge = []) -> (ViewProxy, ViewProxy) -> Void { return { containerView, view in
+    public static func edgeInsetsBlock(_ insets: UIEdgeInsets, safeAreaEdges: SafeAreaEdge) -> (ViewProxy, ViewProxy) -> Void { return { containerView, view in
         if safeAreaEdges.contains(.leading) {
             view.leading == containerView.safeAreaLayoutGuide.leading + insets.left
         } else {
@@ -94,13 +94,13 @@ public extension UIView {
     }
 
     @discardableResult
-    public func addAndConstrainView(_ view: UIView, insets: UIEdgeInsets, safeAreaEdges: SafeAreaEdge = []) -> ConstraintGroup {
+    public func addAndConstrainView(_ view: UIView, insets: UIEdgeInsets = .zero, safeAreaEdges: SafeAreaEdge = []) -> ConstraintGroup {
         self.addSubview(view)
         return self.constrainView(view, insets: insets, safeAreaEdges: safeAreaEdges)
     }
 
     @discardableResult
-    public func addAndConstrainView(_ view: UIView, block: (ViewProxy, ViewProxy) -> Void = UIView.edgeInsetsBlock(.zero)) -> ConstraintGroup {
+    public func addAndConstrainView(_ view: UIView, block: (ViewProxy, ViewProxy) -> Void) -> ConstraintGroup {
         self.addSubview(view)
         return constrain(self, view, block: block)
     }
